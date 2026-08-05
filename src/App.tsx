@@ -109,7 +109,8 @@ function AddScreen({ onBack, onDrafts, onCandidates, notify }: { onBack: () => v
   const [text, setText] = useState("");
   const [image, setImage] = useState<string>();
   const [busy, setBusy] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const photoLibraryRef = useRef<HTMLInputElement>(null);
 
   const readImage = (file?: File) => {
     if (!file) return;
@@ -157,9 +158,11 @@ function AddScreen({ onBack, onDrafts, onCandidates, notify }: { onBack: () => v
 
         <section className={`photo-drop ${image ? "has-image" : ""}`}>
           {image ? <img src={image} alt="선택한 학습 자료 미리보기" /> : <div className="photo-placeholder"><span>▧</span><b>교재나 노트를 촬영해 보세요</b><p>한 장에 여러 단어가 있어도 괜찮아요.</p></div>}
-          <input ref={fileRef} type="file" accept="image/*" capture="environment" hidden onChange={(event) => readImage(event.target.files?.[0])} />
+          <input ref={cameraRef} type="file" accept="image/*" capture="environment" hidden onChange={(event) => readImage(event.target.files?.[0])} />
+          <input ref={photoLibraryRef} type="file" accept="image/*" hidden onChange={(event) => readImage(event.target.files?.[0])} />
           <div className="photo-actions">
-            <ActionButton variant="neutralWeak" onClick={() => fileRef.current?.click()}>{image ? "사진 바꾸기" : "사진 촬영 · 선택"}</ActionButton>
+            <ActionButton variant="neutralWeak" onClick={() => cameraRef.current?.click()}>{image ? "다시 촬영" : "사진 촬영"}</ActionButton>
+            <ActionButton variant="neutralWeak" onClick={() => photoLibraryRef.current?.click()}>사진첩에서 선택</ActionButton>
             {image && <ActionButton variant="ghost" onClick={() => setImage(undefined)}>삭제</ActionButton>}
           </div>
         </section>
