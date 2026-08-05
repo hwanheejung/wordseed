@@ -1,0 +1,48 @@
+{
+  "name": "wordseed",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b --pretty false",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "seed:compat": "seed-design compat"
+  },
+  "dependencies": {
+    "@karrotmarket/react-monochrome-icon": "^1.25.0",
+    "@seed-design/css": "^2.3.0",
+    "@seed-design/react": "^2.1.0",
+    "dexie": "latest",
+    "dexie-react-hooks": "latest",
+    "openai": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "@seed-design/cli": "latest",
+    "@seed-design/vite-plugin": "latest",
+    "@testing-library/jest-dom": "latest",
+    "@testing-library/react": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@vercel/node": "latest",
+    "@vitejs/plugin-react": "latest",
+    "eslint": "latest",
+    "eslint-plugin-react-hooks": "latest",
+    "fake-indexeddb": "latest",
+    "globals": "latest",
+    "jsdom": "latest",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "latest",
+    "vite": "latest",
+    "vite-plugin-pwa": "latest",
+    "vitest": "latest",
+    "workbox-window": "latest"
+  }
+}
