@@ -9,6 +9,8 @@ export interface Meaning {
   pronunciation?: string;
   provenance: Provenance;
   examples: Example[];
+  synonyms: string[];
+  antonyms: string[];
 }
 
 export interface Example {
@@ -27,8 +29,6 @@ export interface VocabularyCard {
   partOfSpeech?: string;
   pronunciation?: string;
   meanings: Meaning[];
-  synonyms: string[];
-  antonyms: string[];
   tags: string[];
   testExamples: Example[];
   sourceText?: string;
@@ -55,8 +55,6 @@ export interface CardDraft {
   partOfSpeech?: string;
   pronunciation?: string;
   meanings: Meaning[];
-  synonyms: string[];
-  antonyms: string[];
   tags?: string[];
   testExamples: Example[];
   sourceText?: string;

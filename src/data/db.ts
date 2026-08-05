@@ -81,6 +81,14 @@ class WordseedDatabase extends Dexie {
         card.tags = normalizeTags(card.tags);
       });
     });
+    this.version(9).stores({
+      cards: "id, normalizedTerm, status, createdAt, *tags",
+      reviewEvents: "++id, cardId, mode, timestamp",
+    }).upgrade(async (transaction) => {
+      await transaction.table("cards").toCollection().modify((card) => {
+        Object.assign(card, normalizeStoredCard(card as LegacyCard));
+      });
+    });
   }
 }
 
@@ -90,10 +98,12 @@ export async function ensureSeedData() {
   if ((await db.cards.count()) === 0) await db.cards.bulkAdd(seedCards);
 }
 
-type LegacyMeaning = Omit<Meaning, "examples"> & { examples?: Example[] };
+type LegacyMeaning = Omit<Meaning, "examples" | "synonyms" | "antonyms"> & { examples?: Example[]; synonyms?: string[]; antonyms?: string[] };
 type LegacyCard = Omit<VocabularyCard, "meanings" | "testExamples" | "tags"> & {
   meanings: LegacyMeaning[];
   examples?: Example[];
+  synonyms?: string[];
+  antonyms?: string[];
   testExamples?: Example[];
   stage?: number;
   isNew?: boolean;
@@ -123,6 +133,8 @@ export function normalizeStoredCard(card: LegacyCard): VocabularyCard {
   delete cardWithoutLegacyFields.isNew;
   delete cardWithoutLegacyFields.nextReviewAt;
   delete cardWithoutLegacyFields.lastReviewedAt;
+  delete cardWithoutLegacyFields.synonyms;
+  delete cardWithoutLegacyFields.antonyms;
   const legacyExamples = Array.isArray(legacyCardExamples) ? legacyCardExamples : [];
   const meanings = (Array.isArray(card.meanings) ? card.meanings : []).map((meaning, index) => {
     const partOfSpeech = meaning.partOfSpeech ?? card.partOfSpeech;
@@ -139,6 +151,8 @@ export function normalizeStoredCard(card: LegacyCard): VocabularyCard {
       partOfSpeech,
       pronunciation: meaning.pronunciation ?? card.pronunciation,
       examples: pairedExamples,
+      synonyms: normalizeRelationList(meaning.synonyms ?? (index === 0 ? card.synonyms : [])),
+      antonyms: normalizeRelationList(meaning.antonyms ?? (index === 0 ? card.antonyms : [])),
     };
   });
   const testExamples = (Array.isArray(card.testExamples) ? card.testExamples : [])
@@ -163,6 +177,11 @@ export function normalizeTags(tags: unknown): string[] {
     .filter(Boolean)));
 }
 
+function normalizeRelationList(values: unknown): string[] {
+  if (!Array.isArray(values)) return [];
+  return Array.from(new Set(values.filter((value): value is string => typeof value === "string").map((value) => value.trim()).filter(Boolean)));
+}
+
 export function draftToCard(draft: CardDraft, previous?: VocabularyCard): VocabularyCard {
   const timestamp = new Date().toISOString();
   return {
@@ -179,9 +198,9 @@ export function draftToCard(draft: CardDraft, previous?: VocabularyCard): Vocabu
         partOfSpeech: meaning.partOfSpeech?.trim() || draft.partOfSpeech?.trim(),
         pronunciation: meaning.pronunciation?.trim() || draft.pronunciation?.trim(),
         examples: meaning.examples.filter((example) => example.en.trim()),
+        synonyms: normalizeRelationList(meaning.synonyms),
+        antonyms: normalizeRelationList(meaning.antonyms),
       })),
-    synonyms: draft.synonyms.map((item) => item.trim()).filter(Boolean),
-    antonyms: draft.antonyms.map((item) => item.trim()).filter(Boolean),
     tags: normalizeTags(draft.tags ?? previous?.tags),
     testExamples: draft.testExamples.filter((example) => example.en.trim()),
     sourceText: draft.sourceText,
@@ -229,7 +248,7 @@ export async function recordReview(
 
 export async function exportDatabase() {
   const payload = {
-    version: 8,
+    version: 9,
     exportedAt: new Date().toISOString(),
     cards: await db.cards.toArray(),
     reviewEvents: await db.reviewEvents.toArray(),
@@ -239,7 +258,7 @@ export async function exportDatabase() {
 
 export async function importDatabase(raw: string) {
   const parsed = JSON.parse(raw) as { version?: number; cards?: LegacyCard[]; reviewEvents?: LegacyReviewEvent[] };
-  if (![1, 2, 3, 4, 5, 6, 7, 8].includes(parsed.version ?? 0) || !Array.isArray(parsed.cards) || !parsed.cards.every((card) => card.id && card.term)) {
+  if (![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(parsed.version ?? 0) || !Array.isArray(parsed.cards) || !parsed.cards.every((card) => card.id && card.term)) {
     throw new Error("지원하지 않는 백업 파일이에요.");
   }
   const importedCards = parsed.cards;

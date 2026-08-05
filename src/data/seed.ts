@@ -20,10 +20,10 @@ export const seedCards: VocabularyCard[] = [
         examples: [
           { en: "The author's vivid descriptions held the readers in thrall throughout the suspenseful novel.", ko: "작가의 생생한 묘사는 긴장감 넘치는 소설 내내 독자들을 완전히 사로잡았다.", type: "sentence", provenance: "source" },
         ],
+        synonyms: ["captivity", "bondage", "control"],
+        antonyms: ["freedom", "independence"],
       },
     ],
-    synonyms: ["captivity", "bondage", "control"],
-    antonyms: ["freedom", "independence"],
     tags: [],
     testExamples: [
       { en: "The courtroom was silent, held in thrall by the witness's unexpected testimony.", ko: "법정은 증인의 예상치 못한 증언에 완전히 사로잡혀 조용해졌다.", answer: "thrall", type: "sentence", provenance: "ai" },
@@ -52,10 +52,10 @@ export const seedCards: VocabularyCard[] = [
         examples: [
           { en: "The policy may induce companies to reduce unnecessary spending.", ko: "그 정책은 기업이 불필요한 지출을 줄이도록 유도할 수 있다.", type: "sentence", provenance: "source" },
         ],
+        synonyms: ["prompt", "cause", "lead to"],
+        antonyms: ["prevent", "discourage"],
       },
     ],
-    synonyms: ["prompt", "cause", "lead to"],
-    antonyms: ["prevent", "discourage"],
     tags: [],
     testExamples: [
       { en: "The doctor warned that the medication could induce drowsiness, so I shouldn't drive.", ko: "의사는 그 약이 졸음을 유발할 수 있으므로 운전하면 안 된다고 경고했다.", answer: "induce", type: "sentence", provenance: "ai" },
@@ -83,10 +83,10 @@ export const seedCards: VocabularyCard[] = [
         examples: [
           { en: "Digital technology has become pervasive in modern education.", ko: "디지털 기술은 현대 교육에 널리 퍼지게 되었다.", type: "sentence", provenance: "ai" },
         ],
+        synonyms: ["widespread", "prevalent", "ubiquitous"],
+        antonyms: ["limited", "rare"],
       },
     ],
-    synonyms: ["widespread", "prevalent", "ubiquitous"],
-    antonyms: ["limited", "rare"],
     tags: [],
     testExamples: [
       { en: "Smartphone use has become so pervasive that many restaurants now offer charging stations.", ko: "스마트폰 사용이 매우 보편화되어 이제 많은 식당에서 충전 시설을 제공한다.", answer: "pervasive", type: "sentence", provenance: "ai" },

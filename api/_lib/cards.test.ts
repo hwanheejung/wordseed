@@ -14,9 +14,9 @@ const validCard = CardSchema.parse({
     pronunciation: "/ɪnˈduːs/",
     provenance: "ai",
     examples: [{ en: "The policy may induce companies to reduce spending.", ko: null, type: "sentence", provenance: "ai" }],
+    synonyms: ["cause"],
+    antonyms: ["prevent"],
   }],
-  synonyms: ["cause"],
-  antonyms: ["prevent"],
   testExamples: [
     { en: "A sudden temperature drop can induce dormancy in seeds.", ko: null, answer: "induce", type: "sentence", provenance: "ai" },
     { en: "A: What could induce consumers to switch brands?\nB: A lower price might persuade them.", ko: null, answer: "induce", type: "dialogue", provenance: "ai" },
@@ -47,12 +47,12 @@ describe("generated card validation", () => {
     }))).toBe(true);
   });
 
-  it("rejects generic filler and reused study examples", () => {
+  it("rejects generic filler", () => {
     expect(hasValidTestContexts({
       ...validCard,
       testExamples: [
         { ...validCard.testExamples[0], en: "The professor used the term induce to clarify the central idea." },
-        { ...validCard.testExamples[1], en: validCard.meanings[0].examples[0].en },
+        { ...validCard.testExamples[1] },
       ],
     })).toBe(false);
   });

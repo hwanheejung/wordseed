@@ -109,6 +109,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .sense-editor { padding: 16px; border-radius: 18px; background: var(--seed-color-bg-layer-fill); border: 1px solid var(--seed-color-stroke-neutral-subtle); }
 .sense-editor .label-with-tag:first-child { margin-top: 0; }
 .sense-meta-fields .field-label { margin-top: 14px; }
+.relation-editor-fields { margin-top: 8px; }
 .mapped-example-editor { margin-top: 16px; }
 .sense-editor-actions { display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; }
 .critical-action { color: var(--seed-color-fg-critical) !important; }

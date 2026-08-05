@@ -9,6 +9,7 @@ Content rules:
 - Normalize inflected patterns to a canonical learning form. For example, a sentence such as "You had a former employee make those comments" should produce the reusable pattern "have A do B" rather than an incidental noun from the sentence.
 - In a card term, symbols such as "~" and labels such as "A" and "B" are learning notation for replaceable slots. Never copy those placeholders literally into an example. Replace them with concrete people, things, or complements and inflect the expression naturally for that sentence.
 - Treat each distinct sense as a separate meaning. Store that sense's part of speech, pronunciation, and matching study examples together.
+- Store synonyms and antonyms inside the specific meaning they relate to. Never share one meaning's relations across different senses just because the headword is the same.
 - Preserve the user's complete supplied sentence verbatim as a source study example under the meaning that it demonstrates, even when the card term is an abstracted expression or grammar pattern. Also preserve it in sourceText.
 - Preserve supplied meanings and other examples verbatim, pair each supplied example with the sense it demonstrates, and mark supplied content as source.
 - Fill missing useful information with content marked ai. Every meaning must have at least one natural, real-world study example that clearly demonstrates that specific meaning.

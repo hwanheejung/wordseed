@@ -191,7 +191,7 @@ function CandidateScreen({ initial, onBack, onContinue }: { initial: ExtractedCa
             </article>
           ))}
         </div>
-        <div className="sticky-cta"><ActionButton size="large" disabled={!selected.length} onClick={() => onContinue(selected.map((item) => ({ term: item.term, acceptedVariants: item.acceptedVariants, partOfSpeech: item.partOfSpeech, pronunciation: item.pronunciation, meanings: item.meanings, synonyms: item.synonyms, antonyms: item.antonyms, tags: item.tags, testExamples: item.testExamples, sourceText: item.sourceText, sourceLabel: item.sourceLabel })))} className="full-button">선택한 {selected.length}개 검토하기</ActionButton></div>
+        <div className="sticky-cta"><ActionButton size="large" disabled={!selected.length} onClick={() => onContinue(selected.map((item) => ({ term: item.term, acceptedVariants: item.acceptedVariants, partOfSpeech: item.partOfSpeech, pronunciation: item.pronunciation, meanings: item.meanings, tags: item.tags, testExamples: item.testExamples, sourceText: item.sourceText, sourceLabel: item.sourceLabel })))} className="full-button">선택한 {selected.length}개 검토하기</ActionButton></div>
       </main>
     </>
   );
@@ -248,6 +248,8 @@ function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft
       definitionKo: "",
       provenance: "user",
       examples: [{ en: "", type: "sentence", provenance: "user" }],
+      synonyms: [],
+      antonyms: [],
     }],
   });
   const addExample = (meaningIndex: number) => updateMeaning(meaningIndex, {
@@ -315,6 +317,10 @@ function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft
                     <TextField.Root><TextField.Textarea aria-label={`뜻 ${meaningIndex + 1}의 예문 ${exampleIndex + 1}`} value={example.en} onChange={(event) => updateExample(meaningIndex, exampleIndex, event.target.value)} placeholder="이 뜻이 드러나는 예문을 입력해 주세요" /></TextField.Root>
                   </div>
                 ))}
+                <div className="field-grid relation-editor-fields">
+                  <div><label className="field-label">이 뜻의 동의어 <span>쉼표로 구분</span></label><TextField.Root><TextField.Input aria-label={`뜻 ${meaningIndex + 1}의 동의어`} value={meaning.synonyms.join(", ")} onChange={(event) => updateMeaning(meaningIndex, { synonyms: event.target.value.split(",") })} /></TextField.Root></div>
+                  <div><label className="field-label">이 뜻의 반의어 <span>쉼표로 구분</span></label><TextField.Root><TextField.Input aria-label={`뜻 ${meaningIndex + 1}의 반의어`} value={meaning.antonyms.join(", ")} onChange={(event) => updateMeaning(meaningIndex, { antonyms: event.target.value.split(",") })} /></TextField.Root></div>
+                </div>
                 <div className="sense-editor-actions">
                   <ActionButton size="small" variant="ghost" onClick={() => addExample(meaningIndex)}>＋ 예문 추가</ActionButton>
                   {draft.meanings.length > 1 && <ActionButton size="small" variant="ghost" className="critical-action" onClick={() => update({ meanings: draft.meanings.filter((_, index) => index !== meaningIndex) })}>뜻 삭제</ActionButton>}
@@ -336,10 +342,6 @@ function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft
               ))}
             </div>
           </section>
-          <label className="field-label">동의어 <span>쉼표로 구분</span></label>
-          <TextField.Root><TextField.Input aria-label="동의어" value={draft.synonyms.join(", ")} onChange={(event) => update({ synonyms: event.target.value.split(",") })} /></TextField.Root>
-          <label className="field-label">반의어 <span>쉼표로 구분</span></label>
-          <TextField.Root><TextField.Input aria-label="반의어" value={draft.antonyms.join(", ")} onChange={(event) => update({ antonyms: event.target.value.split(",") })} /></TextField.Root>
         </section>
         <div className="review-nav"><ActionButton variant="neutralWeak" disabled={active === 0} onClick={() => setActive((value) => value - 1)}>이전</ActionButton>{active < drafts.length - 1 ? <ActionButton variant="neutralSolid" onClick={() => setActive((value) => value + 1)}>다음 카드</ActionButton> : <ActionButton loading={busy} onClick={saveAll}>모두 저장</ActionButton>}</div>
       </main>
@@ -356,10 +358,10 @@ function VocabularyCardView({ card }: { card: VocabularyCard }) {
           <section className="sense-block" key={`${meaning.definitionKo}-${meaningIndex}`}>
             <div className="meaning-block"><div className="sense-meta"><small>뜻 {meaningIndex + 1}</small><span>{meaning.partOfSpeech || card.partOfSpeech || "word"}{(meaning.pronunciation || card.pronunciation) && ` · ${meaning.pronunciation || card.pronunciation}`}</span></div><h3>{meaning.definitionKo || "뜻 미입력"}</h3>{meaning.definitionEn && <p>{meaning.definitionEn}</p>}</div>
             {meaning.examples.map((example, exampleIndex) => <div className="example-block" key={exampleIndex}><div className="label-with-tag"><small>이 뜻의 예문</small><ProvenanceTag value={example.provenance} /></div><p>{example.en}</p>{example.ko && <span>{example.ko}</span>}</div>)}
+            {(meaning.synonyms.length > 0 || meaning.antonyms.length > 0) && <div className="relations"><div><small>SYNONYMS</small><p>{meaning.synonyms.join(" · ") || "—"}</p></div><div><small>ANTONYMS</small><p>{meaning.antonyms.join(" · ") || "—"}</p></div></div>}
           </section>
         ))}
       </div>
-      {(card.synonyms.length > 0 || card.antonyms.length > 0) && <div className="relations"><div><small>SYNONYMS</small><p>{card.synonyms.join(" · ") || "—"}</p></div><div><small>ANTONYMS</small><p>{card.antonyms.join(" · ") || "—"}</p></div></div>}
     </article>
   );
 }
@@ -444,8 +446,6 @@ function cardToDraft(card: VocabularyCard): CardDraft {
     partOfSpeech: card.partOfSpeech,
     pronunciation: card.pronunciation,
     meanings: card.meanings,
-    synonyms: card.synonyms,
-    antonyms: card.antonyms,
     tags: card.tags,
     testExamples: card.testExamples.length ? card.testExamples : [
       { en: "", answer: "", type: "sentence", provenance: "user" },

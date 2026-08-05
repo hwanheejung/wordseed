@@ -19,6 +19,8 @@ const MeaningSchema = z.object({
   pronunciation: z.string().nullable(),
   provenance: z.enum(["source", "ai", "user"]),
   examples: z.array(ExampleSchema).min(1).max(3),
+  synonyms: z.array(z.string()),
+  antonyms: z.array(z.string()),
 });
 
 export const CardSchema = z.object({
@@ -27,8 +29,6 @@ export const CardSchema = z.object({
   partOfSpeech: z.string().nullable(),
   pronunciation: z.string().nullable(),
   meanings: z.array(MeaningSchema).min(1),
-  synonyms: z.array(z.string()),
-  antonyms: z.array(z.string()),
   testExamples: z.array(TestExampleSchema).min(2).max(4),
   sourceText: z.string().nullable(),
   sourceLabel: z.string().nullable(),
