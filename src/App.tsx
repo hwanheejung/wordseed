@@ -7,7 +7,7 @@ import { buildFocusQueue, buildStudyQueue, buildTestQueue, moveReviewedCardToBac
 import { parseDialogue } from "./domain/dialogue";
 import { blankTerm, getTestAnswer, isSpecificTestContext, normalizeAnswer, scoreAnswer } from "./domain/scoring";
 import type { CardDraft, Example, ExtractedCandidate, Meaning, Provenance, ReviewResult, VocabularyCard } from "./domain/types";
-import { db, exportDatabase, importDatabase, recordReview, saveDraft } from "./data/db";
+import { db, exportDatabase, importDatabase, normalizeTags, recordReview, saveDraft } from "./data/db";
 import { enrichText, extractImage } from "./services/ai";
 
 type Page = "home" | "add" | "candidates" | "review" | "study" | "focus-study" | "test" | "library" | "card";
@@ -191,7 +191,7 @@ function CandidateScreen({ initial, onBack, onContinue }: { initial: ExtractedCa
             </article>
           ))}
         </div>
-        <div className="sticky-cta"><ActionButton size="large" disabled={!selected.length} onClick={() => onContinue(selected.map((item) => ({ term: item.term, acceptedVariants: item.acceptedVariants, partOfSpeech: item.partOfSpeech, pronunciation: item.pronunciation, meanings: item.meanings, synonyms: item.synonyms, antonyms: item.antonyms, testExamples: item.testExamples, sourceText: item.sourceText, sourceLabel: item.sourceLabel })))} className="full-button">선택한 {selected.length}개 검토하기</ActionButton></div>
+        <div className="sticky-cta"><ActionButton size="large" disabled={!selected.length} onClick={() => onContinue(selected.map((item) => ({ term: item.term, acceptedVariants: item.acceptedVariants, partOfSpeech: item.partOfSpeech, pronunciation: item.pronunciation, meanings: item.meanings, synonyms: item.synonyms, antonyms: item.antonyms, tags: item.tags, testExamples: item.testExamples, sourceText: item.sourceText, sourceLabel: item.sourceLabel })))} className="full-button">선택한 {selected.length}개 검토하기</ActionButton></div>
       </main>
     </>
   );
@@ -201,11 +201,38 @@ function ProvenanceTag({ value }: { value: Provenance }) {
   return <Badge tone={value === "source" ? "positive" : value === "ai" ? "informative" : "neutral"} variant="weak">{value === "source" ? "원문" : value === "ai" ? "AI 보완" : value === "fallback" ? "앱 보완" : "직접 입력"}</Badge>;
 }
 
+function TagSelector({ label, options, selected, onChange, onCreate }: { label: string; options: string[]; selected: string[]; onChange: (tags: string[]) => void; onCreate: (tag: string) => void }) {
+  const [creating, setCreating] = useState(false);
+  const [newTag, setNewTag] = useState("");
+  const createTag = () => {
+    const tag = normalizeTags([newTag])[0];
+    if (!tag) return;
+    onCreate(tag);
+    onChange(normalizeTags([...selected, tag]));
+    setNewTag("");
+    setCreating(false);
+  };
+  const toggleTag = (tag: string) => onChange(selected.includes(tag) ? selected.filter((item) => item !== tag) : [...selected, tag]);
+
+  return <section className="tag-selector">
+    <div className="tag-selector-heading"><label className="field-label">{label}</label><ActionButton size="small" variant="neutralWeak" onClick={() => setCreating((value) => !value)}>＋ 추가</ActionButton></div>
+    {creating && <div className="tag-create-row"><TextField.Root><TextField.Input autoFocus aria-label="새 태그 이름" value={newTag} onChange={(event) => setNewTag(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") createTag(); }} placeholder="새 태그 이름" /></TextField.Root><ActionButton variant="neutralSolid" disabled={!newTag.trim()} onClick={createTag}>생성</ActionButton></div>}
+    <div className="tag-options" aria-label={`${label} 선택`}>
+      {options.length ? options.map((tag) => <Chip.Root key={tag} size="small" variant={selected.includes(tag) ? "solid" : "outlineStrong"} onClick={() => toggleTag(tag)}><Chip.Label>#{tag}</Chip.Label></Chip.Root>) : <p>아직 생성된 태그가 없어요.</p>}
+    </div>
+  </section>;
+}
+
 function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft[]; onBack: () => void; onSaved: () => void | Promise<void>; notify: (message: string) => void }) {
   const [drafts, setDrafts] = useState(initial);
   const [active, setActive] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [batchTags, setBatchTags] = useState<string[]>([]);
+  const [createdTags, setCreatedTags] = useState<string[]>([]);
+  const savedCards = useLiveQuery(() => db.cards.toArray(), [], []);
   const draft = drafts[active];
+  const availableTags = normalizeTags([...savedCards.flatMap((card) => card.tags), ...drafts.flatMap((item) => item.tags ?? []), ...createdTags]).sort((a, b) => a.localeCompare(b, "ko"));
+  const registerTag = (tag: string) => setCreatedTags((current) => normalizeTags([...current, tag]));
   const update = (patch: Partial<CardDraft>) => setDrafts((current) => current.map((item, index) => index === active ? { ...item, ...patch } : item));
   const updateMeaning = (meaningIndex: number, patch: Partial<Meaning>) => update({
     meanings: draft.meanings.map((meaning, index) => index === meaningIndex ? { ...meaning, ...patch } : meaning),
@@ -232,6 +259,11 @@ function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft
   const addTestExample = () => update({
     testExamples: [...draft.testExamples, { en: "", answer: "", type: "sentence", provenance: "user" }],
   });
+  const applyTagsToAll = () => {
+    if (!batchTags.length) return notify("적용할 태그를 선택해 주세요.");
+    setDrafts((current) => current.map((item) => ({ ...item, tags: normalizeTags([...(item.tags ?? []), ...batchTags]) })));
+    notify(`${drafts.length}개 카드에 태그를 추가했어요.`);
+  };
 
   const saveAll = async () => {
     if (drafts.some((item) => !item.term.trim() || !item.meanings.length || item.meanings.some((meaning) => !meaning.definitionKo.trim()))) return notify("모든 카드에 단어와 뜻을 입력해 주세요.");
@@ -261,11 +293,16 @@ function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft
     <>
       <AppHeader title="카드 검토" subtitle={`${active + 1} / ${drafts.length} · 저장 전에 수정할 수 있어요`} onBack={onBack} />
       <main className="screen review-screen">
+        {drafts.length > 1 && <section className="batch-tag-editor">
+          <TagSelector label="모든 카드에 추가할 태그" options={availableTags} selected={batchTags} onChange={setBatchTags} onCreate={registerTag} />
+          <ActionButton className="full-button" variant="neutralSolid" disabled={!batchTags.length} onClick={applyTagsToAll}>선택한 태그 전체 적용</ActionButton>
+        </section>}
         {drafts.length > 1 && <div className="draft-tabs">{drafts.map((item, index) => <Chip.Root key={`${item.term}-${index}`} size="small" variant={active === index ? "solid" : "outlineStrong"} onClick={() => setActive(index)}><Chip.Label>{item.term || index + 1}</Chip.Label></Chip.Root>)}</div>}
         <section className="edit-card">
           <div className="source-note"><span>✓</span><div><b>원문 정보를 우선했어요</b><p>AI가 보완한 항목은 파란색으로 표시돼요.</p></div></div>
           <label className="field-label">단어 · 표현</label>
           <TextField.Root><TextField.Input aria-label="단어 또는 표현" value={draft.term} onChange={(event) => update({ term: event.target.value })} /></TextField.Root>
+          <TagSelector label="태그" options={availableTags} selected={draft.tags ?? []} onChange={(tags) => update({ tags })} onCreate={registerTag} />
           <div className="sense-editor-heading"><label className="field-label">뜻과 예문</label><ActionButton size="small" variant="neutralWeak" onClick={addMeaning}>＋ 뜻 추가</ActionButton></div>
           <div className="sense-editor-list">
             {draft.meanings.map((meaning, meaningIndex) => (
@@ -317,7 +354,7 @@ function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft
 function VocabularyCardView({ card }: { card: VocabularyCard }) {
   return (
     <article className="vocabulary-card">
-      <div className="word-topline"><div><Badge variant="weak">{card.meanings.length}개 뜻</Badge><h2>{card.term}</h2></div><button className="sound-button" onClick={() => speak(card.term)} aria-label={`${card.term} 발음 듣기`}>◖)))</button></div>
+      <div className="word-topline"><div><Badge variant="weak">{card.meanings.length}개 뜻</Badge><h2>{card.term}</h2>{card.tags.length > 0 && <div className="card-tags">{card.tags.map((tag) => <Badge key={tag} tone="neutral" variant="weak">#{tag}</Badge>)}</div>}</div><button className="sound-button" onClick={() => speak(card.term)} aria-label={`${card.term} 발음 듣기`}>◖)))</button></div>
       <div className="sense-list">
         {card.meanings.map((meaning, meaningIndex) => (
           <section className="sense-block" key={`${meaning.definitionKo}-${meaningIndex}`}>
@@ -413,6 +450,7 @@ function cardToDraft(card: VocabularyCard): CardDraft {
     meanings: card.meanings,
     synonyms: card.synonyms,
     antonyms: card.antonyms,
+    tags: card.tags,
     testExamples: card.testExamples.length ? card.testExamples : [
       { en: "", answer: "", type: "sentence", provenance: "user" },
       { en: "", answer: "", type: "dialogue", provenance: "user" },
@@ -425,8 +463,10 @@ function cardToDraft(card: VocabularyCard): CardDraft {
 function LibraryScreen({ cards, onBack, onOpen, notify }: { cards: VocabularyCard[]; onBack: () => void; onOpen: (orderedCards: VocabularyCard[], index: number) => void; notify: (message: string) => void }) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | ReviewResult>("all");
+  const [tagFilter, setTagFilter] = useState("all");
   const importRef = useRef<HTMLInputElement>(null);
-  const filtered = cards.filter((card) => (filter === "all" || card.status === filter) && `${card.term} ${card.meanings.map((item) => item.definitionKo).join(" ")}`.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+  const tags = Array.from(new Set(cards.flatMap((card) => card.tags))).sort((a, b) => a.localeCompare(b, "ko"));
+  const filtered = cards.filter((card) => (filter === "all" || card.status === filter) && (tagFilter === "all" || card.tags.includes(tagFilter)) && `${card.term} ${card.meanings.map((item) => item.definitionKo).join(" ")} ${card.tags.join(" ")}`.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
 
   const download = async () => {
     const blob = new Blob([await exportDatabase()], { type: "application/json" });
@@ -442,9 +482,10 @@ function LibraryScreen({ cards, onBack, onOpen, notify }: { cards: VocabularyCar
       <main className="screen library-screen">
         <TextField.Root><TextField.Input aria-label="단어 또는 뜻 검색" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="단어 또는 뜻 검색" /></TextField.Root>
         <div className="filter-chips">{(["all", "unknown", "confusing", "correct"] as const).map((value) => <Chip.Root key={value} size="small" variant={filter === value ? "solid" : "outlineStrong"} onClick={() => setFilter(value)}><Chip.Label>{value === "all" ? "전체" : resultMeta[value].label}</Chip.Label></Chip.Root>)}</div>
+        {tags.length > 0 && <section className="tag-filter"><b>태그</b><div className="filter-chips"><Chip.Root size="small" variant={tagFilter === "all" ? "solid" : "outlineStrong"} onClick={() => setTagFilter("all")}><Chip.Label>전체 태그</Chip.Label></Chip.Root>{tags.map((tag) => <Chip.Root key={tag} size="small" variant={tagFilter === tag ? "solid" : "outlineStrong"} onClick={() => setTagFilter(tag)}><Chip.Label>#{tag}</Chip.Label></Chip.Root>)}</div></section>}
         <div className="library-actions"><ActionButton variant="neutralWeak" size="small" onClick={() => void download()}>JSON 내보내기</ActionButton><ActionButton variant="neutralWeak" size="small" onClick={() => importRef.current?.click()}>가져오기</ActionButton><input ref={importRef} type="file" accept="application/json" hidden onChange={(event) => void restore(event.target.files?.[0])} /></div>
         <div className="word-list">
-          {filtered.map((card, index) => <article key={card.id} className="word-row"><button className="word-row-main" onClick={() => onOpen(filtered, index)}><div><div className="word-row-title"><h2>{card.term}</h2><Badge tone={resultMeta[card.status].tone} variant="weak">{resultMeta[card.status].label}</Badge></div><p>{card.meanings.map((meaning) => meaning.definitionKo).join(" · ")}</p></div><span>›</span></button><button className="delete-button" onClick={() => { if (window.confirm(`‘${card.term}’ 카드를 삭제할까요?`)) void db.cards.delete(card.id); }} aria-label={`${card.term} 삭제`}>삭제</button></article>)}
+          {filtered.map((card, index) => <article key={card.id} className="word-row"><button className="word-row-main" onClick={() => onOpen(filtered, index)}><div><div className="word-row-title"><h2>{card.term}</h2><Badge tone={resultMeta[card.status].tone} variant="weak">{resultMeta[card.status].label}</Badge></div><p>{card.meanings.map((meaning) => meaning.definitionKo).join(" · ")}</p>{card.tags.length > 0 && <div className="word-row-tags">{card.tags.map((tag) => <small key={tag}>#{tag}</small>)}</div>}</div><span>›</span></button><button className="delete-button" onClick={() => { if (window.confirm(`‘${card.term}’ 카드를 삭제할까요?`)) void db.cards.delete(card.id); }} aria-label={`${card.term} 삭제`}>삭제</button></article>)}
           {!filtered.length && <EmptyState title="일치하는 단어가 없어요" description="검색어나 필터를 바꿔 보세요." />}
         </div>
       </main>

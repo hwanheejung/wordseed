@@ -73,6 +73,14 @@ class WordseedDatabase extends Dexie {
         Object.assign(card, normalizeStoredCard(card as LegacyCard));
       });
     });
+    this.version(8).stores({
+      cards: "id, normalizedTerm, status, createdAt, *tags",
+      reviewEvents: "++id, cardId, mode, timestamp",
+    }).upgrade(async (transaction) => {
+      await transaction.table("cards").toCollection().modify((card) => {
+        card.tags = normalizeTags(card.tags);
+      });
+    });
   }
 }
 
@@ -83,7 +91,7 @@ export async function ensureSeedData() {
 }
 
 type LegacyMeaning = Omit<Meaning, "examples"> & { examples?: Example[] };
-type LegacyCard = Omit<VocabularyCard, "meanings" | "testExamples"> & {
+type LegacyCard = Omit<VocabularyCard, "meanings" | "testExamples" | "tags"> & {
   meanings: LegacyMeaning[];
   examples?: Example[];
   testExamples?: Example[];
@@ -91,6 +99,7 @@ type LegacyCard = Omit<VocabularyCard, "meanings" | "testExamples"> & {
   isNew?: boolean;
   nextReviewAt?: string;
   lastReviewedAt?: string;
+  tags?: string[];
 };
 type LegacyReviewEvent = ReviewEvent & { previousStage?: number; newStage?: number };
 
@@ -141,8 +150,17 @@ export function normalizeStoredCard(card: LegacyCard): VocabularyCard {
   return {
     ...cardWithoutLegacyFields,
     meanings,
+    tags: normalizeTags(card.tags),
     testExamples,
   } as VocabularyCard;
+}
+
+export function normalizeTags(tags: unknown): string[] {
+  if (!Array.isArray(tags)) return [];
+  return Array.from(new Set(tags
+    .filter((tag): tag is string => typeof tag === "string")
+    .map((tag) => tag.trim().replace(/^#/, ""))
+    .filter(Boolean)));
 }
 
 export function draftToCard(draft: CardDraft, previous?: VocabularyCard): VocabularyCard {
@@ -164,6 +182,7 @@ export function draftToCard(draft: CardDraft, previous?: VocabularyCard): Vocabu
       })),
     synonyms: draft.synonyms.map((item) => item.trim()).filter(Boolean),
     antonyms: draft.antonyms.map((item) => item.trim()).filter(Boolean),
+    tags: normalizeTags(draft.tags ?? previous?.tags),
     testExamples: draft.testExamples.filter((example) => example.en.trim()),
     sourceText: draft.sourceText,
     sourceLabel: draft.sourceLabel,
@@ -210,7 +229,7 @@ export async function recordReview(
 
 export async function exportDatabase() {
   const payload = {
-    version: 7,
+    version: 8,
     exportedAt: new Date().toISOString(),
     cards: await db.cards.toArray(),
     reviewEvents: await db.reviewEvents.toArray(),
@@ -220,7 +239,7 @@ export async function exportDatabase() {
 
 export async function importDatabase(raw: string) {
   const parsed = JSON.parse(raw) as { version?: number; cards?: LegacyCard[]; reviewEvents?: LegacyReviewEvent[] };
-  if (![1, 2, 3, 4, 5, 6, 7].includes(parsed.version ?? 0) || !Array.isArray(parsed.cards) || !parsed.cards.every((card) => card.id && card.term)) {
+  if (![1, 2, 3, 4, 5, 6, 7, 8].includes(parsed.version ?? 0) || !Array.isArray(parsed.cards) || !parsed.cards.every((card) => card.id && card.term)) {
     throw new Error("지원하지 않는 백업 파일이에요.");
   }
   const importedCards = parsed.cards;

@@ -24,6 +24,7 @@ export const seedCards: VocabularyCard[] = [
     ],
     synonyms: ["captivity", "bondage", "control"],
     antonyms: ["freedom", "independence"],
+    tags: [],
     testExamples: [
       { en: "The courtroom was silent, held in thrall by the witness's unexpected testimony.", ko: "법정은 증인의 예상치 못한 증언에 완전히 사로잡혀 조용해졌다.", answer: "thrall", type: "sentence", provenance: "ai" },
       { en: "A: Did you notice how quiet the audience was during her story?\nB: Yes, she had the entire room in thrall.", ko: "A: 그녀가 이야기하는 동안 관객들이 얼마나 조용했는지 봤어?\nB: 응, 방 안의 모두가 그녀의 이야기에 완전히 사로잡혔어.", answer: "thrall", type: "dialogue", provenance: "ai" },
@@ -55,6 +56,7 @@ export const seedCards: VocabularyCard[] = [
     ],
     synonyms: ["prompt", "cause", "lead to"],
     antonyms: ["prevent", "discourage"],
+    tags: [],
     testExamples: [
       { en: "The doctor warned that the medication could induce drowsiness, so I shouldn't drive.", ko: "의사는 그 약이 졸음을 유발할 수 있으므로 운전하면 안 된다고 경고했다.", answer: "induce", type: "sentence", provenance: "ai" },
       { en: "A: What could induce more employees to use public transportation?\nB: A reliable commuter subsidy might persuade them.", ko: "A: 무엇이 더 많은 직원이 대중교통을 이용하도록 유도할 수 있을까?\nB: 믿을 만한 통근 보조금이 그들을 설득할 수도 있어.", answer: "induce", type: "dialogue", provenance: "ai" },
@@ -85,6 +87,7 @@ export const seedCards: VocabularyCard[] = [
     ],
     synonyms: ["widespread", "prevalent", "ubiquitous"],
     antonyms: ["limited", "rare"],
+    tags: [],
     testExamples: [
       { en: "Smartphone use has become so pervasive that many restaurants now offer charging stations.", ko: "스마트폰 사용이 매우 보편화되어 이제 많은 식당에서 충전 시설을 제공한다.", answer: "pervasive", type: "sentence", provenance: "ai" },
       { en: "A: Why is it so hard to avoid online ads?\nB: Because targeted advertising is pervasive across most apps and websites.", ko: "A: 왜 온라인 광고를 피하기가 그렇게 어려워?\nB: 맞춤형 광고가 대부분의 앱과 웹사이트에 널리 퍼져 있기 때문이야.", answer: "pervasive", type: "dialogue", provenance: "ai" },

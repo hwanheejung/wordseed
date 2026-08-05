@@ -29,6 +29,7 @@ export interface VocabularyCard {
   meanings: Meaning[];
   synonyms: string[];
   antonyms: string[];
+  tags: string[];
   testExamples: Example[];
   sourceText?: string;
   sourceLabel?: string;
@@ -56,6 +57,7 @@ export interface CardDraft {
   meanings: Meaning[];
   synonyms: string[];
   antonyms: string[];
+  tags?: string[];
   testExamples: Example[];
   sourceText?: string;
   sourceLabel?: string;
