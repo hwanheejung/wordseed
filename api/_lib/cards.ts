@@ -38,18 +38,12 @@ export const CardsResponseSchema = z.object({ cards: z.array(CardSchema).min(1).
 export const CandidateSchema = CardSchema.extend({ confidence: z.number().min(0).max(1) });
 export const CandidatesResponseSchema = z.object({ candidates: z.array(CandidateSchema).min(1).max(30) });
 
-function normalizeExample(value: string) {
-  return value.normalize("NFKC").toLocaleLowerCase("en-US").trim().replace(/\s+/g, " ");
-}
-
 export function hasValidTestContexts(card: z.infer<typeof CardSchema>) {
   const genericPattern = /(used? (?:the )?(?:term|word|expression)|meaning of|which (?:term|word|expression)|fits? (?:the|this|a) (?:new )?context|clarify the central idea)/i;
-  const studyExamples = new Set(card.meanings.flatMap((meaning) => meaning.examples.map((example) => normalizeExample(example.en))));
   return card.testExamples.length >= 2 && card.testExamples.every((example) => {
     const escapedAnswer = example.answer.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     return new RegExp(escapedAnswer, "i").test(example.en)
-      && !genericPattern.test(example.en)
-      && !studyExamples.has(normalizeExample(example.en));
+      && !genericPattern.test(example.en);
   });
 }
 

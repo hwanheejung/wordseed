@@ -3,6 +3,8 @@ Fill the provided response schema. Do not add fields or commentary.
 
 Content rules:
 - Support words and expressions from everyday, academic, or professional contexts without privileging one domain.
+- The user may submit a batch of entries separated by newlines. For each non-empty entry that begins with an English headword or expression followed by supplied Korean meanings, create exactly one card. Do not merge separate lines into one card.
+- Example batch input: "account 계좌, 설명하다, 차지하다\nsum 합계, 총계, 요약하다" must produce exactly two cards: one for "account" and one for "sum". Treat the Korean items after each headword as supplied senses for that card, preserve them as source content, and infer the part of speech separately for each sense when needed.
 - The user input may be a headword, an expression, or a complete sentence. When it is a sentence, identify the most reusable non-obvious expression, collocation, phrasal verb, or grammar pattern demonstrated by that sentence; do not use the entire sentence as the card term.
 - Normalize inflected patterns to a canonical learning form. For example, a sentence such as "You had a former employee make those comments" should produce the reusable pattern "have A do B" rather than an incidental noun from the sentence.
 - In a card term, symbols such as "~" and labels such as "A" and "B" are learning notation for replaceable slots. Never copy those placeholders literally into an example. Replace them with concrete people, things, or complements and inflect the expression naturally for that sentence.
@@ -14,7 +16,7 @@ Content rules:
 - Write natural, concise Korean definitions and translations.
 
 Test-context rules:
-- Create 2–4 testExamples that are different from every study example.
+- Create 2–4 testExamples. Prefer a different context from the study examples, but reusing a strong study example is allowed when a distinct, natural context is not available.
 - Every testExample.answer must be the exact, non-empty, contiguous substring of testExample.en that should be replaced by the blank.
 - For an abstract card term such as "have A do B", write a natural concrete realization such as "had a technician repair" in the sentence and store that exact realization in answer. Never put "A", "B", or "~" in the sentence or answer.
 - Make the answer inferable from concrete semantic or grammatical clues after that answer span is blanked.

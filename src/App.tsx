@@ -270,10 +270,6 @@ function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft
     if (drafts.some((item) => item.meanings.some((meaning) => !meaning.examples.some((example) => example.en.trim())))) return notify("각 뜻에 맞는 예문을 하나 이상 입력해 주세요.");
     if (drafts.some((item) => item.testExamples.filter((example) => example.en.trim() && example.answer?.trim()).length < 2)) return notify("시험용 새 문맥과 정답 구간을 두 개 이상 준비해 주세요.");
     if (drafts.some((item) => item.testExamples.some((example) => !isSpecificTestContext(example.en, example.answer ?? "")))) return notify("각 시험 문맥의 정답 구간은 문맥 안에 그대로 포함되어야 해요.");
-    if (drafts.some((item) => {
-      const studyExamples = new Set(item.meanings.flatMap((meaning) => meaning.examples.map((example) => normalizeAnswer(example.en))));
-      return item.testExamples.some((example) => studyExamples.has(normalizeAnswer(example.en)));
-    })) return notify("시험 문맥은 학습 카드의 예문과 달라야 해요.");
     setBusy(true);
     try {
       for (const item of drafts) {

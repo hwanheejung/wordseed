@@ -5,6 +5,10 @@ import { CardsResponseSchema, hasValidTestContexts, toClientCard } from "../_lib
 import { serializeApiError } from "../_lib/errors.js";
 import { ENRICH_SYSTEM_PROMPT } from "../_lib/prompts.js";
 
+class CardGenerationValidationError extends Error {
+  status = 422;
+}
+
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (request.method !== "POST") return response.status(405).json({ error: "POST 요청만 지원해요." });
   if (!process.env.OPENAI_API_KEY) return response.status(503).json({ error: "OPENAI_API_KEY가 설정되지 않았어요." });
@@ -26,8 +30,10 @@ export default async function handler(request: VercelRequest, response: VercelRe
       ],
       text: { format: zodTextFormat(CardsResponseSchema, "vocabulary_cards"), verbosity: "low" },
     });
-    if (!result.output_parsed) throw new Error("구조화된 카드가 반환되지 않았어요.");
-    if (!result.output_parsed.cards.every(hasValidTestContexts)) throw new Error("구체적인 시험 문맥이 생성되지 않았어요.");
+    if (!result.output_parsed) throw new CardGenerationValidationError("구조화된 카드가 반환되지 않았어요.");
+    if (!result.output_parsed.cards.every(hasValidTestContexts)) {
+      throw new CardGenerationValidationError("AI가 생성한 시험 문맥이 검증을 통과하지 못했어요. 각 카드에는 학습 예문과 다른, 정답 구간이 문장 안에 정확히 포함된 구체적인 새 문맥이 2개 이상 필요해요.");
+    }
     return response.status(200).json({ cards: result.output_parsed.cards.map(toClientCard) });
   } catch (error) {
     console.error(error);
