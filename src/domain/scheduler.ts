@@ -1,32 +1,42 @@
 import type { ReviewResult, VocabularyCard } from "./types";
+import { getTestAnswer, isSpecificTestContext } from "./scoring";
 
-export const CORRECT_INTERVALS_DAYS = [1, 2, 4, 7, 14, 30] as const;
+const STATUS_PRIORITY: Record<ReviewResult, number> = {
+  unknown: 0,
+  confusing: 1,
+  correct: 2,
+};
 
-export function calculateNextReview(
-  card: Pick<VocabularyCard, "stage">,
-  result: ReviewResult,
-  now = new Date(),
-) {
-  if (result === "unknown") {
-    return { stage: 0, nextReviewAt: new Date(now.getTime() + 5 * 60_000).toISOString() };
-  }
-
-  if (result === "confusing") {
-    return { stage: card.stage, nextReviewAt: new Date(now.getTime() + 12 * 60 * 60_000).toISOString() };
-  }
-
-  const stage = Math.min(card.stage + 1, CORRECT_INTERVALS_DAYS.length);
-  const days = CORRECT_INTERVALS_DAYS[Math.max(0, stage - 1)];
-  return { stage, nextReviewAt: new Date(now.getTime() + days * 86_400_000).toISOString() };
+export function buildStudyQueue(cards: VocabularyCard[]) {
+  return cards
+    .map((card, index) => ({ card, index }))
+    .sort((left, right) => STATUS_PRIORITY[left.card.status] - STATUS_PRIORITY[right.card.status] || left.index - right.index)
+    .map(({ card }) => card);
 }
 
-export function buildReviewQueue(cards: VocabularyCard[], now = new Date(), newLimit = 10) {
-  const due = cards
-    .filter((card) => !card.isNew && new Date(card.nextReviewAt).getTime() <= now.getTime())
-    .sort((a, b) => a.nextReviewAt.localeCompare(b.nextReviewAt));
-  const fresh = cards
-    .filter((card) => card.isNew)
-    .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
-    .slice(0, newLimit);
-  return [...due, ...fresh];
+export function buildFocusQueue(cards: VocabularyCard[]) {
+  return cards.filter((card) => card.status === "unknown" || card.status === "confusing");
+}
+
+export function startQueueAt(cards: VocabularyCard[], startIndex: number) {
+  if (!cards.length) return [];
+  const safeIndex = Math.min(Math.max(0, startIndex), cards.length - 1);
+  return [...cards.slice(safeIndex), ...cards.slice(0, safeIndex)];
+}
+
+export function moveReviewedCardToBack(cards: VocabularyCard[], updated: VocabularyCard) {
+  return [...cards.slice(1), updated];
+}
+
+export function updateFocusQueue(cards: VocabularyCard[], updated: VocabularyCard) {
+  return updated.status === "correct" ? cards.slice(1) : moveReviewedCardToBack(cards, updated);
+}
+
+export function buildTestQueue(cards: VocabularyCard[], random: () => number = Math.random) {
+  const queue = cards.filter((card) => card.testExamples.some((example) => isSpecificTestContext(example.en, getTestAnswer(example, card.term))));
+  for (let index = queue.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(random() * (index + 1));
+    [queue[index], queue[swapIndex]] = [queue[swapIndex], queue[index]];
+  }
+  return queue;
 }

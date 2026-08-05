@@ -42,16 +42,34 @@ export async function extractImage(imageDataUrl: string) {
 
 export function manualDraft(text: string): CardDraft {
   const [firstLine, ...context] = text.trim().split(/\n+/);
+  const koreanStart = firstLine.search(/[가-힣]/);
+  const term = (koreanStart >= 0 ? firstLine.slice(0, koreanStart) : firstLine).trim();
+  const suppliedMeanings = koreanStart >= 0
+    ? firstLine.slice(koreanStart).trim().split(/[,;/·]+|\s+(?=[가-힣]+(?:하다|되다|이다)\b)/).filter(Boolean)
+    : [];
+  const sourceExample = context.join(" ").trim();
+  const meanings = (suppliedMeanings.length ? suppliedMeanings : [""]).map((definitionKo, index) => ({
+    definitionKo,
+    provenance: definitionKo ? "source" as const : "user" as const,
+    examples: [{
+      en: index === 0 && sourceExample
+        ? sourceExample
+        : "",
+      type: "sentence" as const,
+      provenance: index === 0 && sourceExample ? "source" as const : "user" as const,
+    }],
+  }));
   return {
-    term: firstLine.trim(),
+    term,
     acceptedVariants: [],
-    meanings: [{ definitionKo: "", provenance: "user" }],
+    meanings,
     synonyms: [],
     antonyms: [],
-    examples: context.length
-      ? [{ en: context.join(" "), type: "sentence", provenance: "source" }]
-      : [],
-    sourceText: context.join(" ") || undefined,
+    testExamples: [
+      { en: "", type: "sentence", provenance: "user" },
+      { en: "", type: "dialogue", provenance: "user" },
+    ],
+    sourceText: sourceExample || undefined,
     sourceLabel: "직접 입력",
   };
 }
@@ -59,7 +77,11 @@ export function manualDraft(text: string): CardDraft {
 export const demoPhotoCandidates: ExtractedCandidate[] = [
   {
     ...manualDraft("mitigate\nThe new policy could mitigate the harmful effects of air pollution."),
-    meanings: [{ definitionKo: "완화하다, 경감하다", provenance: "source" }],
+    meanings: [{
+      definitionKo: "완화하다, 경감하다",
+      provenance: "source",
+      examples: [{ en: "The new policy could mitigate the harmful effects of air pollution.", type: "sentence", provenance: "source" }],
+    }],
     synonyms: ["alleviate", "reduce"],
     selected: true,
     confidence: 0.96,
@@ -67,14 +89,22 @@ export const demoPhotoCandidates: ExtractedCandidate[] = [
   },
   {
     ...manualDraft("subsequent"),
-    meanings: [{ definitionKo: "그다음의, 이후의", provenance: "source" }],
+    meanings: [{
+      definitionKo: "그다음의, 이후의",
+      provenance: "source",
+      examples: [{ en: "Subsequent experiments confirmed the initial finding.", type: "sentence", provenance: "ai" }],
+    }],
     selected: true,
     confidence: 0.91,
     sourceLabel: "사진에서 추출 · 데모",
   },
   {
     ...manualDraft("ambiguous"),
-    meanings: [{ definitionKo: "모호한, 여러 의미로 해석되는", provenance: "ai" }],
+    meanings: [{
+      definitionKo: "모호한, 여러 의미로 해석되는",
+      provenance: "ai",
+      examples: [{ en: "The instructions were ambiguous, so the students interpreted them differently.", type: "sentence", provenance: "ai" }],
+    }],
     selected: false,
     confidence: 0.82,
     sourceLabel: "사진에서 추출 · 데모",

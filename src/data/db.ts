@@ -1,7 +1,6 @@
 import Dexie, { type EntityTable } from "dexie";
-import type { CardDraft, ReviewEvent, ReviewResult, VocabularyCard } from "../domain/types";
-import { calculateNextReview } from "../domain/scheduler";
-import { normalizeAnswer } from "../domain/scoring";
+import type { CardDraft, Example, Meaning, ReviewEvent, ReviewResult, VocabularyCard } from "../domain/types";
+import { getTestAnswer, isSpecificTestContext, normalizeAnswer } from "../domain/scoring";
 import { seedCards } from "./seed";
 
 class WordseedDatabase extends Dexie {
@@ -14,6 +13,66 @@ class WordseedDatabase extends Dexie {
       cards: "id, normalizedTerm, nextReviewAt, isNew, status, createdAt",
       reviewEvents: "++id, cardId, mode, timestamp",
     });
+    this.version(2).stores({
+      cards: "id, normalizedTerm, nextReviewAt, isNew, status, createdAt",
+      reviewEvents: "++id, cardId, mode, timestamp",
+    }).upgrade(async (transaction) => {
+      await transaction.table("cards").toCollection().modify((card) => {
+        Object.assign(card, normalizeStoredCard(card as LegacyCard));
+        delete (card as LegacyCard).examples;
+      });
+    });
+    this.version(3).stores({
+      cards: "id, normalizedTerm, nextReviewAt, isNew, status, createdAt",
+      reviewEvents: "++id, cardId, mode, timestamp",
+    }).upgrade(async (transaction) => {
+      await transaction.table("cards").toCollection().modify((card) => {
+        Object.assign(card, normalizeStoredCard(card as LegacyCard));
+        delete (card as LegacyCard).examples;
+      });
+    });
+    this.version(4).stores({
+      cards: "id, normalizedTerm, nextReviewAt, isNew, status, createdAt",
+      reviewEvents: "++id, cardId, mode, timestamp",
+    }).upgrade(async (transaction) => {
+      await transaction.table("cards").toCollection().modify((card) => {
+        Object.assign(card, normalizeStoredCard(card as LegacyCard));
+      });
+    });
+    this.version(5).stores({
+      cards: "id, normalizedTerm, status, createdAt",
+      reviewEvents: "++id, cardId, mode, timestamp",
+    }).upgrade(async (transaction) => {
+      await transaction.table("cards").toCollection().modify((card) => {
+        Object.assign(card, normalizeStoredCard(card as LegacyCard));
+        delete card.stage;
+        delete card.isNew;
+        delete card.nextReviewAt;
+        delete card.lastReviewedAt;
+      });
+      await transaction.table("reviewEvents").toCollection().modify((event) => {
+        delete event.previousStage;
+        delete event.newStage;
+      });
+    });
+    this.version(6).stores({
+      cards: "id, normalizedTerm, status, createdAt",
+      reviewEvents: "++id, cardId, mode, timestamp",
+    }).upgrade(async (transaction) => {
+      const demoTestExamples = new Map(seedCards.map((card) => [card.id, card.testExamples]));
+      await transaction.table("cards").toCollection().modify((card) => {
+        const testExamples = demoTestExamples.get(card.id);
+        if (testExamples) card.testExamples = testExamples;
+      });
+    });
+    this.version(7).stores({
+      cards: "id, normalizedTerm, status, createdAt",
+      reviewEvents: "++id, cardId, mode, timestamp",
+    }).upgrade(async (transaction) => {
+      await transaction.table("cards").toCollection().modify((card) => {
+        Object.assign(card, normalizeStoredCard(card as LegacyCard));
+      });
+    });
   }
 }
 
@@ -21,6 +80,69 @@ export const db = new WordseedDatabase();
 
 export async function ensureSeedData() {
   if ((await db.cards.count()) === 0) await db.cards.bulkAdd(seedCards);
+}
+
+type LegacyMeaning = Omit<Meaning, "examples"> & { examples?: Example[] };
+type LegacyCard = Omit<VocabularyCard, "meanings" | "testExamples"> & {
+  meanings: LegacyMeaning[];
+  examples?: Example[];
+  testExamples?: Example[];
+  stage?: number;
+  isNew?: boolean;
+  nextReviewAt?: string;
+  lastReviewedAt?: string;
+};
+type LegacyReviewEvent = ReviewEvent & { previousStage?: number; newStage?: number };
+
+export function createFallbackStudyExample(term: string, partOfSpeech?: string): Example {
+  const normalizedPart = partOfSpeech?.toLocaleLowerCase() ?? "";
+  const en = normalizedPart.includes("verb")
+    ? `The researchers decided to ${term} their original proposal after reviewing the new evidence.`
+    : normalizedPart.includes("adjective")
+      ? `The report described the result as ${term} after the researchers reviewed the evidence.`
+      : normalizedPart.includes("adverb")
+        ? `The researchers responded ${term} when the new evidence became available.`
+        : `The lecturer explained the meaning of ${term} during the academic discussion.`;
+  return { en, type: "sentence", provenance: "fallback" };
+}
+
+export function normalizeStoredCard(card: LegacyCard): VocabularyCard {
+  const legacyCardExamples = card.examples;
+  const cardWithoutLegacyFields = { ...card };
+  delete cardWithoutLegacyFields.examples;
+  delete cardWithoutLegacyFields.stage;
+  delete cardWithoutLegacyFields.isNew;
+  delete cardWithoutLegacyFields.nextReviewAt;
+  delete cardWithoutLegacyFields.lastReviewedAt;
+  const legacyExamples = Array.isArray(legacyCardExamples) ? legacyCardExamples : [];
+  const meanings = (Array.isArray(card.meanings) ? card.meanings : []).map((meaning, index) => {
+    const partOfSpeech = meaning.partOfSpeech ?? card.partOfSpeech;
+    const nestedExamples = Array.isArray(meaning.examples) ? meaning.examples.filter((example) => example.en?.trim()) : [];
+    const pairedExamples = nestedExamples.length
+      ? nestedExamples
+      : legacyExamples[index]
+        ? [legacyExamples[index]]
+        : index === 0 && legacyExamples.length
+          ? legacyExamples
+          : [createFallbackStudyExample(card.term, partOfSpeech)];
+    return {
+      ...meaning,
+      partOfSpeech,
+      pronunciation: meaning.pronunciation ?? card.pronunciation,
+      examples: pairedExamples,
+    };
+  });
+  const testExamples = (Array.isArray(card.testExamples) ? card.testExamples : [])
+    .map((example) => {
+      const answer = getTestAnswer(example, card.term);
+      return answer ? { ...example, answer } : undefined;
+    })
+    .filter((example): example is Example & { answer: string } => Boolean(example && isSpecificTestContext(example.en, example.answer)));
+  return {
+    ...cardWithoutLegacyFields,
+    meanings,
+    testExamples,
+  } as VocabularyCard;
 }
 
 export function draftToCard(draft: CardDraft, previous?: VocabularyCard): VocabularyCard {
@@ -32,17 +154,20 @@ export function draftToCard(draft: CardDraft, previous?: VocabularyCard): Vocabu
     acceptedVariants: Array.from(new Set([draft.term, ...(draft.acceptedVariants ?? [])].map(normalizeAnswer).filter(Boolean))),
     partOfSpeech: draft.partOfSpeech?.trim(),
     pronunciation: draft.pronunciation?.trim(),
-    meanings: draft.meanings.filter((meaning) => meaning.definitionKo.trim()),
+    meanings: draft.meanings
+      .filter((meaning) => meaning.definitionKo.trim())
+      .map((meaning) => ({
+        ...meaning,
+        partOfSpeech: meaning.partOfSpeech?.trim() || draft.partOfSpeech?.trim(),
+        pronunciation: meaning.pronunciation?.trim() || draft.pronunciation?.trim(),
+        examples: meaning.examples.filter((example) => example.en.trim()),
+      })),
     synonyms: draft.synonyms.map((item) => item.trim()).filter(Boolean),
     antonyms: draft.antonyms.map((item) => item.trim()).filter(Boolean),
-    examples: draft.examples.filter((example) => example.en.trim()),
+    testExamples: draft.testExamples.filter((example) => example.en.trim()),
     sourceText: draft.sourceText,
     sourceLabel: draft.sourceLabel,
     status: previous?.status ?? "unknown",
-    stage: previous?.stage ?? 0,
-    isNew: previous?.isNew ?? true,
-    nextReviewAt: previous?.nextReviewAt ?? timestamp,
-    lastReviewedAt: previous?.lastReviewedAt,
     createdAt: previous?.createdAt ?? timestamp,
     updatedAt: timestamp,
   };
@@ -65,14 +190,9 @@ export async function recordReview(
   details?: Pick<ReviewEvent, "prompt" | "submittedAnswer">,
 ) {
   const now = new Date();
-  const schedule = calculateNextReview(card, result, now);
   const updated: VocabularyCard = {
     ...card,
     status: result,
-    stage: schedule.stage,
-    isNew: false,
-    nextReviewAt: schedule.nextReviewAt,
-    lastReviewedAt: now.toISOString(),
     updatedAt: now.toISOString(),
   };
   await db.transaction("rw", db.cards, db.reviewEvents, async () => {
@@ -81,8 +201,6 @@ export async function recordReview(
       cardId: card.id,
       mode,
       result,
-      previousStage: card.stage,
-      newStage: schedule.stage,
       timestamp: now.toISOString(),
       ...details,
     });
@@ -92,7 +210,7 @@ export async function recordReview(
 
 export async function exportDatabase() {
   const payload = {
-    version: 1,
+    version: 7,
     exportedAt: new Date().toISOString(),
     cards: await db.cards.toArray(),
     reviewEvents: await db.reviewEvents.toArray(),
@@ -101,14 +219,20 @@ export async function exportDatabase() {
 }
 
 export async function importDatabase(raw: string) {
-  const parsed = JSON.parse(raw) as { version?: number; cards?: VocabularyCard[]; reviewEvents?: ReviewEvent[] };
-  if (parsed.version !== 1 || !Array.isArray(parsed.cards) || !parsed.cards.every((card) => card.id && card.term)) {
+  const parsed = JSON.parse(raw) as { version?: number; cards?: LegacyCard[]; reviewEvents?: LegacyReviewEvent[] };
+  if (![1, 2, 3, 4, 5, 6, 7].includes(parsed.version ?? 0) || !Array.isArray(parsed.cards) || !parsed.cards.every((card) => card.id && card.term)) {
     throw new Error("지원하지 않는 백업 파일이에요.");
   }
+  const importedCards = parsed.cards;
   await db.transaction("rw", db.cards, db.reviewEvents, async () => {
     await db.cards.clear();
     await db.reviewEvents.clear();
-    await db.cards.bulkPut(parsed.cards ?? []);
-    await db.reviewEvents.bulkPut(parsed.reviewEvents ?? []);
+    await db.cards.bulkPut(importedCards.map(normalizeStoredCard));
+    await db.reviewEvents.bulkPut((parsed.reviewEvents ?? []).map((event) => {
+      const normalized = { ...event };
+      delete normalized.previousStage;
+      delete normalized.newStage;
+      return normalized;
+    }));
   });
 }

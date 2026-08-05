@@ -1,6 +1,6 @@
 # Wordseed
 
-A mobile-first TOEFL vocabulary PWA for capturing words from text or photos, reviewing complete cards, and testing recall with contextual fill-in-the-blank questions.
+A mobile-first vocabulary PWA for capturing English words and expressions from text or photos, reviewing complete cards, and testing recall in new contexts.
 
 ## Run locally
 
@@ -21,14 +21,14 @@ Optional environment setting:
 OPENAI_MODEL=gpt-5.6-terra
 ```
 
-Deploy the repository to Vercel so `/api/cards/extract` and `/api/cards/enrich` run as serverless functions. During plain Vite development, unavailable endpoints fall back to an editable manual card or demo photo candidates.
+Deploy the repository to Vercel so `/api/cards/extract` and `/api/cards/enrich` run as serverless functions. During plain Vite development, text input falls back to an editable manual card; photo extraction reports that AI configuration is required.
 
 ## Data and review schedule
 
 - All vocabulary cards, provenance, schedules, and review events live in IndexedDB.
-- Unknown answers reset a card and return in 5 minutes.
-- Confusing answers retain the stage and return in 12 hours.
-- Correct answers advance through 1, 2, 4, 7, 14, and 30 days.
+- Study sessions start in Unknown, Confusing, Known order, then rotate every reviewed card to the back indefinitely.
+- Test sessions rotate indefinitely through cards with valid hidden contexts.
+- Card status and review-event timestamps remain stored for learning history; no time-based scheduling is applied.
 - JSON export omits original photos while preserving extracted source text.
 
 ## Verification

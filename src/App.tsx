@@ -1,32 +1,22 @@
 import { Badge, Chip, TextField } from "@seed-design/react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import { Checkbox } from "seed-design/ui/checkbox";
-import { ProgressCircle } from "seed-design/ui/progress-circle";
-import { buildReviewQueue } from "./domain/scheduler";
-import { blankTerm, scoreAnswer } from "./domain/scoring";
-import type { CardDraft, ExtractedCandidate, ReviewResult, VocabularyCard } from "./domain/types";
+import { buildFocusQueue, buildStudyQueue, buildTestQueue, moveReviewedCardToBack, startQueueAt, updateFocusQueue } from "./domain/scheduler";
+import { parseDialogue } from "./domain/dialogue";
+import { blankTerm, getTestAnswer, isSpecificTestContext, normalizeAnswer, scoreAnswer } from "./domain/scoring";
+import type { CardDraft, Example, ExtractedCandidate, Meaning, Provenance, ReviewResult, VocabularyCard } from "./domain/types";
 import { db, exportDatabase, importDatabase, recordReview, saveDraft } from "./data/db";
-import { demoPhotoCandidates, enrichText, extractImage, manualDraft } from "./services/ai";
+import { enrichText, extractImage } from "./services/ai";
 
-type Page = "home" | "add" | "candidates" | "review" | "study" | "test" | "library";
+type Page = "home" | "add" | "candidates" | "review" | "study" | "focus-study" | "test" | "library" | "card";
 
-const resultMeta: Record<ReviewResult, { label: string; next: string; tone: "critical" | "warning" | "positive" }> = {
-  unknown: { label: "몰랐어요", next: "5분 후", tone: "critical" },
-  confusing: { label: "헷갈려요", next: "12시간 후", tone: "warning" },
-  correct: { label: "맞혔어요", next: "다음 단계", tone: "positive" },
+const resultMeta: Record<ReviewResult, { label: string; tone: "critical" | "warning" | "positive" }> = {
+  unknown: { label: "몰랐어요", tone: "critical" },
+  confusing: { label: "헷갈려요", tone: "warning" },
+  correct: { label: "알고있어요", tone: "positive" },
 };
-
-const INITIAL_NOW = Date.now();
-const INITIAL_TODAY = new Date(INITIAL_NOW).toISOString().slice(0, 10);
-
-function formatDue(date: string) {
-  const diff = new Date(date).getTime() - Date.now();
-  if (diff <= 0) return "복습할 시간이에요";
-  if (diff < 86_400_000) return `${Math.max(1, Math.ceil(diff / 3_600_000))}시간 후`;
-  return `${Math.ceil(diff / 86_400_000)}일 후`;
-}
 
 function speak(term: string) {
   if (!("speechSynthesis" in window)) return;
@@ -37,7 +27,7 @@ function speak(term: string) {
   window.speechSynthesis.speak(utterance);
 }
 
-function AppHeader({ title, subtitle, onBack }: { title: string; subtitle?: string; onBack?: () => void }) {
+function AppHeader({ title, subtitle, onBack, action }: { title: string; subtitle?: string; onBack?: () => void; action?: ReactNode }) {
   return (
     <header className="app-header">
       <div className="header-row">
@@ -46,6 +36,7 @@ function AppHeader({ title, subtitle, onBack }: { title: string; subtitle?: stri
           <h1>{title}</h1>
           {subtitle && <p>{subtitle}</p>}
         </div>
+        {action && <div className="header-action">{action}</div>}
       </div>
     </header>
   );
@@ -62,10 +53,14 @@ function EmptyState({ title, description, action }: { title: string; description
   );
 }
 
-function HomeScreen({ cards, onNavigate, onStart }: { cards: VocabularyCard[]; onNavigate: (page: Page) => void; onStart: (mode: "study" | "test") => void }) {
-  const dueCount = cards.filter((card) => !card.isNew && new Date(card.nextReviewAt).getTime() <= INITIAL_NOW).length;
-  const newCount = cards.filter((card) => card.isNew).length;
-  const reviewedToday = cards.filter((card) => card.lastReviewedAt?.slice(0, 10) === INITIAL_TODAY).length;
+function HomeScreen({ cards, onNavigate, onStart, onOpenCard }: { cards: VocabularyCard[]; onNavigate: (page: Page) => void; onStart: (mode: "study" | "focus-study" | "test") => void; onOpenCard: (card: VocabularyCard) => void }) {
+  const statusCounts = {
+    unknown: cards.filter((card) => card.status === "unknown").length,
+    confusing: cards.filter((card) => card.status === "confusing").length,
+    correct: cards.filter((card) => card.status === "correct").length,
+  };
+  const focusCount = statusCounts.unknown + statusCounts.confusing;
+  const testableCount = buildTestQueue(cards, () => 0.5).length;
   const recent = cards.slice().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 3);
 
   return (
@@ -74,13 +69,9 @@ function HomeScreen({ cards, onNavigate, onStart }: { cards: VocabularyCard[]; o
       <main className="screen home-screen">
         <section className="hero-card">
           <div>
-            <Badge tone="brand" variant="weak">오늘의 학습</Badge>
-            <h2><strong>{dueCount + Math.min(newCount, 10)}개</strong>의 단어가<br />기다리고 있어요</h2>
-            <p>복습 {dueCount} · 새 단어 {Math.min(newCount, 10)}</p>
-          </div>
-          <div className="hero-progress" aria-label={`오늘 ${reviewedToday}개 학습`}>
-            <ProgressCircle value={Math.min(100, reviewedToday * 10)} size="40" />
-            <span>{reviewedToday}</span>
+            <Badge tone="brand" variant="weak">반복 학습</Badge>
+            <h2><strong>{cards.length}개</strong>의 단어를<br />계속 순환해요</h2>
+            <p>몰랐어요 {statusCounts.unknown} · 헷갈려요 {statusCounts.confusing} · 알고있어요 {statusCounts.correct}</p>
           </div>
         </section>
 
@@ -88,8 +79,11 @@ function HomeScreen({ cards, onNavigate, onStart }: { cards: VocabularyCard[]; o
           <button className="mode-card study" onClick={() => onStart("study")}>
             <span className="mode-icon">▤</span><span><b>학습 모드</b><small>전체 카드를 보며 익혀요</small></span><span>›</span>
           </button>
+          <button className="mode-card unknown" disabled={!focusCount} onClick={() => onStart("focus-study")}>
+            <span className="mode-icon">!</span><span><b>몰랐어요 · 헷갈려요 학습</b><small>{focusCount}개를 집중해서 반복해요</small></span><span>›</span>
+          </button>
           <button className="mode-card test" onClick={() => onStart("test")}>
-            <span className="mode-icon">✎</span><span><b>시험 모드</b><small>빈칸에 직접 입력해요</small></span><span>›</span>
+            <span className="mode-icon">✎</span><span><b>시험 모드</b><small>시험 가능 {testableCount}개 · 빈칸에 직접 입력해요</small></span><span>›</span>
           </button>
         </div>
 
@@ -99,7 +93,7 @@ function HomeScreen({ cards, onNavigate, onStart }: { cards: VocabularyCard[]; o
           <div className="section-heading"><h2>최근 단어</h2><button onClick={() => onNavigate("library")}>전체 보기</button></div>
           <div className="compact-list">
             {recent.map((card) => (
-              <button key={card.id} onClick={() => onNavigate("library")} className="compact-row">
+              <button key={card.id} onClick={() => onOpenCard(card)} className="compact-row">
                 <div><b>{card.term}</b><span>{card.meanings[0]?.definitionKo || "뜻 미입력"}</span></div>
                 <Badge tone={resultMeta[card.status].tone} variant="weak">{resultMeta[card.status].label}</Badge>
               </button>
@@ -132,16 +126,14 @@ function AddScreen({ onBack, onDrafts, onCandidates, notify }: { onBack: () => v
       if (image) {
         try {
           onCandidates(await extractImage(image));
-        } catch {
-          notify("AI 연결 전이라 데모 추출 결과를 보여드려요.");
-          onCandidates(demoPhotoCandidates);
+        } catch (error) {
+          notify(error instanceof Error ? error.message : "사진 분석에 실패했어요. 다시 시도해 주세요.");
         }
       } else {
         try {
           onDrafts(await enrichText(text));
-        } catch {
-          notify("AI 연결 없이 직접 편집할 수 있는 카드를 만들었어요.");
-          onDrafts([manualDraft(text)]);
+        } catch (error) {
+          notify(error instanceof Error ? error.message : "AI 카드 생성에 실패했어요. 다시 시도해 주세요.");
         }
       }
     } finally {
@@ -196,27 +188,57 @@ function CandidateScreen({ initial, onBack, onContinue }: { initial: ExtractedCa
             </article>
           ))}
         </div>
-        <div className="sticky-cta"><ActionButton size="large" disabled={!selected.length} onClick={() => onContinue(selected.map((item) => ({ term: item.term, acceptedVariants: item.acceptedVariants, partOfSpeech: item.partOfSpeech, pronunciation: item.pronunciation, meanings: item.meanings, synonyms: item.synonyms, antonyms: item.antonyms, examples: item.examples, sourceText: item.sourceText, sourceLabel: item.sourceLabel })))} className="full-button">선택한 {selected.length}개 검토하기</ActionButton></div>
+        <div className="sticky-cta"><ActionButton size="large" disabled={!selected.length} onClick={() => onContinue(selected.map((item) => ({ term: item.term, acceptedVariants: item.acceptedVariants, partOfSpeech: item.partOfSpeech, pronunciation: item.pronunciation, meanings: item.meanings, synonyms: item.synonyms, antonyms: item.antonyms, testExamples: item.testExamples, sourceText: item.sourceText, sourceLabel: item.sourceLabel })))} className="full-button">선택한 {selected.length}개 검토하기</ActionButton></div>
       </main>
     </>
   );
 }
 
-function ProvenanceTag({ value }: { value: "source" | "ai" | "user" }) {
-  return <Badge tone={value === "source" ? "positive" : value === "ai" ? "informative" : "neutral"} variant="weak">{value === "source" ? "원문" : value === "ai" ? "AI 보완" : "직접 입력"}</Badge>;
+function ProvenanceTag({ value }: { value: Provenance }) {
+  return <Badge tone={value === "source" ? "positive" : value === "ai" ? "informative" : "neutral"} variant="weak">{value === "source" ? "원문" : value === "ai" ? "AI 보완" : value === "fallback" ? "앱 보완" : "직접 입력"}</Badge>;
 }
 
-function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft[]; onBack: () => void; onSaved: () => void; notify: (message: string) => void }) {
+function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft[]; onBack: () => void; onSaved: () => void | Promise<void>; notify: (message: string) => void }) {
   const [drafts, setDrafts] = useState(initial);
   const [active, setActive] = useState(0);
   const [busy, setBusy] = useState(false);
   const draft = drafts[active];
   const update = (patch: Partial<CardDraft>) => setDrafts((current) => current.map((item, index) => index === active ? { ...item, ...patch } : item));
-  const updateMeaning = (value: string) => update({ meanings: [{ ...(draft.meanings[0] ?? { provenance: "user" as const }), definitionKo: value }] });
-  const updateExample = (value: string) => update({ examples: value ? [{ ...(draft.examples[0] ?? { type: "sentence" as const, provenance: "user" as const }), en: value }] : [] });
+  const updateMeaning = (meaningIndex: number, patch: Partial<Meaning>) => update({
+    meanings: draft.meanings.map((meaning, index) => index === meaningIndex ? { ...meaning, ...patch } : meaning),
+  });
+  const updateExample = (meaningIndex: number, exampleIndex: number, value: string) => {
+    const meaning = draft.meanings[meaningIndex];
+    updateMeaning(meaningIndex, {
+      examples: meaning.examples.map((example, index) => index === exampleIndex ? { ...example, en: value } : example),
+    });
+  };
+  const addMeaning = () => update({
+    meanings: [...draft.meanings, {
+      definitionKo: "",
+      provenance: "user",
+      examples: [{ en: "", type: "sentence", provenance: "user" }],
+    }],
+  });
+  const addExample = (meaningIndex: number) => updateMeaning(meaningIndex, {
+    examples: [...draft.meanings[meaningIndex].examples, { en: "", type: "sentence", provenance: "user" }],
+  });
+  const updateTestExample = (exampleIndex: number, patch: Partial<Example>) => update({
+    testExamples: draft.testExamples.map((example, index) => index === exampleIndex ? { ...example, ...patch, provenance: "user" } : example),
+  });
+  const addTestExample = () => update({
+    testExamples: [...draft.testExamples, { en: "", answer: "", type: "sentence", provenance: "user" }],
+  });
 
   const saveAll = async () => {
-    if (drafts.some((item) => !item.term.trim() || !item.meanings[0]?.definitionKo.trim())) return notify("모든 카드에 단어와 뜻을 입력해 주세요.");
+    if (drafts.some((item) => !item.term.trim() || !item.meanings.length || item.meanings.some((meaning) => !meaning.definitionKo.trim()))) return notify("모든 카드에 단어와 뜻을 입력해 주세요.");
+    if (drafts.some((item) => item.meanings.some((meaning) => !meaning.examples.some((example) => example.en.trim())))) return notify("각 뜻에 맞는 예문을 하나 이상 입력해 주세요.");
+    if (drafts.some((item) => item.testExamples.filter((example) => example.en.trim() && example.answer?.trim()).length < 2)) return notify("시험용 새 문맥과 정답 구간을 두 개 이상 준비해 주세요.");
+    if (drafts.some((item) => item.testExamples.some((example) => !isSpecificTestContext(example.en, example.answer ?? "")))) return notify("각 시험 문맥의 정답 구간은 문맥 안에 그대로 포함되어야 해요.");
+    if (drafts.some((item) => {
+      const studyExamples = new Set(item.meanings.flatMap((meaning) => meaning.examples.map((example) => normalizeAnswer(example.en))));
+      return item.testExamples.some((example) => studyExamples.has(normalizeAnswer(example.en)));
+    })) return notify("시험 문맥은 학습 카드의 예문과 달라야 해요.");
     setBusy(true);
     try {
       for (const item of drafts) {
@@ -227,7 +249,7 @@ function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft
         }
       }
       notify(`${drafts.length}개의 카드를 저장했어요.`);
-      onSaved();
+      await onSaved();
     } finally { setBusy(false); }
   };
 
@@ -241,14 +263,43 @@ function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft
           <div className="source-note"><span>✓</span><div><b>원문 정보를 우선했어요</b><p>AI가 보완한 항목은 파란색으로 표시돼요.</p></div></div>
           <label className="field-label">단어 · 표현</label>
           <TextField.Root><TextField.Input aria-label="단어 또는 표현" value={draft.term} onChange={(event) => update({ term: event.target.value })} /></TextField.Root>
-          <div className="field-grid">
-            <div><label className="field-label">품사</label><TextField.Root><TextField.Input aria-label="품사" value={draft.partOfSpeech ?? ""} onChange={(event) => update({ partOfSpeech: event.target.value })} placeholder="verb" /></TextField.Root></div>
-            <div><label className="field-label">발음</label><TextField.Root><TextField.Input aria-label="발음" value={draft.pronunciation ?? ""} onChange={(event) => update({ pronunciation: event.target.value })} placeholder="/ɪnˈduːs/" /></TextField.Root></div>
+          <div className="sense-editor-heading"><label className="field-label">뜻과 예문</label><ActionButton size="small" variant="neutralWeak" onClick={addMeaning}>＋ 뜻 추가</ActionButton></div>
+          <div className="sense-editor-list">
+            {draft.meanings.map((meaning, meaningIndex) => (
+              <section className="sense-editor" key={meaningIndex}>
+                <div className="label-with-tag"><b>뜻 {meaningIndex + 1}</b><ProvenanceTag value={meaning.provenance} /></div>
+                <TextField.Root><TextField.Textarea aria-label={`뜻 ${meaningIndex + 1}`} value={meaning.definitionKo} onChange={(event) => updateMeaning(meaningIndex, { definitionKo: event.target.value })} placeholder="뜻을 입력해 주세요" /></TextField.Root>
+                <div className="field-grid sense-meta-fields">
+                  <div><label className="field-label">이 뜻의 품사</label><TextField.Root><TextField.Input aria-label={`뜻 ${meaningIndex + 1}의 품사`} value={meaning.partOfSpeech ?? draft.partOfSpeech ?? ""} onChange={(event) => updateMeaning(meaningIndex, { partOfSpeech: event.target.value })} placeholder="verb" /></TextField.Root></div>
+                  <div><label className="field-label">이 뜻의 발음</label><TextField.Root><TextField.Input aria-label={`뜻 ${meaningIndex + 1}의 발음`} value={meaning.pronunciation ?? draft.pronunciation ?? ""} onChange={(event) => updateMeaning(meaningIndex, { pronunciation: event.target.value })} placeholder="/tʃɑːrdʒ/" /></TextField.Root></div>
+                </div>
+                {meaning.examples.map((example, exampleIndex) => (
+                  <div className="mapped-example-editor" key={exampleIndex}>
+                    <div className="label-with-tag"><small>이 뜻의 예문 {exampleIndex + 1}</small><ProvenanceTag value={example.provenance} /></div>
+                    <TextField.Root><TextField.Textarea aria-label={`뜻 ${meaningIndex + 1}의 예문 ${exampleIndex + 1}`} value={example.en} onChange={(event) => updateExample(meaningIndex, exampleIndex, event.target.value)} placeholder="이 뜻이 드러나는 예문을 입력해 주세요" /></TextField.Root>
+                  </div>
+                ))}
+                <div className="sense-editor-actions">
+                  <ActionButton size="small" variant="ghost" onClick={() => addExample(meaningIndex)}>＋ 예문 추가</ActionButton>
+                  {draft.meanings.length > 1 && <ActionButton size="small" variant="ghost" className="critical-action" onClick={() => update({ meanings: draft.meanings.filter((_, index) => index !== meaningIndex) })}>뜻 삭제</ActionButton>}
+                </div>
+              </section>
+            ))}
           </div>
-          <div className="label-with-tag"><label className="field-label">주요 뜻</label><ProvenanceTag value={draft.meanings[0]?.provenance ?? "user"} /></div>
-          <TextField.Root><TextField.Textarea aria-label="주요 뜻" value={draft.meanings[0]?.definitionKo ?? ""} onChange={(event) => updateMeaning(event.target.value)} placeholder="뜻을 입력해 주세요" /></TextField.Root>
-          <div className="label-with-tag"><label className="field-label">예문</label>{draft.examples[0] && <ProvenanceTag value={draft.examples[0].provenance} />}</div>
-          <TextField.Root><TextField.Textarea aria-label="예문" value={draft.examples[0]?.en ?? ""} onChange={(event) => updateExample(event.target.value)} placeholder="예문이 없으면 AI가 시험용 문장을 만들 수 있어요." /></TextField.Root>
+          <section className="test-context-editor">
+            <div className="sense-editor-heading"><div><label className="field-label">시험용 새 문맥</label><p>정답을 문맥에서 추론할 수 있어야 하며, 단어 카드에는 보이지 않아요.</p></div><ActionButton size="small" variant="neutralWeak" onClick={addTestExample}>＋ 문맥 추가</ActionButton></div>
+            <div className="test-context-list">
+              {draft.testExamples.map((example, exampleIndex) => (
+                <div className="mapped-example-editor" key={exampleIndex}>
+                  <div className="label-with-tag"><small>{example.type === "dialogue" ? "대화" : "예문"} {exampleIndex + 1}</small>{example.en && <ProvenanceTag value={example.provenance} />}</div>
+                  <TextField.Root><TextField.Textarea aria-label={`시험용 문맥 ${exampleIndex + 1}`} value={example.en} onChange={(event) => updateTestExample(exampleIndex, { en: event.target.value })} placeholder={`${draft.term || "정답 표현"}을 자연스럽게 활용한 새로운 문맥`} /></TextField.Root>
+                  <label className="field-label">빈칸 처리할 정답 구간</label>
+                  <TextField.Root><TextField.Input aria-label={`시험용 문맥 ${exampleIndex + 1}의 정답 구간`} value={example.answer ?? ""} onChange={(event) => updateTestExample(exampleIndex, { answer: event.target.value })} placeholder="예: had a technician repair" /></TextField.Root>
+                  {draft.testExamples.length > 2 && <ActionButton size="small" variant="ghost" className="critical-action" onClick={() => update({ testExamples: draft.testExamples.filter((_, index) => index !== exampleIndex) })}>문맥 삭제</ActionButton>}
+                </div>
+              ))}
+            </div>
+          </section>
           <label className="field-label">동의어 <span>쉼표로 구분</span></label>
           <TextField.Root><TextField.Input aria-label="동의어" value={draft.synonyms.join(", ")} onChange={(event) => update({ synonyms: event.target.value.split(",") })} /></TextField.Root>
           <label className="field-label">반의어 <span>쉼표로 구분</span></label>
@@ -263,53 +314,112 @@ function ReviewScreen({ initial, onBack, onSaved, notify }: { initial: CardDraft
 function VocabularyCardView({ card }: { card: VocabularyCard }) {
   return (
     <article className="vocabulary-card">
-      <div className="word-topline"><div><Badge variant="weak">{card.partOfSpeech || "word"}</Badge><h2>{card.term}</h2><p>{card.pronunciation}</p></div><button className="sound-button" onClick={() => speak(card.term)} aria-label={`${card.term} 발음 듣기`}>◖)))</button></div>
-      <div className="meaning-block"><small>주요 뜻</small><h3>{card.meanings[0]?.definitionKo || "뜻 미입력"}</h3>{card.meanings[0]?.definitionEn && <p>{card.meanings[0].definitionEn}</p>}</div>
-      {card.examples[0] && <div className="example-block"><div className="label-with-tag"><small>문맥 예문</small><ProvenanceTag value={card.examples[0].provenance} /></div><p>{card.examples[0].en}</p>{card.examples[0].ko && <span>{card.examples[0].ko}</span>}</div>}
+      <div className="word-topline"><div><Badge variant="weak">{card.meanings.length}개 뜻</Badge><h2>{card.term}</h2></div><button className="sound-button" onClick={() => speak(card.term)} aria-label={`${card.term} 발음 듣기`}>◖)))</button></div>
+      <div className="sense-list">
+        {card.meanings.map((meaning, meaningIndex) => (
+          <section className="sense-block" key={`${meaning.definitionKo}-${meaningIndex}`}>
+            <div className="meaning-block"><div className="sense-meta"><small>뜻 {meaningIndex + 1}</small><span>{meaning.partOfSpeech || card.partOfSpeech || "word"}{(meaning.pronunciation || card.pronunciation) && ` · ${meaning.pronunciation || card.pronunciation}`}</span></div><h3>{meaning.definitionKo || "뜻 미입력"}</h3>{meaning.definitionEn && <p>{meaning.definitionEn}</p>}</div>
+            {meaning.examples.map((example, exampleIndex) => <div className="example-block" key={exampleIndex}><div className="label-with-tag"><small>이 뜻의 예문</small><ProvenanceTag value={example.provenance} /></div><p>{example.en}</p>{example.ko && <span>{example.ko}</span>}</div>)}
+          </section>
+        ))}
+      </div>
       {(card.synonyms.length > 0 || card.antonyms.length > 0) && <div className="relations"><div><small>SYNONYMS</small><p>{card.synonyms.join(" · ") || "—"}</p></div><div><small>ANTONYMS</small><p>{card.antonyms.join(" · ") || "—"}</p></div></div>}
     </article>
   );
 }
 
-function SessionScreen({ mode, cards, onBack, onDone, notify }: { mode: "study" | "test"; cards: VocabularyCard[]; onBack: () => void; onDone: () => void; notify: (message: string) => void }) {
-  const [index, setIndex] = useState(0);
+type SessionMode = "study" | "focus-study" | "test" | "card";
+
+function DialoguePrompt({ prompt }: { prompt: string }) {
+  const turns = parseDialogue(prompt);
+  if (turns.length < 2) return <p className="test-prompt">{prompt}</p>;
+  return <div className="chat-thread" aria-label="두 화자의 대화">{turns.map((turn, index) => <div className={`chat-turn ${index % 2 ? "speaker-two" : "speaker-one"}`} key={`${turn.speaker}-${index}`}><small>{turn.speaker}</small><p>{turn.message}</p></div>)}</div>;
+}
+
+function SessionScreen({ mode, cards, onBack, onEdit, notify }: { mode: SessionMode; cards: VocabularyCard[]; onBack: () => void; onEdit?: (card: VocabularyCard) => void; notify: (message: string) => void }) {
+  const [sessionItems, setSessionItems] = useState(cards);
   const [answer, setAnswer] = useState("");
   const [graded, setGraded] = useState<ReviewResult>();
-  const card = cards[index];
+  const [testTurns, setTestTurns] = useState<Record<string, number>>({});
+  const card = sessionItems[0];
+  const title = mode === "test" ? "시험 모드" : mode === "card" ? "단어 카드" : mode === "focus-study" ? "몰랐어요 · 헷갈려요 학습" : "학습 모드";
 
-  if (!card) return <><AppHeader title={mode === "study" ? "학습 모드" : "시험 모드"} onBack={onBack} /><main className="screen"><EmptyState title="오늘 학습을 마쳤어요" description="다음 복습 시간이 되면 다시 만나요." action={<ActionButton onClick={onDone}>홈으로</ActionButton>} /></main></>;
+  if (!card) return <><AppHeader title={title} onBack={onBack} /><main className="screen"><EmptyState title={mode === "test" ? "시험 가능한 카드가 없어요" : mode === "focus-study" ? "집중 학습할 단어가 없어요" : "학습할 단어가 없어요"} description={mode === "test" ? "저장된 카드에 구체적인 시험용 새 문맥이 없어요. 단어장에서 카드를 열고 수정해 문맥을 두 개 이상 추가해 주세요." : mode === "focus-study" ? "몰랐어요 또는 헷갈려요로 표시한 카드가 생기면 여기서 집중 학습할 수 있어요." : "단어를 추가한 뒤 다시 시작해 주세요."} action={<ActionButton onClick={onBack}>돌아가기</ActionButton>} /></main></>;
 
-  const example = card.examples[0]?.en || `Use the word ${card.term} in an academic context.`;
-  const prompt = blankTerm(example, card.term);
-  const moveNext = () => { setAnswer(""); setGraded(undefined); setIndex((value) => value + 1); };
-  const submitStudy = async (result: ReviewResult) => { await recordReview(card, "study", result); notify(`${resultMeta[result].label} · ${resultMeta[result].next}`); moveNext(); };
-  const gradeTest = () => setGraded(scoreAnswer(answer, [card.term, ...card.acceptedVariants]));
-  const commitTest = async () => { if (!graded) return; await recordReview(card, "test", graded, { prompt, submittedAnswer: answer }); moveNext(); };
+  const validTestExamples = card.testExamples.filter((example) => isSpecificTestContext(example.en, getTestAnswer(example, card.term)));
+  const testTurn = testTurns[card.id] ?? 0;
+  const testExample = mode === "test" ? validTestExamples[testTurn % validTestExamples.length] : undefined;
+  const testAnswer = testExample ? getTestAnswer(testExample, card.term) : "";
+  const prompt = testExample ? blankTerm(testExample.en, testAnswer) : "";
+  const rotate = (updated: VocabularyCard) => {
+    setAnswer("");
+    setGraded(undefined);
+    setSessionItems((items) => moveReviewedCardToBack(items, updated));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const submitStudy = async (result: ReviewResult) => {
+    const updated = await recordReview(card, "study", result);
+    if (mode === "focus-study") {
+      setAnswer("");
+      setGraded(undefined);
+      setSessionItems((items) => updateFocusQueue(items, updated));
+      notify(result === "correct" ? "알고있어요 · 집중 목록에서 제외" : `${resultMeta[result].label} · 맨 뒤로 이동`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      notify(`${resultMeta[result].label} · 맨 뒤로 이동`);
+      rotate(updated);
+    }
+  };
+  const gradeTest = () => setGraded(scoreAnswer(answer, [testAnswer, card.term, ...card.acceptedVariants]));
+  const commitTest = async () => {
+    if (!graded) return;
+    const updated = await recordReview(card, "test", graded, { prompt, submittedAnswer: answer });
+    setTestTurns((turns) => ({ ...turns, [card.id]: testTurn + 1 }));
+    rotate(updated);
+  };
 
   return (
     <>
-      <AppHeader title={mode === "study" ? "학습 모드" : "시험 모드"} subtitle={`${index + 1} / ${cards.length}`} onBack={onBack} />
-      <div className="linear-progress"><span style={{ width: `${((index + 1) / cards.length) * 100}%` }} /></div>
+      <AppHeader title={title} subtitle={`${sessionItems.length}개 카드 · 선택하면 맨 뒤로 이동`} onBack={onBack} action={mode === "card" && onEdit ? <ActionButton size="small" variant="neutralWeak" onClick={() => onEdit(card)} aria-label={`${card.term} 카드 수정`}>✎ 수정</ActionButton> : undefined} />
       <main className={`screen session-screen ${mode}`}>
-        {mode === "study" ? <VocabularyCardView card={card} /> : (
+        {mode !== "test" ? <VocabularyCardView card={card} /> : testExample ? (
           <article className="test-card">
-            <Badge tone="informative" variant="weak">문맥 빈칸</Badge>
-            <p className="test-prompt">{prompt}</p>
-            {card.examples[0]?.ko && <p className="test-translation">{card.examples[0].ko}</p>}
+            <Badge tone="informative" variant="weak">{testExample.type === "dialogue" ? "대화 빈칸" : "새 문맥 빈칸"}</Badge>
+            {testExample.type === "dialogue" ? <DialoguePrompt prompt={prompt} /> : <p className="test-prompt">{prompt}</p>}
+            {testExample.ko && <p className="test-translation">{testExample.ko}</p>}
             <label className="field-label" htmlFor="test-answer">빈칸에 들어갈 단어</label>
             <TextField.Root size="large">
               <TextField.Input id="test-answer" aria-label="빈칸에 들어갈 단어" value={answer} disabled={Boolean(graded)} onChange={(event) => setAnswer(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && answer.trim() && !graded) gradeTest(); }} autoCapitalize="none" autoComplete="off" spellCheck={false} placeholder="정답 입력" />
             </TextField.Root>
-            {graded && <div className={`answer-result ${graded}`}><Badge tone={resultMeta[graded].tone}>{resultMeta[graded].label}</Badge><p>정답은 <strong>{card.term}</strong>이에요.</p><span>{card.meanings[0]?.definitionKo}</span></div>}
+            {graded && <div className={`answer-result ${graded}`}><Badge tone={resultMeta[graded].tone}>{resultMeta[graded].label}</Badge><p>문맥의 정답은 <strong>{testAnswer}</strong>예요.</p><span>학습 표현: {card.term} · {card.meanings.map((meaning) => meaning.definitionKo).join(" · ")}</span></div>}
           </article>
-        )}
+        ) : <EmptyState title="시험 문제를 준비하지 못했어요" description="카드 수정에서 구체적인 시험 문맥을 두 개 이상 추가해 주세요." />}
       </main>
-      {mode === "study" ? <div className="rating-bar">{(["unknown", "confusing", "correct"] as ReviewResult[]).map((result) => <button key={result} className={result} onClick={() => void submitStudy(result)}><b>{resultMeta[result].label}</b><span>{resultMeta[result].next}</span></button>)}</div> : <div className="sticky-cta test-cta">{graded ? <ActionButton size="large" onClick={() => void commitTest()} className="full-button">다음 문제</ActionButton> : <ActionButton size="large" disabled={!answer.trim()} onClick={gradeTest} className="full-button">정답 확인</ActionButton>}</div>}
+      {mode !== "test" ? <div className="rating-bar">{(["unknown", "confusing", "correct"] as ReviewResult[]).map((result) => <button key={result} className={result} onClick={() => void submitStudy(result)}><b>{resultMeta[result].label}</b><span>{mode === "focus-study" && result === "correct" ? "목록에서 제외" : "맨 뒤로"}</span></button>)}</div> : testExample && <div className="sticky-cta test-cta">{graded ? <ActionButton size="large" onClick={() => void commitTest()} className="full-button">다음 문제</ActionButton> : <ActionButton size="large" disabled={!answer.trim()} onClick={gradeTest} className="full-button">정답 확인</ActionButton>}</div>}
     </>
   );
 }
 
-function LibraryScreen({ cards, onBack, onEdit, notify }: { cards: VocabularyCard[]; onBack: () => void; onEdit: (draft: CardDraft) => void; notify: (message: string) => void }) {
+function cardToDraft(card: VocabularyCard): CardDraft {
+  return {
+    id: card.id,
+    term: card.term,
+    acceptedVariants: card.acceptedVariants,
+    partOfSpeech: card.partOfSpeech,
+    pronunciation: card.pronunciation,
+    meanings: card.meanings,
+    synonyms: card.synonyms,
+    antonyms: card.antonyms,
+    testExamples: card.testExamples.length ? card.testExamples : [
+      { en: "", answer: "", type: "sentence", provenance: "user" },
+      { en: "", answer: "", type: "dialogue", provenance: "user" },
+    ],
+    sourceText: card.sourceText,
+    sourceLabel: card.sourceLabel,
+  };
+}
+
+function LibraryScreen({ cards, onBack, onOpen, notify }: { cards: VocabularyCard[]; onBack: () => void; onOpen: (orderedCards: VocabularyCard[], index: number) => void; notify: (message: string) => void }) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | ReviewResult>("all");
   const importRef = useRef<HTMLInputElement>(null);
@@ -331,7 +441,7 @@ function LibraryScreen({ cards, onBack, onEdit, notify }: { cards: VocabularyCar
         <div className="filter-chips">{(["all", "unknown", "confusing", "correct"] as const).map((value) => <Chip.Root key={value} size="small" variant={filter === value ? "solid" : "outlineStrong"} onClick={() => setFilter(value)}><Chip.Label>{value === "all" ? "전체" : resultMeta[value].label}</Chip.Label></Chip.Root>)}</div>
         <div className="library-actions"><ActionButton variant="neutralWeak" size="small" onClick={() => void download()}>JSON 내보내기</ActionButton><ActionButton variant="neutralWeak" size="small" onClick={() => importRef.current?.click()}>가져오기</ActionButton><input ref={importRef} type="file" accept="application/json" hidden onChange={(event) => void restore(event.target.files?.[0])} /></div>
         <div className="word-list">
-          {filtered.map((card) => <article key={card.id} className="word-row"><button className="word-row-main" onClick={() => onEdit(card)}><div><div className="word-row-title"><h2>{card.term}</h2><Badge tone={resultMeta[card.status].tone} variant="weak">{resultMeta[card.status].label}</Badge></div><p>{card.meanings[0]?.definitionKo}</p><small>{card.isNew ? "새 카드" : formatDue(card.nextReviewAt)}</small></div><span>›</span></button><button className="delete-button" onClick={() => { if (window.confirm(`‘${card.term}’ 카드를 삭제할까요?`)) void db.cards.delete(card.id); }} aria-label={`${card.term} 삭제`}>삭제</button></article>)}
+          {filtered.map((card, index) => <article key={card.id} className="word-row"><button className="word-row-main" onClick={() => onOpen(filtered, index)}><div><div className="word-row-title"><h2>{card.term}</h2><Badge tone={resultMeta[card.status].tone} variant="weak">{resultMeta[card.status].label}</Badge></div><p>{card.meanings.map((meaning) => meaning.definitionKo).join(" · ")}</p></div><span>›</span></button><button className="delete-button" onClick={() => { if (window.confirm(`‘${card.term}’ 카드를 삭제할까요?`)) void db.cards.delete(card.id); }} aria-label={`${card.term} 삭제`}>삭제</button></article>)}
           {!filtered.length && <EmptyState title="일치하는 단어가 없어요" description="검색어나 필터를 바꿔 보세요." />}
         </div>
       </main>
@@ -354,16 +464,34 @@ export default function App() {
   const notify = (message: string) => { setToast(message); window.clearTimeout(toastTimer.current); toastTimer.current = window.setTimeout(() => setToast(undefined), 2800); };
 
   const navigate = (next: Page) => { window.scrollTo({ top: 0, behavior: "smooth" }); setPage(next); };
-  const start = (mode: "study" | "test") => { setSessionCards(buildReviewQueue(cards)); navigate(mode); };
+  const start = (mode: "study" | "focus-study" | "test") => {
+    const queue = mode === "test"
+      ? buildTestQueue(cards)
+      : buildStudyQueue(mode === "focus-study" ? buildFocusQueue(cards) : cards);
+    setSessionCards(queue);
+    navigate(mode);
+  };
+  const openOrderedCards = (orderedCards: VocabularyCard[], startIndex: number) => {
+    setSessionCards(startQueueAt(orderedCards, startIndex));
+    navigate("card");
+  };
+  const openCard = (card: VocabularyCard) => openOrderedCards(cards, Math.max(0, cards.findIndex((item) => item.id === card.id)));
+  const editCard = (card: VocabularyCard) => { setDrafts([cardToDraft(card)]); navigate("review"); };
+  const refreshEditedDeck = async () => {
+    const freshCards = await db.cards.toArray();
+    const freshById = new Map(freshCards.map((card) => [card.id, card]));
+    setSessionCards((current) => current.map((card) => freshById.get(card.id)).filter((card): card is VocabularyCard => Boolean(card)));
+    navigate("card");
+  };
   const showNav = ["home", "add", "library"].includes(page);
   return (
     <div className="app-shell">
-      {page === "home" && <HomeScreen cards={cards} onNavigate={navigate} onStart={start} />}
+      {page === "home" && <HomeScreen cards={cards} onNavigate={navigate} onStart={start} onOpenCard={openCard} />}
       {page === "add" && <AddScreen onBack={() => navigate("home")} notify={notify} onDrafts={(value) => { setDrafts(value); navigate("review"); }} onCandidates={(value) => { setCandidates(value); navigate("candidates"); }} />}
       {page === "candidates" && <CandidateScreen initial={candidates} onBack={() => navigate("add")} onContinue={(value) => { setDrafts(value); navigate("review"); }} />}
-      {page === "review" && <ReviewScreen initial={drafts} onBack={() => navigate(drafts.some((item) => item.id) ? "library" : "add")} onSaved={() => navigate("home")} notify={notify} />}
-      {(page === "study" || page === "test") && <SessionScreen mode={page} cards={sessionCards} onBack={() => navigate("home")} onDone={() => navigate("home")} notify={notify} />}
-      {page === "library" && <LibraryScreen cards={cards} onBack={() => navigate("home")} notify={notify} onEdit={(card) => { setDrafts([{ id: card.id, term: card.term, acceptedVariants: card.acceptedVariants, partOfSpeech: card.partOfSpeech, pronunciation: card.pronunciation, meanings: card.meanings, synonyms: card.synonyms, antonyms: card.antonyms, examples: card.examples, sourceText: card.sourceText, sourceLabel: card.sourceLabel }]); navigate("review"); }} />}
+      {page === "review" && <ReviewScreen initial={drafts} onBack={() => navigate(drafts.some((item) => item.id) ? "card" : "add")} onSaved={() => drafts.some((item) => item.id) ? refreshEditedDeck() : navigate("home")} notify={notify} />}
+      {(page === "study" || page === "focus-study" || page === "test" || page === "card") && <SessionScreen mode={page} cards={sessionCards} onBack={() => navigate(page === "card" ? "library" : "home")} onEdit={page === "card" ? editCard : undefined} notify={notify} />}
+      {page === "library" && <LibraryScreen cards={cards} onBack={() => navigate("home")} notify={notify} onOpen={openOrderedCards} />}
       {showNav && <BottomNav page={page} onNavigate={navigate} />}
       {toast && <div className="toast" role="status">{toast}</div>}
     </div>

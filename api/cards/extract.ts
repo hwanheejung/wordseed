@@ -1,7 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
-import { CandidatesResponseSchema, toClientCard } from "../_lib/cards.js";
+import { CandidatesResponseSchema, hasValidTestContexts, toClientCard } from "../_lib/cards.js";
+import { EXTRACT_SYSTEM_PROMPT } from "../_lib/prompts.js";
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (request.method !== "POST") return response.status(405).json({ error: "POST 요청만 지원해요." });
@@ -20,7 +21,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
       input: [
         {
           role: "system",
-          content: "Extract every useful TOEFL-level English word or expression visible in the image. Attach a meaning, synonym, antonym, or example to the correct term when it appears in the source; copy source content faithfully and mark it source. Fill missing high-value fields sparingly and mark them ai. Assign extraction confidence from 0 to 1. Return no commentary outside the schema.",
+          content: EXTRACT_SYSTEM_PROMPT,
         },
         {
           role: "user",
@@ -33,6 +34,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
       text: { format: zodTextFormat(CandidatesResponseSchema, "vocabulary_candidates"), verbosity: "low" },
     });
     if (!result.output_parsed) throw new Error("구조화된 후보가 반환되지 않았어요.");
+    if (!result.output_parsed.candidates.every(hasValidTestContexts)) throw new Error("일부 단어의 구체적인 시험 문맥이 생성되지 않았어요.");
     return response.status(200).json({
       candidates: result.output_parsed.candidates.map((candidate) => ({ ...toClientCard(candidate), confidence: candidate.confidence, selected: candidate.confidence >= 0.85 })),
     });

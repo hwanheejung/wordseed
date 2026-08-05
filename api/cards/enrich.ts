@@ -1,7 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
-import { CardsResponseSchema, toClientCard } from "../_lib/cards.js";
+import { CardsResponseSchema, hasValidTestContexts, toClientCard } from "../_lib/cards.js";
+import { ENRICH_SYSTEM_PROMPT } from "../_lib/prompts.js";
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (request.method !== "POST") return response.status(405).json({ error: "POST 요청만 지원해요." });
@@ -18,13 +19,14 @@ export default async function handler(request: VercelRequest, response: VercelRe
       input: [
         {
           role: "system",
-          content: "Create concise TOEFL vocabulary cards. Preserve supplied meanings and examples verbatim and mark them source. Fill only missing useful fields and mark those ai. Put the meaning used in the supplied context first. Korean definitions must be natural and short. Return no commentary outside the schema.",
+          content: ENRICH_SYSTEM_PROMPT,
         },
         { role: "user", content: text },
       ],
       text: { format: zodTextFormat(CardsResponseSchema, "vocabulary_cards"), verbosity: "low" },
     });
     if (!result.output_parsed) throw new Error("구조화된 카드가 반환되지 않았어요.");
+    if (!result.output_parsed.cards.every(hasValidTestContexts)) throw new Error("구체적인 시험 문맥이 생성되지 않았어요.");
     return response.status(200).json({ cards: result.output_parsed.cards.map(toClientCard) });
   } catch (error) {
     console.error(error);

@@ -1,16 +1,20 @@
 export type ReviewResult = "unknown" | "confusing" | "correct";
-export type Provenance = "source" | "ai" | "user";
+export type Provenance = "source" | "ai" | "user" | "fallback";
 
 export interface Meaning {
   definitionKo: string;
   definitionEn?: string;
   context?: string;
+  partOfSpeech?: string;
+  pronunciation?: string;
   provenance: Provenance;
+  examples: Example[];
 }
 
 export interface Example {
   en: string;
   ko?: string;
+  answer?: string;
   type: "sentence" | "dialogue";
   provenance: Provenance;
 }
@@ -25,14 +29,10 @@ export interface VocabularyCard {
   meanings: Meaning[];
   synonyms: string[];
   antonyms: string[];
-  examples: Example[];
+  testExamples: Example[];
   sourceText?: string;
   sourceLabel?: string;
   status: ReviewResult;
-  stage: number;
-  isNew: boolean;
-  nextReviewAt: string;
-  lastReviewedAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -44,8 +44,6 @@ export interface ReviewEvent {
   prompt?: string;
   submittedAnswer?: string;
   result: ReviewResult;
-  previousStage: number;
-  newStage: number;
   timestamp: string;
 }
 
@@ -58,7 +56,7 @@ export interface CardDraft {
   meanings: Meaning[];
   synonyms: string[];
   antonyms: string[];
-  examples: Example[];
+  testExamples: Example[];
   sourceText?: string;
   sourceLabel?: string;
 }

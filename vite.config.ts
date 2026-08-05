@@ -11,9 +11,9 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["icon.svg"],
       manifest: {
-        name: "Wordseed — TOEFL Vocabulary",
+        name: "Wordseed — Vocabulary in Context",
         short_name: "Wordseed",
-        description: "문맥으로 모으고, 반복해서 기억하는 TOEFL 단어장",
+        description: "일상부터 학업까지, 문맥으로 모으고 반복해서 기억하는 영어 단어장",
         theme_color: "#ff6f0f",
         background_color: "#f7f8fa",
         display: "standalone",

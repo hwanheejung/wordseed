@@ -1,4 +1,4 @@
-import type { ReviewResult } from "./types";
+import type { Example, ReviewResult } from "./types";
 
 export function normalizeAnswer(value: string) {
   return value
@@ -45,8 +45,25 @@ export function scoreAnswer(answer: string, acceptedAnswers: string[]): ReviewRe
     : "unknown";
 }
 
-export function blankTerm(text: string, term: string) {
+function termExpression(term: string) {
   const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const expression = new RegExp(`\\b${escaped}\\b`, "gi");
-  return expression.test(text) ? text.replace(expression, "_____" ) : `${text} (${term}: _____)`;
+  return new RegExp(`\\b${escaped}\\b`, "gi");
+}
+
+export function hasExactTerm(text: string, term: string) {
+  return termExpression(term).test(text);
+}
+
+export function getTestAnswer(example: Example, fallbackTerm: string) {
+  return example.answer?.trim() || (hasExactTerm(example.en, fallbackTerm) ? fallbackTerm : "");
+}
+
+export function isSpecificTestContext(text: string, term: string) {
+  if (!term.trim()) return false;
+  if (!hasExactTerm(text, term)) return false;
+  return !/(used? (?:the )?(?:term|word|expression)|meaning of|which (?:term|word|expression)|fits? (?:the|this|a) (?:new )?context|clarify the central idea)/i.test(text);
+}
+
+export function blankTerm(text: string, term: string) {
+  return text.replace(termExpression(term), "_____");
 }
