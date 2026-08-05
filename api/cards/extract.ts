@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import { CandidatesResponseSchema, hasValidTestContexts, toClientCard } from "../_lib/cards.js";
+import { serializeApiError } from "../_lib/errors.js";
 import { EXTRACT_SYSTEM_PROMPT } from "../_lib/prompts.js";
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
@@ -40,6 +41,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
     });
   } catch (error) {
     console.error(error);
-    return response.status(502).json({ error: "사진에서 단어를 추출하지 못했어요. 더 선명한 사진으로 다시 시도해 주세요." });
+    const failure = serializeApiError(error);
+    return response.status(failure.status).json({ error: failure.message });
   }
 }

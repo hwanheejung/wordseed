@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/cards/enrich.ts": {
+      "maxDuration": 90
+    },
+    "api/cards/extract.ts": {
+      "maxDuration": 180
+    }
+  }
+}

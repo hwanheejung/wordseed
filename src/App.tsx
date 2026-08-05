@@ -461,7 +461,7 @@ export default function App() {
   const [sessionCards, setSessionCards] = useState<VocabularyCard[]>([]);
   const [toast, setToast] = useState<string>();
   const toastTimer = useRef<number | undefined>(undefined);
-  const notify = (message: string) => { setToast(message); window.clearTimeout(toastTimer.current); toastTimer.current = window.setTimeout(() => setToast(undefined), 2800); };
+  const notify = (message: string) => { setToast(message); window.clearTimeout(toastTimer.current); toastTimer.current = window.setTimeout(() => setToast(undefined), 8000); };
 
   const navigate = (next: Page) => { window.scrollTo({ top: 0, behavior: "smooth" }); setPage(next); };
   const start = (mode: "study" | "focus-study" | "test") => {

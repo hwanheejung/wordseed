@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import { CardsResponseSchema, hasValidTestContexts, toClientCard } from "../_lib/cards.js";
+import { serializeApiError } from "../_lib/errors.js";
 import { ENRICH_SYSTEM_PROMPT } from "../_lib/prompts.js";
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
@@ -30,6 +31,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
     return response.status(200).json({ cards: result.output_parsed.cards.map(toClientCard) });
   } catch (error) {
     console.error(error);
-    return response.status(502).json({ error: "AI 카드 생성에 실패했어요. 잠시 후 다시 시도해 주세요." });
+    const failure = serializeApiError(error);
+    return response.status(failure.status).json({ error: failure.message });
   }
 }

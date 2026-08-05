@@ -177,7 +177,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .bottom-nav button { border: 0; background: transparent; color: var(--seed-color-fg-neutral-subtle); min-height: 56px; display: grid; place-content: center; gap: 2px; font-size: 11px; font-weight: 700; cursor: pointer; }
 .bottom-nav button span { font-size: 22px; line-height: 1; }
 .bottom-nav button.active { color: var(--seed-color-fg-brand); }
-.toast { position: fixed; z-index: 50; left: 50%; transform: translateX(-50%); bottom: calc(88px + var(--seed-safe-area-bottom)); width: min(calc(100% - 40px), 460px); background: var(--seed-color-bg-neutral-inverted); color: var(--seed-color-fg-neutral-inverted); padding: 14px 16px; border-radius: 14px; text-align: center; font-weight: 700; box-shadow: 0 12px 32px rgba(0, 0, 0, .2); animation: toast-in .2s ease-out; }
+.toast { position: fixed; z-index: 50; left: 50%; transform: translateX(-50%); bottom: calc(88px + var(--seed-safe-area-bottom)); width: min(calc(100% - 40px), 460px); max-height: min(45vh, 320px); overflow: auto; background: var(--seed-color-bg-neutral-inverted); color: var(--seed-color-fg-neutral-inverted); padding: 14px 16px; border-radius: 14px; text-align: left; font-weight: 700; overflow-wrap: anywhere; white-space: pre-wrap; box-shadow: 0 12px 32px rgba(0, 0, 0, .2); animation: toast-in .2s ease-out; }
 
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 12px); } }
 @media (min-width: 700px) {
