@@ -3061,7 +3061,8 @@
         {
           "en": "A: Has the noise diminished?\nB: Yes, it's much quieter now.",
           "type": "dialogue",
-          "answer": "diminished"
+          "answer": "diminished",
+          "ko": "A: 소음이 줄었나요?\nB: 네, 지금은 훨씬 조용해요."
         }
       ],
       "status": "correct"
@@ -3099,12 +3100,14 @@
         {
           "en": "The residents elected a new mayor.",
           "type": "sentence",
-          "answer": "elected"
+          "answer": "elected",
+          "ko": "주민들은 새 시장을 선출했다."
         },
         {
           "en": "A: Who did the committee elect?\nB: It elected Daniel as treasurer.",
           "type": "dialogue",
-          "answer": "elect"
+          "answer": "elect",
+          "ko": "A: 위원회는 누구를 선출했나요?\nB: 다니엘을 회계 담당자로 선출했어요."
         }
       ],
       "status": "correct"
@@ -3278,12 +3281,14 @@
         {
           "en": "Be careful not to spill coffee on the report.",
           "type": "sentence",
-          "answer": "spill"
+          "answer": "spill",
+          "ko": "보고서에 커피를 쏟지 않도록 조심하세요."
         },
         {
           "en": "A: What happened to the milk?\nB: The baby spilled it on the floor.",
           "type": "dialogue",
-          "answer": "spilled"
+          "answer": "spilled",
+          "ko": "A: 우유는 어떻게 된 거예요?\nB: 아기가 바닥에 쏟았어요."
         }
       ],
       "status": "correct"
@@ -3373,7 +3378,8 @@
         {
           "en": "A: How was the presentation?\nB: Flawless from beginning to end.",
           "type": "dialogue",
-          "answer": "Flawless"
+          "answer": "Flawless",
+          "ko": "A: 발표는 어땠나요?\nB: 처음부터 끝까지 흠잡을 데 없었어요."
         }
       ],
       "status": "correct"
@@ -3410,12 +3416,14 @@
         {
           "en": "The cold draft came through the window.",
           "type": "sentence",
-          "answer": "draft"
+          "answer": "draft",
+          "ko": "창문으로 찬 바람이 들어왔다."
         },
         {
           "en": "He submitted the first draft of his essay.",
           "type": "sentence",
-          "answer": "draft"
+          "answer": "draft",
+          "ko": "그는 에세이의 첫 초안을 제출했다."
         }
       ],
       "status": "correct"
@@ -3488,12 +3496,14 @@
         {
           "en": "A piece of glass lodged in his shoe.",
           "type": "sentence",
-          "answer": "lodged"
+          "answer": "lodged",
+          "ko": "유리 조각이 그의 신발에 박혔다."
         },
         {
           "en": "A: Why is the drawer stuck?\nB: A coin has lodged behind it.",
           "type": "dialogue",
-          "answer": "lodged"
+          "answer": "lodged",
+          "ko": "A: 서랍이 왜 걸렸나요?\nB: 뒤에 동전이 끼었어요."
         }
       ],
       "status": "correct"
@@ -3568,12 +3578,14 @@
         {
           "en": "Doctors said the premature baby was viable with intensive care.",
           "type": "sentence",
-          "answer": "viable"
+          "answer": "viable",
+          "ko": "의사들은 집중 치료를 받으면 미숙아가 생존할 수 있다고 말했다."
         },
         {
           "en": "A: Can the seedling survive the winter?\nB: It should be viable if we keep it warm.",
           "type": "dialogue",
-          "answer": "viable"
+          "answer": "viable",
+          "ko": "A: 묘목이 겨울을 날 수 있을까요?\nB: 따뜻하게 유지하면 살아남을 수 있을 거예요."
         }
       ],
       "status": "correct"
@@ -3749,7 +3761,8 @@
         {
           "en": "A figure emerged from the fog.",
           "type": "sentence",
-          "answer": "emerged"
+          "answer": "emerged",
+          "ko": "안개 속에서 한 형체가 나타났다."
         }
       ],
       "status": "correct"
@@ -3784,7 +3797,8 @@
         {
           "en": "A: What happened after the audit?\nB: Several problems emerged.",
           "type": "dialogue",
-          "answer": "emerged"
+          "answer": "emerged",
+          "ko": "A: 감사 후에 무슨 일이 있었나요?\nB: 여러 문제가 드러났어요."
         }
       ],
       "status": "correct"
@@ -3867,12 +3881,14 @@
         {
           "en": "Under no circumstances should you share your password.",
           "type": "sentence",
-          "answer": "circumstances"
+          "answer": "circumstances",
+          "ko": "어떤 상황에서도 비밀번호를 공유해서는 안 됩니다."
         },
         {
           "en": "The circumstances forced the family to move.",
           "type": "sentence",
-          "answer": "circumstances"
+          "answer": "circumstances",
+          "ko": "상황 때문에 그 가족은 이사할 수밖에 없었다."
         }
       ],
       "status": "correct"
@@ -3957,12 +3973,14 @@
         {
           "en": "The report examines the economic impact of tourism.",
           "type": "sentence",
-          "answer": "economic"
+          "answer": "economic",
+          "ko": "그 보고서는 관광의 경제적 영향을 살펴본다."
         },
         {
           "en": "A: Why are prices rising?\nB: Several economic factors are involved.",
           "type": "dialogue",
-          "answer": "economic"
+          "answer": "economic",
+          "ko": "A: 물가가 왜 오르고 있나요?\nB: 여러 경제적 요인이 관련되어 있어요."
         }
       ],
       "status": "correct"
@@ -4009,7 +4027,8 @@
         {
           "en": "A: Which career suits her aptitude?\nB: Something involving design might be ideal.",
           "type": "dialogue",
-          "answer": "aptitude"
+          "answer": "aptitude",
+          "ko": "A: 어떤 직업이 그녀의 적성에 맞을까요?\nB: 디자인과 관련된 일이 이상적일 것 같아요."
         }
       ],
       "status": "correct"
@@ -4161,7 +4180,8 @@
         {
           "en": "A: Can I afford this purchase?\nB: Check your account balance first.",
           "type": "dialogue",
-          "answer": "account balance"
+          "answer": "account balance",
+          "ko": "A: 이 물건을 살 여유가 있을까요?\nB: 먼저 계좌 잔액을 확인해 보세요."
         }
       ],
       "status": "correct"
@@ -4234,12 +4254,14 @@
         {
           "en": "The music helped me relax after work.",
           "type": "sentence",
-          "answer": "relax"
+          "answer": "relax",
+          "ko": "그 음악은 퇴근 후 긴장을 푸는 데 도움이 되었다."
         },
         {
           "en": "A: You look nervous.\nB: I know. I need to relax.",
           "type": "dialogue",
-          "answer": "relax"
+          "answer": "relax",
+          "ko": "A: 긴장해 보여요.\nB: 맞아요. 긴장을 좀 풀어야겠어요."
         }
       ],
       "status": "correct"
@@ -4623,7 +4645,8 @@
         {
           "en": "A: Should I judge the proposal now?\nB: Wait until you review all the evidence.",
           "type": "dialogue",
-          "answer": "judge"
+          "answer": "judge",
+          "ko": "A: 지금 그 제안을 판단해야 할까요?\nB: 모든 증거를 검토할 때까지 기다리세요."
         }
       ],
       "status": "correct"
@@ -4660,7 +4683,8 @@
         {
           "en": "The judge sentenced the defendant to two years in prison.",
           "type": "sentence",
-          "answer": "judge"
+          "answer": "judge",
+          "ko": "판사는 피고인에게 징역 2년을 선고했다."
         }
       ],
       "status": "correct"
@@ -4696,12 +4720,14 @@
         {
           "en": "The publisher rejected his manuscript.",
           "type": "sentence",
-          "answer": "rejected"
+          "answer": "rejected",
+          "ko": "출판사는 그의 원고를 거절했다."
         },
         {
           "en": "A: Did they approve your request? \nB: No, they rejected it.",
           "type": "dialogue",
-          "answer": "rejected"
+          "answer": "rejected",
+          "ko": "A: 요청이 승인됐나요?\nB: 아니요, 거절됐어요."
         }
       ],
       "status": "correct"
@@ -4872,12 +4898,14 @@
         {
           "en": "A: Did you prepare remarks for the meeting?\nB: No, I just spoke off the cuff.",
           "type": "dialogue",
-          "answer": "off the cuff"
+          "answer": "off the cuff",
+          "ko": "A: 회의에서 할 말을 준비했나요?\nB: 아니요, 그냥 즉흥적으로 말했어요."
         },
         {
           "en": "The comedian is famous for making funny comments off the cuff.",
           "type": "sentence",
-          "answer": "off the cuff"
+          "answer": "off the cuff",
+          "ko": "그 코미디언은 즉흥적으로 재미있는 말을 하는 것으로 유명하다."
         }
       ],
       "status": "unknown"
@@ -5226,7 +5254,8 @@
         {
           "en": "A: Why did the team add another researcher?\nB: To augment its ability to analyze the data.",
           "type": "dialogue",
-          "answer": "augment"
+          "answer": "augment",
+          "ko": "A: 팀이 연구원을 한 명 더 추가한 이유가 뭐예요?\nB: 데이터 분석 역량을 강화하기 위해서예요."
         }
       ],
       "status": "correct"
@@ -5263,12 +5292,14 @@
         {
           "en": "A prudent investor checks the risks before buying shares.",
           "type": "sentence",
-          "answer": "prudent"
+          "answer": "prudent",
+          "ko": "신중한 투자자는 주식을 사기 전에 위험을 확인한다."
         },
         {
           "en": "A: Should we spend the entire budget now?\nB: No, that wouldn't be prudent.",
           "type": "dialogue",
-          "answer": "prudent"
+          "answer": "prudent",
+          "ko": "A: 지금 예산을 전부 써야 할까요?\nB: 아니요, 그건 신중하지 못해요."
         }
       ],
       "status": "unknown"
@@ -5309,7 +5340,8 @@
         {
           "en": "A: Is this source trustworthy?\nB: Yes, it seems credible.",
           "type": "dialogue",
-          "answer": "credible"
+          "answer": "credible",
+          "ko": "A: 이 자료는 신뢰할 만한가요?\nB: 네, 믿을 만해 보여요."
         }
       ],
       "status": "correct"
@@ -5483,7 +5515,8 @@
         {
           "en": "A: Did you fulfill your duty?\nB: Yes, everything is finished.",
           "type": "dialogue",
-          "answer": "fulfill"
+          "answer": "fulfill",
+          "ko": "A: 의무를 다했나요?\nB: 네, 모두 끝냈어요."
         }
       ],
       "status": "correct"
@@ -5561,12 +5594,14 @@
         {
           "en": "Her score was above average.",
           "type": "sentence",
-          "answer": "average"
+          "answer": "average",
+          "ko": "그녀의 점수는 평균 이상이었다."
         },
         {
           "en": "The average household spends less in winter.",
           "type": "sentence",
-          "answer": "average"
+          "answer": "average",
+          "ko": "평균적인 가정은 겨울에 지출을 덜 한다."
         }
       ],
       "status": "correct"
@@ -5599,7 +5634,8 @@
         {
           "en": "A: Can this space help us?\nB: Yes, we can utilize it for storage.",
           "type": "dialogue",
-          "answer": "utilize"
+          "answer": "utilize",
+          "ko": "A: 이 공간을 활용할 수 있을까요?\nB: 네, 수납 공간으로 이용할 수 있어요."
         }
       ],
       "status": "unknown"
@@ -5717,12 +5753,14 @@
         {
           "en": "We need a comprehensive plan before starting the project.",
           "type": "sentence",
-          "answer": "comprehensive"
+          "answer": "comprehensive",
+          "ko": "프로젝트를 시작하기 전에 종합적인 계획이 필요하다."
         },
         {
           "en": "The guide offers comprehensive coverage of the regulations.",
           "type": "sentence",
-          "answer": "comprehensive"
+          "answer": "comprehensive",
+          "ko": "이 안내서는 규정을 종합적으로 다룬다."
         }
       ],
       "status": "unknown"
@@ -5859,7 +5897,8 @@
         {
           "en": "A: Why did he apologize?\nB: The manager compelled him to admit his mistake.",
           "type": "dialogue",
-          "answer": "compelled"
+          "answer": "compelled",
+          "ko": "A: 그는 왜 사과했나요?\nB: 관리자가 실수를 인정하도록 강요했어요."
         }
       ],
       "status": "unknown"
@@ -5943,12 +5982,14 @@
         {
           "en": "Please report any immediate danger to the police.",
           "type": "sentence",
-          "answer": "immediate"
+          "answer": "immediate",
+          "ko": "즉각적인 위험이 있으면 경찰에 신고하세요."
         },
         {
           "en": "A: Who is your immediate supervisor?\nB: Ms. Lee.",
           "type": "dialogue",
-          "answer": "immediate"
+          "answer": "immediate",
+          "ko": "A: 직속 상사가 누구인가요?\nB: 이 선생님입니다."
         }
       ],
       "status": "correct"
@@ -6036,7 +6077,8 @@
         {
           "en": "A: Which phone should I choose?\nB: Compare the battery life first.",
           "type": "dialogue",
-          "answer": "Compare"
+          "answer": "Compare",
+          "ko": "A: 어떤 휴대전화를 골라야 할까요?\nB: 먼저 배터리 사용 시간을 비교해 보세요."
         }
       ],
       "status": "unknown"
@@ -6080,7 +6122,8 @@
         {
           "en": "A: When should I start speaking?\nB: Begin on my cue.",
           "type": "dialogue",
-          "answer": "cue"
+          "answer": "cue",
+          "ko": "A: 언제 말하기 시작하면 되나요?\nB: 제가 신호를 보내면 시작하세요."
         }
       ],
       "status": "correct"
@@ -6229,12 +6272,14 @@
         {
           "en": "Please quote the author accurately in your essay.",
           "type": "sentence",
-          "answer": "quote"
+          "answer": "quote",
+          "ko": "에세이에서 저자의 말을 정확하게 인용하세요."
         },
         {
           "en": "A: Where did that sentence come from?\nB: It is a quote from her speech.",
           "type": "dialogue",
-          "answer": "a quote"
+          "answer": "a quote",
+          "ko": "A: 그 문장은 어디에서 나온 건가요?\nB: 그녀의 연설에서 인용한 문장이에요."
         }
       ],
       "status": "unknown"
@@ -6269,12 +6314,14 @@
         {
           "en": "The curtains complement the furniture.",
           "type": "sentence",
-          "answer": "complement"
+          "answer": "complement",
+          "ko": "커튼이 가구와 잘 어울린다."
         },
         {
           "en": "Fresh herbs complement the soup perfectly.",
           "type": "sentence",
-          "answer": "complement"
+          "answer": "complement",
+          "ko": "신선한 허브가 수프와 완벽하게 어울린다."
         }
       ],
       "status": "correct"
@@ -6315,12 +6362,14 @@
         {
           "en": "The contract has a three-year term.",
           "type": "sentence",
-          "answer": "term"
+          "answer": "term",
+          "ko": "그 계약은 기간이 3년이다."
         },
         {
           "en": "What does this legal term mean?",
           "type": "sentence",
-          "answer": "term"
+          "answer": "term",
+          "ko": "이 법률 용어는 무슨 뜻인가요?"
         }
       ],
       "status": "correct"
@@ -6468,7 +6517,8 @@
         {
           "en": "A: Who created this clever story?\nB: An imaginative young writer did.",
           "type": "dialogue",
-          "answer": "imaginative"
+          "answer": "imaginative",
+          "ko": "A: 이 기발한 이야기는 누가 만들었나요?\nB: 상상력이 풍부한 젊은 작가가 만들었어요."
         }
       ],
       "status": "unknown"
@@ -6506,12 +6556,14 @@
         {
           "en": "The study examines how gender affects career choices.",
           "type": "sentence",
-          "answer": "gender"
+          "answer": "gender",
+          "ko": "그 연구는 성별이 진로 선택에 어떤 영향을 미치는지 살펴본다."
         },
         {
           "en": "Students discussed gender equality in class.",
           "type": "sentence",
-          "answer": "gender"
+          "answer": "gender",
+          "ko": "학생들은 수업에서 성평등에 관해 토론했다."
         }
       ],
       "status": "correct"
@@ -6681,12 +6733,14 @@
         {
           "en": "Please post the announcement on the bulletin board.",
           "type": "sentence",
-          "answer": "board"
+          "answer": "board",
+          "ko": "게시판에 공지를 붙여 주세요."
         },
         {
           "en": "We boarded the train just before it left.",
           "type": "sentence",
-          "answer": "boarded"
+          "answer": "boarded",
+          "ko": "우리는 기차가 출발하기 직전에 탔다."
         }
       ],
       "status": "correct"
@@ -6771,12 +6825,14 @@
         {
           "en": "The scientist proposed a brilliant solution.",
           "type": "sentence",
-          "answer": "brilliant"
+          "answer": "brilliant",
+          "ko": "그 과학자는 훌륭한 해결책을 제안했다."
         },
         {
           "en": "The stars looked brilliant tonight.",
           "type": "sentence",
-          "answer": "brilliant"
+          "answer": "brilliant",
+          "ko": "오늘 밤 별들이 눈부시게 빛났다."
         }
       ],
       "status": "correct"
@@ -6816,7 +6872,8 @@
         {
           "en": "A: Did she understand the instructions?\nB: Her apparent confusion suggested otherwise.",
           "type": "dialogue",
-          "answer": "apparent"
+          "answer": "apparent",
+          "ko": "A: 그녀가 지시를 이해했나요?\nB: 겉으로 드러난 혼란을 보면 아닌 것 같았어요."
         }
       ],
       "status": "unknown"
@@ -6892,12 +6949,14 @@
         {
           "en": "The twins wore identical jackets.",
           "type": "sentence",
-          "answer": "identical"
+          "answer": "identical",
+          "ko": "쌍둥이는 똑같은 재킷을 입었다."
         },
         {
           "en": "Their answers were identical.",
           "type": "sentence",
-          "answer": "identical"
+          "answer": "identical",
+          "ko": "그들의 답은 똑같았다."
         }
       ],
       "status": "correct"
@@ -6940,7 +6999,8 @@
         {
           "en": "A: Was I too harsh with Leo?\nB: Maybe apologize to him.",
           "type": "dialogue",
-          "answer": "harsh"
+          "answer": "harsh",
+          "ko": "A: 제가 레오에게 너무 심했나요?\nB: 사과하는 게 좋을지도 몰라요."
         }
       ],
       "status": "correct"
@@ -7109,7 +7169,8 @@
         {
           "en": "Our principal goal is to improve customer service.",
           "type": "sentence",
-          "answer": "principal"
+          "answer": "principal",
+          "ko": "우리의 주된 목표는 고객 서비스를 개선하는 것이다."
         }
       ],
       "status": "correct"
@@ -7144,7 +7205,8 @@
         {
           "en": "The principal announced the new school policy.",
           "type": "sentence",
-          "answer": "principal"
+          "answer": "principal",
+          "ko": "교장은 새 학교 정책을 발표했다."
         }
       ],
       "status": "correct"
@@ -7222,12 +7284,14 @@
         {
           "en": "Teaching children is his greatest passion.",
           "type": "sentence",
-          "answer": "passion"
+          "answer": "passion",
+          "ko": "아이들을 가르치는 것은 그의 가장 큰 열정이다."
         },
         {
           "en": "A: Why do you practice every day?\nB: Because I have a passion for dance.",
           "type": "dialogue",
-          "answer": "a passion"
+          "answer": "a passion",
+          "ko": "A: 왜 매일 연습하나요?\nB: 춤에 대한 열정이 있기 때문이에요."
         }
       ],
       "status": "unknown"
@@ -7350,12 +7414,14 @@
         {
           "en": "Only specially adapted plants can survive in this arid region.",
           "type": "sentence",
-          "answer": "arid"
+          "answer": "arid",
+          "ko": "특별히 적응한 식물만 이 건조한 지역에서 살아남을 수 있다."
         },
         {
           "en": "A: Why is farming difficult there?\nB: The climate is extremely arid.",
           "type": "dialogue",
-          "answer": "arid"
+          "answer": "arid",
+          "ko": "A: 그곳에서는 왜 농사짓기가 어렵나요?\nB: 기후가 매우 건조해요."
         }
       ],
       "status": "correct"
@@ -7392,12 +7458,14 @@
         {
           "en": "The charity was founded by local doctors.",
           "type": "sentence",
-          "answer": "founded"
+          "answer": "founded",
+          "ko": "그 자선단체는 지역 의사들이 설립했다."
         },
         {
           "en": "The argument is founded on reliable evidence.",
           "type": "sentence",
-          "answer": "founded"
+          "answer": "founded",
+          "ko": "그 주장은 신뢰할 만한 증거에 근거한다."
         }
       ],
       "status": "correct"
@@ -7436,12 +7504,14 @@
         {
           "en": "The team expended considerable energy solving the problem.",
           "type": "sentence",
-          "answer": "expended"
+          "answer": "expended",
+          "ko": "팀은 문제를 해결하는 데 상당한 에너지를 쏟았다."
         },
         {
           "en": "Too much money was expended on repairs.",
           "type": "sentence",
-          "answer": "expended"
+          "answer": "expended",
+          "ko": "수리에 너무 많은 돈이 지출되었다."
         }
       ],
       "status": "correct"
@@ -7483,12 +7553,14 @@
         {
           "en": "The lecture covers a difficult subject.",
           "type": "sentence",
-          "answer": "subject"
+          "answer": "subject",
+          "ko": "그 강의는 어려운 주제를 다룬다."
         },
         {
           "en": "The workers were subjected to unsafe conditions.",
           "type": "sentence",
-          "answer": "subjected"
+          "answer": "subjected",
+          "ko": "노동자들은 안전하지 않은 환경에 노출되었다."
         }
       ],
       "status": "unknown"
@@ -7574,12 +7646,14 @@
         {
           "en": "After years of work, her dream materialized.",
           "type": "sentence",
-          "answer": "materialized"
+          "answer": "materialized",
+          "ko": "수년간 노력한 끝에 그녀의 꿈이 실현되었다."
         },
         {
           "en": "The solution began to materialize during the meeting.",
           "type": "sentence",
-          "answer": "materialize"
+          "answer": "materialize",
+          "ko": "회의 중에 해결책이 구체화되기 시작했다."
         }
       ],
       "status": "unknown"
@@ -7612,12 +7686,14 @@
         {
           "en": "Lack of funding became a major impediment to the project.",
           "type": "sentence",
-          "answer": "impediment"
+          "answer": "impediment",
+          "ko": "자금 부족은 프로젝트의 주요 장애물이 되었다."
         },
         {
           "en": "A: What is delaying the renovation?\nB: The permit issue is the main impediment.",
           "type": "dialogue",
-          "answer": "impediment"
+          "answer": "impediment",
+          "ko": "A: 보수 공사가 왜 지연되고 있나요?\nB: 허가 문제가 가장 큰 장애물이에요."
         }
       ],
       "status": "confusing"
@@ -7860,12 +7936,14 @@
         {
           "en": "The novel's main character is a talented detective.",
           "type": "sentence",
-          "answer": "character"
+          "answer": "character",
+          "ko": "그 소설의 주인공은 재능 있는 탐정이다."
         },
         {
           "en": "This password must contain at least one special character.",
           "type": "sentence",
-          "answer": "character"
+          "answer": "character",
+          "ko": "이 비밀번호에는 특수 문자가 하나 이상 포함되어야 한다."
         }
       ],
       "status": "correct"
@@ -7904,12 +7982,14 @@
         {
           "en": "A small stream flows beneath the bridge.",
           "type": "sentence",
-          "answer": "beneath"
+          "answer": "beneath",
+          "ko": "작은 개울이 다리 아래로 흐른다."
         },
         {
           "en": "A: Where is the cat?\nB: It is sleeping beneath the table.",
           "type": "dialogue",
-          "answer": "beneath the table"
+          "answer": "beneath the table",
+          "ko": "A: 고양이는 어디에 있나요?\nB: 탁자 아래에서 자고 있어요."
         }
       ],
       "status": "correct"
@@ -7945,12 +8025,14 @@
         {
           "en": "This technology has important applications in medicine.",
           "type": "sentence",
-          "answer": "applications"
+          "answer": "applications",
+          "ko": "이 기술은 의학 분야에서 중요한 용도가 있다."
         },
         {
           "en": "A: What is the application of this tool?\nB: It helps analyze large data sets.",
           "type": "dialogue",
-          "answer": "application"
+          "answer": "application",
+          "ko": "A: 이 도구는 어디에 쓰나요?\nB: 대규모 데이터 세트를 분석하는 데 도움이 됩니다."
         }
       ],
       "status": "correct"
@@ -8129,7 +8211,8 @@
         {
           "en": "A: Did the bill become law?\nB: Yes, lawmakers enacted it in June.",
           "type": "dialogue",
-          "answer": "enacted"
+          "answer": "enacted",
+          "ko": "A: 그 법안이 법률로 제정됐나요?\nB: 네, 의원들이 6월에 제정했어요."
         }
       ],
       "status": "confusing"
@@ -8168,12 +8251,14 @@
         {
           "en": "Both teams received a fair chance to compete.",
           "type": "sentence",
-          "answer": "fair"
+          "answer": "fair",
+          "ko": "두 팀 모두 공정하게 경쟁할 기회를 얻었다."
         },
         {
           "en": "We visited the county fair on Saturday.",
           "type": "sentence",
-          "answer": "fair"
+          "answer": "fair",
+          "ko": "우리는 토요일에 지역 축제를 방문했다."
         }
       ],
       "status": "unknown"
@@ -8434,12 +8519,14 @@
         {
           "en": "They built a small cabin in a remote mountain valley.",
           "type": "sentence",
-          "answer": "remote"
+          "answer": "remote",
+          "ko": "그들은 외딴 산골짜기에 작은 오두막을 지었다."
         },
         {
           "en": "A: Why is the clinic so remote?\nB: It serves villages far from the city.",
           "type": "dialogue",
-          "answer": "remote"
+          "answer": "remote",
+          "ko": "A: 그 진료소는 왜 그렇게 외진 곳에 있나요?\nB: 도시에서 멀리 떨어진 마을들을 담당하기 때문이에요."
         }
       ],
       "status": "correct"
@@ -8573,7 +8660,8 @@
         {
           "en": "A: Can we count on you?\nB: Absolutely.",
           "type": "dialogue",
-          "answer": "count on"
+          "answer": "count on",
+          "ko": "A: 당신을 믿고 맡겨도 될까요?\nB: 물론이죠."
         }
       ],
       "status": "correct"
@@ -8657,7 +8745,8 @@
         {
           "en": "The manager's praise gratified the employee's need for recognition.",
           "type": "sentence",
-          "answer": "gratified"
+          "answer": "gratified",
+          "ko": "관리자의 칭찬은 인정받고 싶어 하는 직원의 욕구를 충족시켰다."
         }
       ],
       "status": "correct"
@@ -8695,7 +8784,8 @@
         {
           "en": "A: Did the results make you happy?\nB: Yes, they really gratified me.",
           "type": "dialogue",
-          "answer": "gratified"
+          "answer": "gratified",
+          "ko": "A: 결과가 만족스러웠나요?\nB: 네, 정말 만족스러웠어요."
         }
       ],
       "status": "correct"
@@ -8732,7 +8822,8 @@
         {
           "en": "She wrote an excellent article for the magazine.",
           "type": "sentence",
-          "answer": "article"
+          "answer": "article",
+          "ko": "그녀는 잡지에 훌륭한 기사를 썼다."
         }
       ],
       "status": "confusing"
@@ -8795,7 +8886,8 @@
         {
           "en": "A: What does Article 12 cover?\nB: It explains the privacy rules.",
           "type": "dialogue",
-          "answer": "Article 12"
+          "answer": "Article 12",
+          "ko": "A: 제12조는 무엇을 다루나요?\nB: 개인정보 보호 규칙을 설명합니다."
         }
       ],
       "status": "confusing"
@@ -8860,7 +8952,8 @@
         {
           "en": "We need to analyze the data before drawing conclusions.",
           "type": "sentence",
-          "answer": "analyze"
+          "answer": "analyze",
+          "ko": "결론을 내리기 전에 데이터를 분석해야 한다."
         }
       ],
       "status": "correct"
@@ -8899,7 +8992,8 @@
         {
           "en": "A: Did you analyze the contract?\nB: Yes, I checked every clause.",
           "type": "dialogue",
-          "answer": "analyze"
+          "answer": "analyze",
+          "ko": "A: 계약서를 분석했나요?\nB: 네, 모든 조항을 확인했어요."
         }
       ],
       "status": "correct"
@@ -8958,7 +9052,8 @@
         {
           "en": "A: How did the department lose so many employees?\nB: Mostly through attrition—people retired or moved away.",
           "type": "dialogue",
-          "answer": "attrition"
+          "answer": "attrition",
+          "ko": "A: 그 부서는 어떻게 그렇게 많은 직원을 잃었나요?\nB: 대부분 자연 감소 때문이에요. 사람들이 은퇴하거나 떠났거든요."
         }
       ],
       "status": "unknown"
@@ -8995,12 +9090,14 @@
         {
           "en": "The current policy will change next year.",
           "type": "sentence",
-          "answer": "current"
+          "answer": "current",
+          "ko": "현행 정책은 내년에 바뀔 것이다."
         },
         {
           "en": "The river current was too strong for swimming.",
           "type": "sentence",
-          "answer": "current"
+          "answer": "current",
+          "ko": "강의 물살이 너무 세서 수영할 수 없었다."
         }
       ],
       "status": "correct"
@@ -9044,7 +9141,8 @@
         {
           "en": "A: Do I need a building permit?\nB: Yes, you do.",
           "type": "dialogue",
-          "answer": "permit"
+          "answer": "permit",
+          "ko": "A: 건축 허가가 필요한가요?\nB: 네, 필요합니다."
         }
       ],
       "status": "correct"
@@ -9259,12 +9357,14 @@
         {
           "en": "People who skip breakfast are prone to overeating later.",
           "type": "sentence",
-          "answer": "prone to"
+          "answer": "prone to",
+          "ko": "아침을 거르는 사람은 나중에 과식하기 쉽다."
         },
         {
           "en": "A: Why does Maya catch colds so often?\nB: She’s prone to respiratory infections.",
           "type": "dialogue",
-          "answer": "prone to"
+          "answer": "prone to",
+          "ko": "A: 마야는 왜 감기에 자주 걸리나요?\nB: 호흡기 감염에 걸리기 쉬워요."
         }
       ],
       "status": "correct"
@@ -9306,7 +9406,8 @@
         {
           "en": "A: Does the school provide transportation?\nB: Yes, every morning.",
           "type": "dialogue",
-          "answer": "provide"
+          "answer": "provide",
+          "ko": "A: 학교에서 교통편을 제공하나요?\nB: 네, 매일 아침 제공해요."
         }
       ],
       "status": "correct"
@@ -9413,12 +9514,14 @@
         {
           "en": "Can you remind me about the deadline on Monday?",
           "type": "sentence",
-          "answer": "remind"
+          "answer": "remind",
+          "ko": "월요일에 마감일을 상기시켜 줄래요?"
         },
         {
           "en": "A: Did you remember the appointment?\nB: Yes, my phone reminded me.",
           "type": "dialogue",
-          "answer": "reminded"
+          "answer": "reminded",
+          "ko": "A: 약속을 기억했나요?\nB: 네, 휴대전화가 알려 줬어요."
         }
       ],
       "status": "correct"
@@ -9555,7 +9658,8 @@
         {
           "en": "A: When must we leave the apartment?\nB: You need to vacate it by Friday.",
           "type": "dialogue",
-          "answer": "vacate"
+          "answer": "vacate",
+          "ko": "A: 아파트에서 언제 나가야 하나요?\nB: 금요일까지 비워야 합니다."
         }
       ],
       "status": "correct"
@@ -9595,12 +9699,14 @@
         {
           "en": "The coach blamed the loss on poor preparation.",
           "type": "sentence",
-          "answer": "blamed"
+          "answer": "blamed",
+          "ko": "코치는 패배의 원인을 준비 부족으로 돌렸다."
         },
         {
           "en": "A: Who is at fault? \nB: I take the blame.",
           "type": "dialogue",
-          "answer": "blame"
+          "answer": "blame",
+          "ko": "A: 누구의 잘못인가요?\nB: 제가 책임질게요."
         }
       ],
       "status": "correct"
@@ -9679,12 +9785,14 @@
         {
           "en": "There has been a gradual improvement in sales.",
           "type": "sentence",
-          "answer": "gradual"
+          "answer": "gradual",
+          "ko": "매출이 점진적으로 개선되었다."
         },
         {
           "en": "The gradual change was barely noticeable.",
           "type": "sentence",
-          "answer": "gradual"
+          "answer": "gradual",
+          "ko": "점진적인 변화는 거의 눈에 띄지 않았다."
         }
       ],
       "status": "correct"
@@ -9763,12 +9871,14 @@
         {
           "en": "The campaign aims to eradicate corruption from local government.",
           "type": "sentence",
-          "answer": "eradicate"
+          "answer": "eradicate",
+          "ko": "그 캠페인은 지방 정부의 부패를 근절하는 것을 목표로 한다."
         },
         {
           "en": "A: Can the disease be controlled?\nB: Scientists hope to eradicate it completely.",
           "type": "dialogue",
-          "answer": "eradicate"
+          "answer": "eradicate",
+          "ko": "A: 그 질병을 통제할 수 있을까요?\nB: 과학자들은 완전히 근절하기를 바라고 있어요."
         }
       ],
       "status": "correct"
@@ -9881,7 +9991,8 @@
         {
           "en": "A: Who will handle the tax issue?\nB: We engaged an accountant.",
           "type": "dialogue",
-          "answer": "engaged"
+          "answer": "engaged",
+          "ko": "A: 세금 문제는 누가 처리하나요?\nB: 회계사를 고용했어요."
         }
       ],
       "status": "unknown"
@@ -9953,7 +10064,8 @@
         {
           "en": "A: Can you administer the paperwork?\nB: Yes, I'll handle it this afternoon.",
           "type": "dialogue",
-          "answer": "administer"
+          "answer": "administer",
+          "ko": "A: 서류 업무를 처리할 수 있나요?\nB: 네, 오늘 오후에 처리할게요."
         }
       ],
       "status": "correct"
@@ -10065,7 +10177,8 @@
         {
           "en": "A: Which category does this product belong to?\nB: Household equipment.",
           "type": "dialogue",
-          "answer": "category"
+          "answer": "category",
+          "ko": "A: 이 제품은 어느 범주에 속하나요?\nB: 가정용 장비입니다."
         }
       ],
       "status": "correct"
@@ -10131,7 +10244,8 @@
         {
           "en": "Please place each expense in the correct category.",
           "type": "sentence",
-          "answer": "category"
+          "answer": "category",
+          "ko": "각 비용을 올바른 범주에 넣어 주세요."
         }
       ],
       "status": "correct"
@@ -10171,12 +10285,14 @@
         {
           "en": "She invested her savings in a small business.",
           "type": "sentence",
-          "answer": "invested"
+          "answer": "invested",
+          "ko": "그녀는 저축한 돈을 소규모 사업에 투자했다."
         },
         {
           "en": "A: Why study another language? \nB: I’m investing in my future.",
           "type": "dialogue",
-          "answer": "investing"
+          "answer": "investing",
+          "ko": "A: 왜 다른 언어를 공부하나요?\nB: 제 미래에 투자하는 거예요."
         }
       ],
       "status": "correct"
@@ -10641,12 +10757,14 @@
         {
           "en": "The report gives a general overview of the problem.",
           "type": "sentence",
-          "answer": "general"
+          "answer": "general",
+          "ko": "그 보고서는 문제에 대한 전반적인 개요를 제공한다."
         },
         {
           "en": "The general addressed the soldiers.",
           "type": "sentence",
-          "answer": "general"
+          "answer": "general",
+          "ko": "장군은 병사들에게 연설했다."
         }
       ],
       "status": "correct"
@@ -10909,12 +11027,14 @@
         {
           "en": "The visitors beheld the ancient statue in silence.",
           "type": "sentence",
-          "answer": "beheld"
+          "answer": "beheld",
+          "ko": "방문객들은 고대 조각상을 조용히 바라보았다."
         },
         {
           "en": "Behold the view from the mountain.",
           "type": "sentence",
-          "answer": "Behold"
+          "answer": "Behold",
+          "ko": "산에서 바라보는 경치를 보라."
         }
       ],
       "status": "confusing"
@@ -11012,7 +11132,8 @@
         {
           "en": "A: Can we add the video to the webpage?\nB: Yes, I'll embed it now.",
           "type": "dialogue",
-          "answer": "embed"
+          "answer": "embed",
+          "ko": "A: 웹페이지에 영상을 넣을 수 있나요?\nB: 네, 지금 삽입할게요."
         }
       ],
       "status": "correct"
@@ -11057,7 +11178,8 @@
         {
           "en": "A: Why are you breathing so heavily?\nB: The altitude is affecting me.",
           "type": "dialogue",
-          "answer": "altitude"
+          "answer": "altitude",
+          "ko": "A: 왜 그렇게 숨을 거칠게 쉬나요?\nB: 고도가 영향을 주고 있어요."
         }
       ],
       "status": "correct"
@@ -11181,12 +11303,14 @@
         {
           "en": "Please revise your report before Friday.",
           "type": "sentence",
-          "answer": "revise"
+          "answer": "revise",
+          "ko": "금요일 전에 보고서를 수정해 주세요."
         },
         {
           "en": "A: Is the draft finished?\nB: Not yet. I need to revise it.",
           "type": "dialogue",
-          "answer": "revise"
+          "answer": "revise",
+          "ko": "A: 초안이 완성됐나요?\nB: 아직이요. 수정해야 해요."
         }
       ],
       "status": "correct"
@@ -11349,7 +11473,8 @@
         {
           "en": "A: Could anything go wrong?\nB: Every imaginable thing has been checked.",
           "type": "dialogue",
-          "answer": "imaginable"
+          "answer": "imaginable",
+          "ko": "A: 문제가 생길 가능성이 있나요?\nB: 상상할 수 있는 모든 사항을 확인했어요."
         }
       ],
       "status": "unknown"
@@ -11386,12 +11511,14 @@
         {
           "en": "She suddenly realized the door was unlocked.",
           "type": "sentence",
-          "answer": "realized"
+          "answer": "realized",
+          "ko": "그녀는 갑자기 문이 잠겨 있지 않다는 것을 깨달았다."
         },
         {
           "en": "The team worked hard to realize its vision.",
           "type": "sentence",
-          "answer": "realize"
+          "answer": "realize",
+          "ko": "팀은 비전을 실현하기 위해 열심히 노력했다."
         }
       ],
       "status": "correct"
@@ -11964,7 +12091,8 @@
         {
           "en": "A: Who arranged the event?\nB: A local agency handled everything.",
           "type": "dialogue",
-          "answer": "agency"
+          "answer": "agency",
+          "ko": "A: 행사는 누가 준비했나요?\nB: 지역 대행사가 모든 일을 맡았어요."
         }
       ],
       "status": "correct"
@@ -12316,7 +12444,8 @@
         {
           "en": "A: Why did you reject the offer?\nB: It went against my principles.",
           "type": "dialogue",
-          "answer": "principles"
+          "answer": "principles",
+          "ko": "A: 왜 그 제안을 거절했나요?\nB: 제 원칙에 어긋났기 때문이에요."
         }
       ],
       "status": "correct"
@@ -12608,7 +12737,8 @@
         {
           "en": "A: Why did sales fall?\nB: The decline is largely attributable to higher prices.",
           "type": "dialogue",
-          "answer": "attributable to"
+          "answer": "attributable to",
+          "ko": "A: 매출이 왜 감소했나요?\nB: 그 하락은 주로 가격 인상 때문이에요."
         }
       ],
       "status": "confusing"
@@ -13074,7 +13204,8 @@
         {
           "en": "A: He criticized your work in front of everyone.\nB: I can’t believe he had the audacity.",
           "type": "dialogue",
-          "answer": "audacity"
+          "answer": "audacity",
+          "ko": "A: 그가 모두 앞에서 당신의 일을 비판했어요.\nB: 그가 그렇게 뻔뻔할 수 있다니 믿을 수 없어요."
         }
       ],
       "status": "confusing"
@@ -13255,12 +13386,14 @@
         {
           "en": "Don't mention the surprise party to Maya.",
           "type": "sentence",
-          "answer": "mention"
+          "answer": "mention",
+          "ko": "마야에게 깜짝 파티 이야기를 하지 마세요."
         },
         {
           "en": "A: Did the article mention our company?\nB: Yes, it gave us an honorable mention.",
           "type": "dialogue",
-          "answer": "mention"
+          "answer": "mention",
+          "ko": "A: 기사에서 우리 회사를 언급했나요?\nB: 네, 우리 회사를 특별히 언급했어요."
         }
       ],
       "status": "correct"
@@ -13336,12 +13469,14 @@
         {
           "en": "The scientists isolated the virus.",
           "type": "sentence",
-          "answer": "isolated"
+          "answer": "isolated",
+          "ko": "과학자들은 바이러스를 분리했다."
         },
         {
           "en": "A: Why is he alone? \nB: They isolated him for safety.",
           "type": "dialogue",
-          "answer": "isolated"
+          "answer": "isolated",
+          "ko": "A: 그는 왜 혼자 있나요?\nB: 안전을 위해 그를 격리했어요."
         }
       ],
       "status": "correct"
@@ -13420,12 +13555,14 @@
         {
           "en": "The peace talks began to gather momentum after both sides agreed to meet again.",
           "type": "sentence",
-          "answer": "gather momentum"
+          "answer": "gather momentum",
+          "ko": "양측이 다시 만나기로 합의한 뒤 평화 회담에 탄력이 붙기 시작했다."
         },
         {
           "en": "A: How is the fundraising campaign going?\nB: It’s gathering momentum online.",
           "type": "dialogue",
-          "answer": "gathering momentum"
+          "answer": "gathering momentum",
+          "ko": "A: 모금 캠페인은 어떻게 진행되고 있나요?\nB: 온라인에서 탄력을 받고 있어요."
         }
       ],
       "status": "correct"
@@ -13511,7 +13648,8 @@
         {
           "en": "A: Where does your sister live?\nB: She lives in a quiet subdivision near the lake.",
           "type": "dialogue",
-          "answer": "subdivision"
+          "answer": "subdivision",
+          "ko": "A: 언니는 어디에 사나요?\nB: 호수 근처의 조용한 주택 단지에 살아요."
         }
       ],
       "status": "confusing"
@@ -14364,12 +14502,14 @@
         {
           "en": "He refused to answer the question.",
           "type": "sentence",
-          "answer": "refused"
+          "answer": "refused",
+          "ko": "그는 질문에 답하기를 거부했다."
         },
         {
           "en": "A: Will you sign it? \nB: No, I refuse.",
           "type": "dialogue",
-          "answer": "refuse"
+          "answer": "refuse",
+          "ko": "A: 서명할 건가요?\nB: 아니요, 거부하겠습니다."
         }
       ],
       "status": "correct"
@@ -14407,12 +14547,14 @@
         {
           "en": "She swore to keep the information confidential.",
           "type": "sentence",
-          "answer": "swore"
+          "answer": "swore",
+          "ko": "그녀는 그 정보를 기밀로 유지하겠다고 맹세했다."
         },
         {
           "en": "A: Did you take the money?\nB: I swear I did not.",
           "type": "dialogue",
-          "answer": "swear"
+          "answer": "swear",
+          "ko": "A: 그 돈을 가져갔나요?\nB: 절대 가져가지 않았다고 맹세해요."
         }
       ],
       "status": "unknown"
@@ -14450,12 +14592,14 @@
         {
           "en": "The injured cyclist was taken to the hospital.",
           "type": "sentence",
-          "answer": "injured"
+          "answer": "injured",
+          "ko": "부상당한 자전거 운전자는 병원으로 이송되었다."
         },
         {
           "en": "She felt injured by his unfair criticism.",
           "type": "sentence",
-          "answer": "injured"
+          "answer": "injured",
+          "ko": "그녀는 그의 부당한 비판에 마음의 상처를 입었다."
         }
       ],
       "status": "correct"
@@ -14579,7 +14723,8 @@
         {
           "en": "A: How much cash do you have?\nB: Just one twenty-dollar bill.",
           "type": "dialogue",
-          "answer": "twenty-dollar bill"
+          "answer": "twenty-dollar bill",
+          "ko": "A: 현금이 얼마나 있나요?\nB: 20달러 지폐 한 장뿐이에요."
         }
       ],
       "status": "confusing"
@@ -15015,12 +15160,14 @@
         {
           "en": "Rotate the screen to view the image horizontally.",
           "type": "sentence",
-          "answer": "Rotate"
+          "answer": "Rotate",
+          "ko": "이미지를 가로로 보려면 화면을 회전하세요."
         },
         {
           "en": "The nurses rotate through the evening shift.",
           "type": "sentence",
-          "answer": "rotate"
+          "answer": "rotate",
+          "ko": "간호사들은 돌아가며 저녁 근무를 한다."
         }
       ],
       "status": "unknown"
@@ -15057,12 +15204,14 @@
         {
           "en": "The clinic operates on Mondays.",
           "type": "sentence",
-          "answer": "operates"
+          "answer": "operates",
+          "ko": "그 진료소는 월요일에 운영한다."
         },
         {
           "en": "A: Is the system working? \nB: Yes, it operates normally.",
           "type": "dialogue",
-          "answer": "operates"
+          "answer": "operates",
+          "ko": "A: 시스템이 작동하나요?\nB: 네, 정상적으로 작동해요."
         }
       ],
       "status": "correct"
@@ -15102,7 +15251,8 @@
         {
           "en": "A: Why does the case have extra padding?\nB: It cushions the device during transport.",
           "type": "dialogue",
-          "answer": "cushions"
+          "answer": "cushions",
+          "ko": "A: 케이스에 완충재가 더 들어 있는 이유가 뭔가요?\nB: 운반 중에 기기를 보호해 줘요."
         }
       ],
       "status": "correct"
@@ -15146,7 +15296,8 @@
         {
           "en": "A: How did you remove the mark?\nB: I scrubbed it with soap.",
           "type": "dialogue",
-          "answer": "scrubbed"
+          "answer": "scrubbed",
+          "ko": "A: 얼룩을 어떻게 지웠나요?\nB: 비누로 문질러 닦았어요."
         }
       ],
       "status": "correct"
@@ -15183,12 +15334,14 @@
         {
           "en": "The teacher discussed the child’s behavior.",
           "type": "sentence",
-          "answer": "behavior"
+          "answer": "behavior",
+          "ko": "교사는 아이의 행동에 관해 이야기했다."
         },
         {
           "en": "A: Why was she punished? \nB: Her behavior was unacceptable.",
           "type": "dialogue",
-          "answer": "behavior"
+          "answer": "behavior",
+          "ko": "A: 그녀는 왜 벌을 받았나요?\nB: 행동이 용납할 수 없는 수준이었어요."
         }
       ],
       "status": "correct"
@@ -15224,12 +15377,14 @@
         {
           "en": "He gave me a compliment on my presentation.",
           "type": "sentence",
-          "answer": "compliment"
+          "answer": "compliment",
+          "ko": "그는 내 발표를 칭찬해 주었다."
         },
         {
           "en": "A: You look great today. \nB: Thanks for the compliment.",
           "type": "dialogue",
-          "answer": "compliment"
+          "answer": "compliment",
+          "ko": "A: 오늘 멋져 보여요.\nB: 칭찬해 줘서 고마워요."
         }
       ],
       "status": "correct"
@@ -15306,12 +15461,14 @@
         {
           "en": "This compact car is economical to run.",
           "type": "sentence",
-          "answer": "economical"
+          "answer": "economical",
+          "ko": "이 소형차는 유지비가 경제적이다."
         },
         {
           "en": "A: Which heating system should we install?\nB: The economical one.",
           "type": "dialogue",
-          "answer": "economical"
+          "answer": "economical",
+          "ko": "A: 어떤 난방 시스템을 설치해야 할까요?\nB: 경제적인 것으로 하세요."
         }
       ],
       "status": "correct"
@@ -15345,12 +15502,14 @@
         {
           "en": "The store expanded its delivery service.",
           "type": "sentence",
-          "answer": "expanded"
+          "answer": "expanded",
+          "ko": "그 가게는 배달 서비스를 확대했다."
         },
         {
           "en": "The city continues to expand toward the coast.",
           "type": "sentence",
-          "answer": "expand"
+          "answer": "expand",
+          "ko": "도시는 계속 해안 쪽으로 확장되고 있다."
         }
       ],
       "status": "correct"
@@ -15479,7 +15638,8 @@
         {
           "en": "A: Did he apologize?\nB: Yes, he sent a written apology.",
           "type": "dialogue",
-          "answer": "written apology"
+          "answer": "written apology",
+          "ko": "A: 그가 사과했나요?\nB: 네, 서면 사과문을 보냈어요."
         }
       ],
       "status": "correct"
@@ -15632,12 +15792,14 @@
         {
           "en": "A: How does this year's bonus compare with last year's?\nB: It's comparable, but not significantly higher.",
           "type": "dialogue",
-          "answer": "comparable"
+          "answer": "comparable",
+          "ko": "A: 올해 보너스는 작년과 비교해 어떤가요?\nB: 비슷하지만 크게 더 많지는 않아요."
         },
         {
           "en": "The two candidates have comparable levels of experience.",
           "type": "sentence",
-          "answer": "comparable"
+          "answer": "comparable",
+          "ko": "두 후보는 비슷한 수준의 경력을 갖고 있다."
         }
       ],
       "status": "unknown"
@@ -15763,7 +15925,8 @@
         {
           "en": "A: Are you traveling alone?\nB: No, I have a companion.",
           "type": "dialogue",
-          "answer": "companion"
+          "answer": "companion",
+          "ko": "A: 혼자 여행하나요?\nB: 아니요, 동행이 있어요."
         }
       ],
       "status": "correct"
@@ -15900,7 +16063,8 @@
         {
           "en": "The landlord checked my credit before approving the application.",
           "type": "sentence",
-          "answer": "credit"
+          "answer": "credit",
+          "ko": "집주인은 신청을 승인하기 전에 내 신용을 확인했다."
         }
       ],
       "status": "correct"
@@ -15936,7 +16100,8 @@
         {
           "en": "A: Who should get credit for the successful launch?\nB: The entire design team.",
           "type": "dialogue",
-          "answer": "credit"
+          "answer": "credit",
+          "ko": "A: 성공적인 출시의 공로는 누구에게 돌아가야 하나요?\nB: 디자인팀 전체요."
         }
       ],
       "status": "correct"
@@ -16167,7 +16332,8 @@
         {
           "en": "A: Are you ready for the play?\nB: We rehearsed every evening.",
           "type": "dialogue",
-          "answer": "rehearsed"
+          "answer": "rehearsed",
+          "ko": "A: 연극 준비는 됐나요?\nB: 매일 저녁 연습했어요."
         }
       ],
       "status": "unknown"
@@ -16212,7 +16378,8 @@
         {
           "en": "A: Why did Maya rush out?\nB: She was late for work.",
           "type": "dialogue",
-          "answer": "rush"
+          "answer": "rush",
+          "ko": "A: 마야는 왜 급히 나갔나요?\nB: 출근에 늦었어요."
         }
       ],
       "status": "correct"
@@ -16255,7 +16422,8 @@
         {
           "en": "A: Which laptop should I buy?\nB: I recommend the lighter model.",
           "type": "dialogue",
-          "answer": "recommend"
+          "answer": "recommend",
+          "ko": "A: 어떤 노트북을 사야 할까요?\nB: 더 가벼운 모델을 추천해요."
         }
       ],
       "status": "correct"
@@ -16295,12 +16463,14 @@
         {
           "en": "Economics helps explain why markets change.",
           "type": "sentence",
-          "answer": "Economics"
+          "answer": "Economics",
+          "ko": "경제학은 시장이 왜 변하는지 설명하는 데 도움이 된다."
         },
         {
           "en": "A: What is your major?\nB: I'm majoring in economics.",
           "type": "dialogue",
-          "answer": "economics"
+          "answer": "economics",
+          "ko": "A: 전공이 무엇인가요?\nB: 경제학을 전공하고 있어요."
         }
       ],
       "status": "correct"
@@ -16352,7 +16522,8 @@
         {
           "en": "A: The weather is perfect for the ceremony.\nB: That’s an auspicious sign.",
           "type": "dialogue",
-          "answer": "auspicious"
+          "answer": "auspicious",
+          "ko": "A: 행사 날씨가 완벽하네요.\nB: 좋은 징조예요."
         }
       ],
       "status": "confusing"
@@ -16391,12 +16562,14 @@
         {
           "en": "A common mistake is forgetting to save the file.",
           "type": "sentence",
-          "answer": "common"
+          "answer": "common",
+          "ko": "흔한 실수 중 하나는 파일 저장을 잊는 것이다."
         },
         {
           "en": "A: Do many people have this problem?\nB: Yes, it is quite common.",
           "type": "dialogue",
-          "answer": "common"
+          "answer": "common",
+          "ko": "A: 많은 사람이 이 문제를 겪나요?\nB: 네, 꽤 흔해요."
         }
       ],
       "status": "unknown"
@@ -16703,12 +16876,14 @@
         {
           "en": "The hotel is close to the station; furthermore, it offers free breakfast.",
           "type": "sentence",
-          "answer": "furthermore"
+          "answer": "furthermore",
+          "ko": "그 호텔은 역에서 가깝고, 게다가 무료 아침 식사를 제공한다."
         },
         {
           "en": "A: Why do you support the proposal?\nB: Furthermore, it will create new jobs.",
           "type": "dialogue",
-          "answer": "Furthermore"
+          "answer": "Furthermore",
+          "ko": "A: 왜 그 제안을 지지하나요?\nB: 게다가 새로운 일자리도 만들 거예요."
         }
       ],
       "status": "correct"
@@ -16785,7 +16960,8 @@
         {
           "en": "A: Did you water the plants?\nB: No, I neglected them while I was away.",
           "type": "dialogue",
-          "answer": "neglected"
+          "answer": "neglected",
+          "ko": "A: 식물에 물을 줬나요?\nB: 아니요, 집을 비운 동안 돌보지 못했어요."
         }
       ],
       "status": "correct"
@@ -16823,12 +16999,14 @@
         {
           "en": "The instructions confused the new employees.",
           "type": "sentence",
-          "answer": "confused"
+          "answer": "confused",
+          "ko": "그 지침은 신입 직원들을 혼란스럽게 했다."
         },
         {
           "en": "A: Which file should I open? \nB: The two labels confuse everyone.",
           "type": "dialogue",
-          "answer": "confuse"
+          "answer": "confuse",
+          "ko": "A: 어떤 파일을 열어야 하나요?\nB: 두 라벨 때문에 모두가 헷갈려 해요."
         }
       ],
       "status": "correct"
@@ -16999,12 +17177,14 @@
         {
           "en": "She kept boasting about her exam score.",
           "type": "sentence",
-          "answer": "boasting"
+          "answer": "boasting",
+          "ko": "그녀는 계속 시험 점수를 자랑했다."
         },
         {
           "en": "A: How did you win? \nB: I’m not here to boast.",
           "type": "dialogue",
-          "answer": "boast"
+          "answer": "boast",
+          "ko": "A: 어떻게 이겼나요?\nB: 자랑하려는 건 아니에요."
         }
       ],
       "status": "correct"
@@ -17131,12 +17311,14 @@
         {
           "en": "Please explain the process in comprehensible language.",
           "type": "sentence",
-          "answer": "comprehensible"
+          "answer": "comprehensible",
+          "ko": "이해하기 쉬운 말로 과정을 설명해 주세요."
         },
         {
           "en": "The lecturer made a complex theory comprehensible to beginners.",
           "type": "sentence",
-          "answer": "comprehensible"
+          "answer": "comprehensible",
+          "ko": "강사는 복잡한 이론을 초보자도 이해할 수 있게 설명했다."
         }
       ],
       "status": "unknown"
@@ -17255,7 +17437,8 @@
         {
           "en": "A: Why are you attending the meeting?\nB: I have a professional obligation.",
           "type": "dialogue",
-          "answer": "professional obligation"
+          "answer": "professional obligation",
+          "ko": "A: 회의에 왜 참석하나요?\nB: 업무상 의무가 있어요."
         }
       ],
       "status": "correct"
@@ -17337,7 +17520,8 @@
         {
           "en": "A: How can I maintain my focus?\nB: Take short breaks.",
           "type": "dialogue",
-          "answer": "maintain"
+          "answer": "maintain",
+          "ko": "A: 어떻게 집중력을 유지할 수 있을까요?\nB: 짧게 휴식을 취하세요."
         }
       ],
       "status": "correct"
@@ -17404,12 +17588,14 @@
         {
           "en": "The hikers abandoned their attempt because of the storm.",
           "type": "sentence",
-          "answer": "abandoned their attempt"
+          "answer": "abandoned their attempt",
+          "ko": "등산객들은 폭풍 때문에 시도를 포기했다."
         },
         {
           "en": "A: Are you going to abandon the project?\nB: No, we just need more time.",
           "type": "dialogue",
-          "answer": "abandon the project"
+          "answer": "abandon the project",
+          "ko": "A: 프로젝트를 포기할 건가요?\nB: 아니요, 시간이 조금 더 필요할 뿐이에요."
         }
       ],
       "status": "correct"
@@ -17459,7 +17645,8 @@
         {
           "en": "A: Why does the manager seem so unapproachable?\nB: His austere manner intimidates people.",
           "type": "dialogue",
-          "answer": "austere"
+          "answer": "austere",
+          "ko": "A: 관리자는 왜 그렇게 다가가기 어려워 보이나요?\nB: 엄격한 태도가 사람들을 위축시켜요."
         }
       ],
       "status": "confusing"
@@ -17498,12 +17685,14 @@
         {
           "en": "He became financially independent at twenty-two.",
           "type": "sentence",
-          "answer": "independent"
+          "answer": "independent",
+          "ko": "그는 스물두 살에 경제적으로 독립했다."
         },
         {
           "en": "A: Do you need help? \nB: No, I’m independent now.",
           "type": "dialogue",
-          "answer": "independent"
+          "answer": "independent",
+          "ko": "A: 도움이 필요한가요?\nB: 아니요, 이제 혼자 할 수 있어요."
         }
       ],
       "status": "correct"
@@ -17547,12 +17736,14 @@
         {
           "en": "The players ran onto the field before the match.",
           "type": "sentence",
-          "answer": "field"
+          "answer": "field",
+          "ko": "선수들은 경기 전에 운동장으로 달려 나갔다."
         },
         {
           "en": "His field is artificial intelligence.",
           "type": "sentence",
-          "answer": "field"
+          "answer": "field",
+          "ko": "그의 분야는 인공지능이다."
         }
       ],
       "status": "unknown"
@@ -17593,7 +17784,8 @@
         {
           "en": "A: Is that creature real?\nB: No, it’s imaginary.",
           "type": "dialogue",
-          "answer": "imaginary"
+          "answer": "imaginary",
+          "ko": "A: 저 생물은 진짜인가요?\nB: 아니요, 상상 속의 존재예요."
         }
       ],
       "status": "unknown"
@@ -17789,12 +17981,14 @@
         {
           "en": "The internet connection worked intermittently during the storm.",
           "type": "sentence",
-          "answer": "intermittently"
+          "answer": "intermittently",
+          "ko": "폭풍이 치는 동안 인터넷 연결이 간헐적으로 작동했다."
         },
         {
           "en": "The warning light flashed intermittently all night.",
           "type": "sentence",
-          "answer": "intermittently"
+          "answer": "intermittently",
+          "ko": "경고등이 밤새 간헐적으로 깜빡였다."
         }
       ],
       "status": "confusing"
@@ -17830,12 +18024,14 @@
         {
           "en": "She sounded regretful after the argument.",
           "type": "sentence",
-          "answer": "regretful"
+          "answer": "regretful",
+          "ko": "그녀는 말다툼 후 후회하는 듯한 목소리였다."
         },
         {
           "en": "A: Do you still feel bad about it? \nB: Yes, I’m regretful.",
           "type": "dialogue",
-          "answer": "regretful"
+          "answer": "regretful",
+          "ko": "A: 아직도 그 일로 마음이 안 좋나요?\nB: 네, 후회하고 있어요."
         }
       ],
       "status": "correct"
@@ -17911,12 +18107,14 @@
         {
           "en": "The company took an aggressive approach to expansion.",
           "type": "sentence",
-          "answer": "aggressive"
+          "answer": "aggressive",
+          "ko": "그 회사는 확장에 공격적인 접근 방식을 취했다."
         },
         {
           "en": "A: Is the dog dangerous? \nB: It can be aggressive.",
           "type": "dialogue",
-          "answer": "aggressive"
+          "answer": "aggressive",
+          "ko": "A: 그 개는 위험한가요?\nB: 공격적일 때가 있어요."
         }
       ],
       "status": "correct"
@@ -18163,12 +18361,14 @@
         {
           "en": "The gallery will exhibit her latest sculptures.",
           "type": "sentence",
-          "answer": "exhibit"
+          "answer": "exhibit",
+          "ko": "그 미술관은 그녀의 최신 조각품을 전시할 예정이다."
         },
         {
           "en": "The rare coin was the main exhibit.",
           "type": "sentence",
-          "answer": "exhibit"
+          "answer": "exhibit",
+          "ko": "그 희귀 동전이 주요 전시품이었다."
         }
       ],
       "status": "correct"
@@ -18213,7 +18413,8 @@
         {
           "en": "A: Why is Ben upset?\nB: He disliked the manager's attitude.",
           "type": "dialogue",
-          "answer": "attitude"
+          "answer": "attitude",
+          "ko": "A: 벤은 왜 화가 났나요?\nB: 관리자의 태도를 싫어했어요."
         }
       ],
       "status": "correct"
@@ -18446,12 +18647,14 @@
         {
           "en": "The editor asked readers to comment on the proposal.",
           "type": "sentence",
-          "answer": "comment"
+          "answer": "comment",
+          "ko": "편집자는 독자들에게 그 제안에 의견을 달아 달라고 요청했다."
         },
         {
           "en": "A: Did he say anything about the design?\nB: Yes, he made a positive comment.",
           "type": "dialogue",
-          "answer": "comment"
+          "answer": "comment",
+          "ko": "A: 그가 디자인에 관해 말한 게 있나요?\nB: 네, 긍정적인 의견을 냈어요."
         }
       ],
       "status": "correct"
@@ -18559,12 +18762,14 @@
         {
           "en": "The cleaner removed the sticky residue from the glass.",
           "type": "sentence",
-          "answer": "residue"
+          "answer": "residue",
+          "ko": "청소부는 유리에 붙은 끈적한 잔여물을 제거했다."
         },
         {
           "en": "A: Is there any paint left on the brush?\nB: Just a little residue.",
           "type": "dialogue",
-          "answer": "residue"
+          "answer": "residue",
+          "ko": "A: 붓에 페인트가 남아 있나요?\nB: 잔여물이 조금만 남아 있어요."
         }
       ],
       "status": "correct"
@@ -18659,12 +18864,14 @@
         {
           "en": "Agriculture remains the predominant industry in the region.",
           "type": "sentence",
-          "answer": "predominant"
+          "answer": "predominant",
+          "ko": "농업은 여전히 그 지역의 주된 산업이다."
         },
         {
           "en": "The predominant mood at the meeting was cautious optimism.",
           "type": "sentence",
-          "answer": "predominant"
+          "answer": "predominant",
+          "ko": "회의의 주된 분위기는 신중한 낙관론이었다."
         }
       ],
       "status": "correct"
@@ -18791,12 +18998,14 @@
         {
           "en": "The athlete made an astonishing recovery after the accident.",
           "type": "sentence",
-          "answer": "astonishing"
+          "answer": "astonishing",
+          "ko": "그 선수는 사고 후 놀라운 회복을 보였다."
         },
         {
           "en": "A: How was the concert?\nB: Astonishing—the singer never missed a note.",
           "type": "dialogue",
-          "answer": "Astonishing"
+          "answer": "Astonishing",
+          "ko": "A: 콘서트는 어땠나요?\nB: 놀라웠어요. 가수가 음 하나도 놓치지 않았어요."
         }
       ],
       "status": "correct"

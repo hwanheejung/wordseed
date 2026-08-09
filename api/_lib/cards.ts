@@ -8,6 +8,7 @@ const ExampleSchema = z.object({
 });
 
 const TestExampleSchema = ExampleSchema.extend({
+  ko: z.string().min(1),
   answer: z.string().min(1),
 });
 
@@ -42,6 +43,7 @@ export function hasValidTestContexts(card: z.infer<typeof CardSchema>) {
           "\\$&",
         );
         return (
+          example.ko.trim().length > 0 &&
           new RegExp(escapedAnswer, "i").test(example.en) &&
           !genericPattern.test(example.en)
         );

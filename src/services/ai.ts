@@ -66,8 +66,8 @@ export function manualDraft(text: string): CardDraft {
     }],
     acceptedVariants: [term],
     testExamples: [
-      { en: "", answer: "", type: "sentence" as const, provenance: "user" as const },
-      { en: "", answer: "", type: "dialogue" as const, provenance: "user" as const },
+      { en: "", ko: "", answer: "", type: "sentence" as const, provenance: "user" as const },
+      { en: "", ko: "", answer: "", type: "dialogue" as const, provenance: "user" as const },
     ],
   }));
   return {

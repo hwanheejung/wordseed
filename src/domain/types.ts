@@ -9,6 +9,7 @@ export interface Example {
 }
 
 export interface TestExample extends Example {
+  ko: string;
   answer: string;
 }
 

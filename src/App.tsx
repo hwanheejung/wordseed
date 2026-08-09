@@ -6,6 +6,7 @@ import {
   IconDot3HorizontalLine,
 } from "@karrotmarket/react-monochrome-icon";
 import { useLiveQuery } from "dexie-react-hooks";
+import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import { Checkbox } from "seed-design/ui/checkbox";
@@ -19,7 +20,6 @@ import {
   recordReview,
   saveDraft,
 } from "./data/db";
-import { parseDialogue } from "./domain/dialogue";
 import {
   buildFocusQueue,
   buildStudyQueue,
@@ -29,9 +29,11 @@ import {
   updateFocusQueue,
 } from "./domain/scheduler";
 import {
+  answerWordPlaceholder,
   blankTerm,
   isSpecificTestContext,
   scoreAnswer,
+  splitAroundAnswer,
 } from "./domain/scoring";
 import type {
   CardDraft,
@@ -703,8 +705,17 @@ function validateDrafts(drafts: CardDraft[]): DraftValidationIssue | undefined {
         message: `${cardLabel}: 뜻 ${missingExampleIndex + 1}에 예문을 하나 이상 입력해 주세요.`,
       };
     for (const [meaningIndex, meaning] of item.meanings.entries()) {
+      const missingTranslationIndex = (meaning.testExamples ?? []).findIndex(
+        (example) => !example.ko?.trim(),
+      );
+      if (missingTranslationIndex >= 0)
+        return {
+          cardIndex,
+          message: `${cardLabel}: 뜻 ${meaningIndex + 1}의 시험용 문맥 ${missingTranslationIndex + 1}에 한국어 해석을 입력해 주세요.`,
+        };
       const completeTestExamples = (meaning.testExamples ?? []).filter(
-        (example) => example.en.trim() && example.answer?.trim(),
+        (example) =>
+          example.en.trim() && example.ko?.trim() && example.answer?.trim(),
       );
       if (completeTestExamples.length < 2)
         return {
@@ -911,8 +922,20 @@ function ReviewScreen({
           examples: [{ en: "", type: "sentence", provenance: "user" }],
           acceptedVariants: [draft.term],
           testExamples: [
-            { en: "", answer: "", type: "sentence", provenance: "user" },
-            { en: "", answer: "", type: "dialogue", provenance: "user" },
+            {
+              en: "",
+              ko: "",
+              answer: "",
+              type: "sentence",
+              provenance: "user",
+            },
+            {
+              en: "",
+              ko: "",
+              answer: "",
+              type: "dialogue",
+              provenance: "user",
+            },
           ],
         },
       ],
@@ -941,7 +964,7 @@ function ReviewScreen({
     updateMeaning(meaningIndex, {
       testExamples: [
         ...(draft.meanings[meaningIndex].testExamples ?? []),
-        { en: "", answer: "", type: "sentence", provenance: "user" },
+        { en: "", ko: "", answer: "", type: "sentence", provenance: "user" },
       ],
     });
   const applyTagsToAll = () => {
@@ -1233,6 +1256,19 @@ function ReviewScreen({
                           placeholder={`${draft.term || "정답 표현"}을 자연스럽게 활용한 새로운 문맥`}
                         />
                       </TextField.Root>
+                      <label className="field-label">한국어 해석</label>
+                      <TextField.Root>
+                        <TextField.Input
+                          aria-label={`시험용 문맥 ${exampleIndex + 1}의 한국어 해석`}
+                          value={example.ko ?? ""}
+                          onChange={(event) =>
+                            updateTestExample(meaningIndex, exampleIndex, {
+                              ko: event.target.value,
+                            })
+                          }
+                          placeholder="문맥의 자연스러운 한국어 해석"
+                        />
+                      </TextField.Root>
                       <label className="field-label">
                         빈칸 처리할 정답 구간
                       </label>
@@ -1339,9 +1375,6 @@ function VocabularyCardView({
     <article className="rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-6 shadow-[0_8px_30px_rgba(0,0,0,.07)]">
       <div className="flex items-start justify-between pb-5 [&_h2]:mt-2.5 [&_h2]:mb-0.5 [&_h2]:text-[38px] [&_h2]:leading-none [&_h2]:tracking-[-.04em] [&_p]:mt-2 [&_p]:mb-0 [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
         <div>
-          <Badge variant="weak">
-            {meaningId ? "이 뜻을 학습 중" : `${card.meanings.length}개 뜻`}
-          </Badge>
           <h2>{card.term}</h2>
           {card.tags.length > 0 && (
             <div className="mt-2.5 flex flex-wrap gap-1.5">
@@ -1365,8 +1398,7 @@ function VocabularyCardView({
         {visibleMeanings.map((meaning) => (
           <section className="sense-block" key={meaning.id}>
             <div className="border-t border-[var(--seed-color-stroke-neutral-subtle)] py-5 [&_h3]:mt-2 [&_h3]:mb-1 [&_h3]:text-[length:var(--seed-font-size-t6)] [&_h3]:leading-[1.45] [&>p]:m-0 [&>p]:text-[var(--seed-color-fg-neutral-subtle)] [&_small]:font-extrabold [&_small]:tracking-[.04em] [&_small]:text-[var(--seed-color-fg-brand)]">
-              <div className="flex items-center justify-between gap-3 [&_span]:text-[length:var(--seed-font-size-t2)] [&_span]:text-[var(--seed-color-fg-neutral-subtle)]">
-                <small>{resultMeta[meaning.status].label}</small>
+              <div className="flex items-center justify-end gap-3 [&_span]:text-[length:var(--seed-font-size-t2)] [&_span]:text-[var(--seed-color-fg-neutral-subtle)]">
                 <span>
                   {meaning.partOfSpeech || "word"}
                   {meaning.pronunciation && ` · ${meaning.pronunciation}`}
@@ -1381,7 +1413,7 @@ function VocabularyCardView({
                 key={exampleIndex}
               >
                 <div className="label-with-tag">
-                  <small>이 뜻의 예문</small>
+                  <small>예문</small>
                   {example.provenance && (
                     <ProvenanceTag value={example.provenance} />
                   )}
@@ -1408,10 +1440,18 @@ function SwipeableCardStack({
   showAllMeanings?: boolean;
   onNavigate: (direction: "next" | "previous") => void;
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const gesture = useRef({ startX: 0, startY: 0, x: 0, startedAt: 0 });
-  const [dragX, setDragX] = useState(0);
-  const [settling, setSettling] = useState(false);
+  const navigationPending = useRef(false);
+  const [viewportRef, emblaApi] = useEmblaCarousel({
+    active: items.length > 1,
+    align: "center",
+    containScroll: false,
+    dragFree: false,
+    duration: 24,
+    skipSnaps: false,
+    startIndex: 1,
+    watchDrag: (_api, event) =>
+      !(event.target as HTMLElement).closest("button"),
+  });
   const sameCardCount = items.findIndex(
     (candidate) => candidate.card.id !== item.card.id,
   );
@@ -1419,135 +1459,64 @@ function SwipeableCardStack({
     3,
     sameCardCount === -1 ? items.length : sameCardCount,
   );
-  const nextItem = items[1];
-  const previousItem = items.at(-1);
-  const nextCardStarts = nextItem && nextItem.card.id !== item.card.id;
-  const nextMeaningInCard = nextItem && nextItem.card.id === item.card.id;
-  const revealProgress = Math.min(1, Math.max(0, -dragX) / 180);
   const stackOffset = 16;
+  const slides = [items.at(-1) ?? item, item, items[1] ?? item];
 
-  const reset = () => {
-    setSettling(true);
-    setDragX(0);
-    window.setTimeout(() => setSettling(false), 220);
-  };
-  const complete = (direction: "next" | "previous") => {
-    setSettling(true);
-    setDragX(
-      (direction === "next" ? -1 : 1) * Math.max(window.innerWidth, 520),
-    );
-    window.setTimeout(() => {
-      onNavigate(direction);
-    }, 220);
-  };
+  useEffect(() => {
+    if (!emblaApi) return;
+    const handleSelect = () => {
+      const selectedIndex = emblaApi.selectedScrollSnap();
+      if (selectedIndex === 1 || navigationPending.current) return;
+      navigationPending.current = true;
+      onNavigate(selectedIndex === 2 ? "next" : "previous");
+    };
+    emblaApi.on("select", handleSelect);
+    return () => {
+      emblaApi.off("select", handleSelect);
+    };
+  }, [emblaApi, onNavigate]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.reInit({ startIndex: 1 });
+    emblaApi.scrollTo(1, true);
+    navigationPending.current = false;
+  }, [emblaApi, item.meaning.id]);
 
   return (
     <div
-      className="relative -mx-5 isolate overflow-hidden px-5 pb-12"
+      className="relative -mx-5 isolate px-5 pb-12"
       aria-label={`${item.card.term} 카드, 좌우로 밀어 이전 또는 다음 뜻 보기`}
     >
-      {Array.from(
-        { length: Math.max(0, layerCount - (nextMeaningInCard ? 2 : 1)) },
-        (_, index) => (
-          <div
-            className="absolute inset-x-5 top-0 bottom-12 origin-bottom rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] shadow-[0_10px_28px_rgba(0,0,0,.07)]"
-            key={index}
-            style={{
-              transform: `translateY(${(index + 2) * stackOffset}px) scale(${1 - (index + 2) * 0.03})`,
-              zIndex: layerCount - index,
-            }}
-            aria-hidden="true"
-          />
-        ),
-      )}
-      {nextMeaningInCard && (
+      {Array.from({ length: Math.max(0, layerCount - 1) }, (_, index) => (
         <div
-          className="absolute inset-x-5 top-0 bottom-12 z-4 will-change-transform [&>article]:h-full"
+          className="absolute inset-x-5 top-0 bottom-12 origin-bottom rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] shadow-[0_10px_28px_rgba(0,0,0,.07)]"
+          key={index}
           style={{
-            transform: `translate3d(0, ${stackOffset * (1 - revealProgress)}px, 0) scale(${0.97 + revealProgress * 0.03})`,
+            transform: `translateY(${(index + 1) * stackOffset}px) scale(${1 - (index + 1) * 0.03})`,
+            zIndex: layerCount - index,
           }}
           aria-hidden="true"
-        >
-          <VocabularyCardView
-            card={nextItem.card}
-            meaningId={nextItem.meaning.id}
-          />
-        </div>
-      )}
-      {nextCardStarts && (
-        <div
-          className="absolute inset-x-5 top-0 bottom-12 z-4 will-change-transform [&>article]:h-full"
-          style={{
-            transform: `translate3d(calc(100% + ${Math.min(0, dragX)}px), 0, 0)`,
-          }}
-          aria-hidden="true"
-        >
-          <VocabularyCardView
-            card={nextItem.card}
-            meaningId={nextItem.meaning.id}
-          />
-        </div>
-      )}
-      {previousItem && items.length > 1 && (
-        <div
-          className="absolute inset-x-5 top-0 bottom-12 z-4 will-change-transform [&>article]:h-full"
-          style={{
-            transform: `translate3d(calc(-100% + ${Math.max(0, dragX)}px), 0, 0)`,
-          }}
-          aria-hidden="true"
-        >
-          <VocabularyCardView
-            card={previousItem.card}
-            meaningId={previousItem.meaning.id}
-          />
-        </div>
-      )}
-      <div
-        ref={cardRef}
-        className={`relative z-5 origin-bottom cursor-grab touch-pan-y select-none will-change-[transform,opacity] active:cursor-grabbing ${settling ? "transition-[transform,opacity] duration-200 ease-[cubic-bezier(.2,.8,.2,1)] motion-reduce:transition-opacity motion-reduce:duration-100" : ""}`}
-        style={{
-          transform: `translate3d(${dragX}px, 0, 0) rotate(${dragX / 28}deg)`,
-          opacity: Math.max(0.45, 1 - Math.abs(dragX) / 700),
-        }}
-        onPointerDown={(event) => {
-          if ((event.target as HTMLElement).closest("button")) return;
-          cardRef.current?.setPointerCapture(event.pointerId);
-          gesture.current = {
-            startX: event.clientX,
-            startY: event.clientY,
-            x: event.clientX,
-            startedAt: performance.now(),
-          };
-          setSettling(false);
-        }}
-        onPointerMove={(event) => {
-          if (!cardRef.current?.hasPointerCapture(event.pointerId)) return;
-          const deltaX = event.clientX - gesture.current.startX;
-          const deltaY = event.clientY - gesture.current.startY;
-          if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 10)
-            return;
-          gesture.current.x = event.clientX;
-          setDragX(deltaX);
-        }}
-        onPointerUp={(event) => {
-          if (!cardRef.current?.hasPointerCapture(event.pointerId)) return;
-          cardRef.current.releasePointerCapture(event.pointerId);
-          const elapsed = Math.max(
-            1,
-            performance.now() - gesture.current.startedAt,
-          );
-          const velocity =
-            (gesture.current.x - gesture.current.startX) / elapsed;
-          if (dragX < -90 || velocity < -0.55) complete("next");
-          else if (dragX > 90 || velocity > 0.55) complete("previous");
-          else reset();
-        }}
-        onPointerCancel={reset}
-      >
-        <VocabularyCardView
-          card={item.card}
-          meaningId={showAllMeanings ? undefined : item.meaning.id}
         />
+      ))}
+      <div
+        ref={viewportRef}
+        className="relative z-5 overflow-hidden touch-pan-y"
+      >
+        <div className="-ml-5 flex cursor-grab select-none active:cursor-grabbing">
+          {slides.map((slide, index) => (
+            <div
+              className="min-w-0 flex-[0_0_100%] pl-5"
+              key={`${index}-${slide.meaning.id}`}
+              aria-hidden={index !== 1}
+            >
+              <VocabularyCardView
+                card={slide.card}
+                meaningId={showAllMeanings ? undefined : slide.meaning.id}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -1555,29 +1524,64 @@ function SwipeableCardStack({
 
 type SessionMode = "study" | "focus-study" | "test" | "card";
 
-function DialoguePrompt({ prompt }: { prompt: string }) {
-  const turns = parseDialogue(prompt);
-  if (turns.length < 2)
-    return (
-      <p className="my-[22px] mb-2.5 whitespace-pre-line text-[length:var(--seed-font-size-t7)] leading-[1.6] tracking-[-.02em]">
-        {prompt}
-      </p>
+function InlineTestPrompt({
+  text,
+  expectedAnswer,
+  answer,
+  revealStage,
+  disabled,
+  onAnswerChange,
+  onSubmit,
+}: {
+  text: string;
+  expectedAnswer: string;
+  answer: string;
+  revealStage: 0 | 1 | 2;
+  disabled: boolean;
+  onAnswerChange: (answer: string) => void;
+  onSubmit: () => void;
+}) {
+  const { before, after } = splitAroundAnswer(text, expectedAnswer);
+  const expectedWords = expectedAnswer.trim().split(/\s+/);
+  const enteredWords = answer.split(" ");
+  const updateWord = (index: number, value: string) => {
+    const next = expectedWords.map((_, wordIndex) =>
+      wordIndex === index
+        ? value.replace(/\s/g, "")
+        : (enteredWords[wordIndex] ?? ""),
     );
+    onAnswerChange(next.join(" "));
+  };
+
   return (
-    <div
-      className="my-6 mb-[18px] flex flex-col gap-3.5"
-      aria-label="두 화자의 대화"
-    >
-      {turns.map((turn, index) => (
-        <div
-          className={`max-w-[86%] ${index % 2 ? "self-end text-right [&_p]:rounded-[18px_18px_5px_18px] [&_p]:bg-[var(--seed-color-bg-brand-weak)] [&_p]:text-[var(--seed-color-fg-brand-contrast)]" : "self-start [&_p]:rounded-[18px_18px_18px_5px] [&_p]:bg-[var(--seed-color-bg-neutral-weak)]"} [&_small]:mx-2 [&_small]:mb-1.5 [&_small]:block [&_small]:font-bold [&_small]:text-[var(--seed-color-fg-neutral-subtle)] [&_p]:m-0 [&_p]:px-[15px] [&_p]:py-[13px] [&_p]:text-left [&_p]:leading-[1.55]`}
-          key={`${turn.speaker}-${index}`}
-        >
-          <small>{turn.speaker}</small>
-          <p>{turn.message}</p>
-        </div>
-      ))}
-    </div>
+    <p className="my-7 whitespace-pre-wrap text-[length:var(--seed-font-size-t7)] leading-[2.1] font-bold tracking-[-.02em]">
+      {before}
+      <span className="inline-flex flex-wrap gap-1.5 align-middle">
+        {expectedWords.map((word, index) => (
+          <input
+            key={`${word}-${index}`}
+            aria-label={`정답 ${index + 1}번째 단어`}
+            className="h-12 rounded-xl border border-transparent bg-[var(--seed-color-bg-neutral-weak)] px-2 text-center text-[length:var(--seed-font-size-t6)] font-bold text-[var(--seed-color-fg-neutral)] outline-none transition-colors placeholder:text-[var(--seed-color-fg-neutral-muted)] focus:border-[var(--seed-color-stroke-brand)] focus:bg-[var(--seed-color-bg-brand-weak)] disabled:opacity-100"
+            style={{ width: `${Math.max(3, word.length + 1)}ch` }}
+            value={enteredWords[index] ?? ""}
+            placeholder={
+              revealStage === 2
+                ? word
+                : answerWordPlaceholder(word, revealStage === 1)
+            }
+            disabled={disabled}
+            onChange={(event) => updateWord(index, event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && answer.trim()) onSubmit();
+            }}
+            autoCapitalize="none"
+            autoComplete="off"
+            spellCheck={false}
+          />
+        ))}
+      </span>
+      {after}
+    </p>
   );
 }
 
@@ -1596,6 +1600,7 @@ function SessionScreen({
 }) {
   const [sessionItems, setSessionItems] = useState(items);
   const [answer, setAnswer] = useState("");
+  const [revealStage, setRevealStage] = useState<0 | 1 | 2>(0);
   const [graded, setGraded] = useState<ReviewResult>();
   const [testTurns, setTestTurns] = useState<Record<string, number>>({});
   const item = sessionItems[0];
@@ -1636,8 +1641,9 @@ function SessionScreen({
       </>
     );
 
-  const validTestExamples = meaning.testExamples.filter((example) =>
-    isSpecificTestContext(example.en, example.answer),
+  const validTestExamples = meaning.testExamples.filter(
+    (example) =>
+      example.ko.trim() && isSpecificTestContext(example.en, example.answer),
   );
   const testTurn = testTurns[meaning.id] ?? 0;
   const testExample =
@@ -1648,12 +1654,14 @@ function SessionScreen({
   const prompt = testExample ? blankTerm(testExample.en, testAnswer) : "";
   const rotate = (updated: StudyItem) => {
     setAnswer("");
+    setRevealStage(0);
     setGraded(undefined);
     setSessionItems((items) => moveReviewedCardToBack(items, updated));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const navigateWithoutRating = (direction: "next" | "previous") => {
     setAnswer("");
+    setRevealStage(0);
     setGraded(undefined);
     setSessionItems((current) =>
       direction === "next"
@@ -1719,63 +1727,54 @@ function SessionScreen({
       >
         {mode !== "test" ? (
           <SwipeableCardStack
-            key={meaning.id}
             item={item}
             items={sessionItems}
             onNavigate={navigateWithoutRating}
           />
         ) : testExample ? (
-          <article className="flex min-h-[440px] flex-col justify-center rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-6 shadow-[0_8px_30px_rgba(0,0,0,.07)]">
-            <Badge tone="informative" variant="weak">
-              {testExample.type === "dialogue" ? "대화 빈칸" : "새 문맥 빈칸"}
-            </Badge>
-            {testExample.type === "dialogue" ? (
-              <DialoguePrompt prompt={prompt} />
-            ) : (
-              <p className="my-[22px] mb-2.5 whitespace-pre-line text-[length:var(--seed-font-size-t7)] leading-[1.6] tracking-[-.02em]">
-                {prompt}
-              </p>
-            )}
-            {testExample.ko && (
-              <p className="mt-0 mb-[18px] leading-[1.5] text-[var(--seed-color-fg-neutral-subtle)]">
+          <article className="flex min-h-[440px] flex-col overflow-hidden rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] shadow-[0_8px_30px_rgba(0,0,0,.07)]">
+            <div className="flex flex-1 flex-col justify-center p-6">
+              <InlineTestPrompt
+                text={testExample.en}
+                expectedAnswer={testAnswer}
+                answer={answer}
+                revealStage={revealStage}
+                disabled={Boolean(graded)}
+                onAnswerChange={setAnswer}
+                onSubmit={gradeTest}
+              />
+              <p className="m-0 text-[length:var(--seed-font-size-t5)] leading-[1.55] font-light mb-5">
                 {testExample.ko}
               </p>
-            )}
-            <label className="field-label" htmlFor="test-answer">
-              빈칸에 들어갈 단어
-            </label>
-            <TextField.Root size="large">
-              <TextField.Input
-                id="test-answer"
-                aria-label="빈칸에 들어갈 단어"
-                value={answer}
-                disabled={Boolean(graded)}
-                onChange={(event) => setAnswer(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" && answer.trim() && !graded)
-                    gradeTest();
-                }}
-                autoCapitalize="none"
-                autoComplete="off"
-                spellCheck={false}
-                placeholder="정답 입력"
-              />
-            </TextField.Root>
-            {graded && (
-              <div
-                className={`mt-4 rounded-2xl p-4 ${graded === "correct" ? "bg-[var(--seed-color-bg-positive-weak)]" : graded === "confusing" ? "bg-[var(--seed-color-bg-warning-weak)]" : "bg-[var(--seed-color-bg-critical-weak)]"} [&_p]:mt-2.5 [&_p]:mb-1 [&_span]:text-[var(--seed-color-fg-neutral-subtle)]`}
-              >
-                <Badge tone={resultMeta[graded].tone}>
-                  {resultMeta[graded].label}
-                </Badge>
-                <p>
-                  문맥의 정답은 <strong>{testAnswer}</strong>예요.
-                </p>
-                <span>
-                  학습 표현: {card.term} · {meaning.definitionKo}
-                </span>
-              </div>
-            )}
+              {!graded && revealStage < 2 && (
+                <div>
+                  <ActionButton
+                    size="small"
+                    variant="ghost"
+                    onClick={() =>
+                      setRevealStage((stage) => (stage + 1) as 1 | 2)
+                    }
+                  >
+                    {revealStage === 0 ? "힌트 보기" : "정답 보기"}
+                  </ActionButton>
+                </div>
+              )}
+              {graded && (
+                <div
+                  className={`mt-4 rounded-2xl p-4 ${graded === "correct" ? "bg-[var(--seed-color-bg-positive-weak)]" : graded === "confusing" ? "bg-[var(--seed-color-bg-warning-weak)]" : "bg-[var(--seed-color-bg-critical-weak)]"} [&_p]:mt-2.5 [&_p]:mb-1 [&_span]:text-[var(--seed-color-fg-neutral-subtle)]`}
+                >
+                  <Badge tone={resultMeta[graded].tone}>
+                    {resultMeta[graded].label}
+                  </Badge>
+                  <p>
+                    문맥의 정답은 <strong>{testAnswer}</strong>예요.
+                  </p>
+                  <span>
+                    학습 표현: {card.term} · {meaning.definitionKo}
+                  </span>
+                </div>
+              )}
+            </div>
           </article>
         ) : (
           <EmptyState
@@ -1790,13 +1789,14 @@ function SessionScreen({
             (result) => (
               <button
                 key={result}
-                className={
+                aria-pressed={meaning.status === result}
+                className={`${
                   result === "unknown"
                     ? "bg-[var(--seed-color-bg-critical-weak)] text-[var(--seed-color-fg-critical-contrast)]"
                     : result === "confusing"
                       ? "bg-[var(--seed-color-bg-warning-weak)] text-[var(--seed-color-fg-warning-contrast)]"
                       : "bg-[var(--seed-color-bg-positive-weak)] text-[var(--seed-color-fg-positive-contrast)]"
-                }
+                } ${meaning.status === result ? "ring-2 ring-inset ring-current" : "opacity-70"}`}
                 onClick={() => void submitStudy(result)}
               >
                 <b>{resultMeta[result].label}</b>

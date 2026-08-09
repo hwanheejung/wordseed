@@ -33,6 +33,7 @@ function makeCard(
       testExamples: [
         {
           en: `The team used ${id} to solve the specific problem before noon.`,
+          ko: `팀은 정오 전에 구체적인 문제를 해결하기 위해 ${id}를 사용했다.`,
           answer: id,
           type: "sentence",
         },
@@ -58,6 +59,7 @@ describe("meaning-level review scheduling", () => {
     card.meanings[0].testExamples = [
       {
         en: "The professor used the term thrall to clarify the central idea.",
+        ko: "교수는 핵심 개념을 명확히 하기 위해 thrall이라는 용어를 사용했다.",
         answer: "thrall",
         type: "sentence",
       },

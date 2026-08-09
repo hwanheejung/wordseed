@@ -68,6 +68,7 @@ export function buildTestQueue(
 ) {
   const queue = toStudyItems(cards).filter(({ meaning }) =>
     meaning.testExamples.some((example) =>
+      Boolean(example.ko.trim()) &&
       isSpecificTestContext(example.en, example.answer),
     ),
   );

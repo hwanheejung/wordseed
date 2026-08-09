@@ -17,6 +17,7 @@ Content rules:
 
 Test-context rules:
 - Create 2–4 testExamples for every meaning. Each test context must test only that specific meaning. Prefer a different context from the study examples, but reusing a strong study example is allowed when a distinct, natural context is not available.
+- Every testExample must include a natural Korean translation in ko. The translation is required context for solving the blank.
 - Store acceptedVariants inside each meaning. Include the canonical term or expression and only grammatical variants that are valid answers for that meaning.
 - Every testExample.answer must be the exact, non-empty, contiguous substring of testExample.en that should be replaced by the blank.
 - For an abstract card term such as "have A do B", write a natural concrete realization such as "had a technician repair" in the sentence and store that exact realization in answer. Never put "A", "B", or "~" in the sentence or answer.

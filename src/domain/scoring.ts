@@ -70,3 +70,24 @@ export function isSpecificTestContext(text: string, term: string) {
 export function blankTerm(text: string, term: string) {
   return text.replace(termExpression(term), "_____");
 }
+
+export function answerWordPlaceholder(word: string, hint = false) {
+  let revealed = false;
+  return Array.from(word, (character) => {
+    if (!/[\p{L}\p{N}]/u.test(character)) return character;
+    if (hint && !revealed) {
+      revealed = true;
+      return character;
+    }
+    return "_";
+  }).join("");
+}
+
+export function splitAroundAnswer(text: string, answer: string) {
+  const match = termExpression(answer).exec(text);
+  if (!match) return { before: text, after: "" };
+  return {
+    before: text.slice(0, match.index),
+    after: text.slice(match.index + match[0].length),
+  };
+}

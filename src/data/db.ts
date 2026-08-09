@@ -104,11 +104,14 @@ function draftToRecords(draft: CardDraft, previous?: VocabularyCard) {
         ? previousMeanings.get(meaning.id)
         : undefined;
       const testExamples = (meaning.testExamples ?? [])
-        .filter((example) => example.en.trim() && example.answer?.trim())
+        .filter(
+          (example) =>
+            example.en.trim() && example.ko?.trim() && example.answer?.trim(),
+        )
         .map(
           (example): TestExample => ({
             en: example.en.trim(),
-            ko: example.ko?.trim() || undefined,
+            ko: example.ko!.trim(),
             answer: example.answer!.trim(),
             type: example.type,
           }),

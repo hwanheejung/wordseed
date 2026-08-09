@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { answerSimilarity, blankTerm, getTestAnswer, isSpecificTestContext, normalizeAnswer, scoreAnswer } from "./scoring";
+import { answerSimilarity, answerWordPlaceholder, blankTerm, getTestAnswer, isSpecificTestContext, normalizeAnswer, scoreAnswer, splitAroundAnswer } from "./scoring";
 
 describe("test answer scoring", () => {
   it("normalizes case, punctuation, and whitespace", () => {
@@ -20,6 +20,18 @@ describe("test answer scoring", () => {
   it("blanks the target term without changing its context", () => {
     expect(blankTerm("The policy may induce change.", "induce")).toBe("The policy may _____ change.");
     expect(blankTerm("No target is present.", "induce")).toBe("No target is present.");
+  });
+
+  it("builds word-level blank and first-letter hint placeholders", () => {
+    expect("swing by".split(" ").map((word) => answerWordPlaceholder(word))).toEqual(["_____", "__"]);
+    expect("swing by".split(" ").map((word) => answerWordPlaceholder(word, true))).toEqual(["s____", "b_"]);
+  });
+
+  it("splits a sentence around its inline answer", () => {
+    expect(splitAroundAnswer("Can you swing by after work?", "swing by")).toEqual({
+      before: "Can you ",
+      after: " after work?",
+    });
   });
 
   it("uses a concrete answer span for an abstract grammar pattern", () => {
