@@ -91,7 +91,6 @@ function CardPageSession({ cards, items }: CardPageSessionProps) {
         item={item}
         previousItem={getPreviousStudyItem(session)}
         nextItem={getNextStudyItem(session)}
-        layerCount={Math.max(session.queue.length, session.history.length)}
         navigationRevision={session.revision}
         concealedFields={preferences.concealedFields}
         onNavigate={(direction) => dispatch({ type: "navigated", direction })}

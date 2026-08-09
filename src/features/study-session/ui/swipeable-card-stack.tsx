@@ -4,12 +4,12 @@ import { VocabularyCardView } from "@/entities/card";
 import type { ConcealableCardField } from "@/entities/card";
 import type { StudyQueueItem } from "../types/study-queue-item";
 import { speak } from "@/shared/utils/speech";
+import { getRemainingCardLayerCount } from "../utils/card-stack";
 
 export function SwipeableCardStack({
   item,
   previousItem,
   nextItem,
-  itemCount,
   navigationRevision,
   concealedFields = [],
   showAllMeanings = false,
@@ -18,7 +18,6 @@ export function SwipeableCardStack({
   item: StudyQueueItem;
   previousItem?: StudyQueueItem;
   nextItem?: StudyQueueItem;
-  itemCount: number;
   navigationRevision: number;
   concealedFields?: ConcealableCardField[];
   showAllMeanings?: boolean;
@@ -38,7 +37,7 @@ export function SwipeableCardStack({
     watchDrag: (_api, event) =>
       !(event.target as HTMLElement).closest("button"),
   });
-  const layerCount = Math.min(3, itemCount);
+  const layerCount = getRemainingCardLayerCount(item);
   const slides = [previousItem ?? item, item, nextItem ?? item];
 
   // Synchronize Embla selection events with the card-session navigation callback.
@@ -91,11 +90,11 @@ export function SwipeableCardStack({
     >
       {Array.from({ length: Math.max(0, layerCount - 1) }, (_, index) => (
         <div
-          className="absolute inset-x-5 top-0 bottom-12 origin-bottom rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] shadow-[0_10px_28px_rgba(0,0,0,.07)]"
+          className="absolute inset-x-5 top-0 bottom-12 origin-bottom rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] shadow-[0_10px_28px_rgba(0,0,0,.07)] transition-transform duration-[160ms] ease-[cubic-bezier(.23,1,.32,1)]"
           key={index}
           style={{
-            transform: `translateY(${(index + 1) * 16}px) scale(${1 - (index + 1) * 0.03})`,
-            zIndex: layerCount - index,
+            transform: `translate3d(${(index + 2) * 5}px, ${(index + 2) * 5}px, 0)`,
+            zIndex: 1 - index,
           }}
           aria-hidden="true"
         />
@@ -111,7 +110,9 @@ export function SwipeableCardStack({
           if (Math.abs(event.clientX - dragStartX.current) > 24)
             dragIntent.current = true;
         }}
-        onPointerUp={() => window.setTimeout(() => (dragIntent.current = false))}
+        onPointerUp={() =>
+          window.setTimeout(() => (dragIntent.current = false))
+        }
         onPointerCancel={() => {
           dragIntent.current = false;
         }}

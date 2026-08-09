@@ -7,7 +7,6 @@ export function LearningCardSession({
   item,
   previousItem,
   nextItem,
-  layerCount,
   navigationRevision,
   concealedFields = [],
   removeCorrectFromQueue = false,
@@ -17,7 +16,6 @@ export function LearningCardSession({
   item: StudyQueueItem;
   previousItem?: StudyQueueItem;
   nextItem?: StudyQueueItem;
-  layerCount: number;
   navigationRevision: number;
   concealedFields?: ConcealableCardField[];
   removeCorrectFromQueue?: boolean;
@@ -31,7 +29,6 @@ export function LearningCardSession({
           item={item}
           previousItem={previousItem}
           nextItem={nextItem}
-          itemCount={layerCount}
           navigationRevision={navigationRevision}
           concealedFields={concealedFields}
           onNavigate={onNavigate}

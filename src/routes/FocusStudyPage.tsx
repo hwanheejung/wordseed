@@ -84,7 +84,6 @@ function FocusStudyPageSession({ cards, items }: FocusStudyPageSessionProps) {
         item={item}
         previousItem={getPreviousStudyItem(session)}
         nextItem={getNextStudyItem(session)}
-        layerCount={Math.max(session.queue.length, session.history.length)}
         navigationRevision={session.revision}
         concealedFields={preferences.concealedFields}
         removeCorrectFromQueue
