@@ -57,13 +57,59 @@ const resultMeta: Record<
   correct: { label: "알고있어요", tone: "positive" },
 };
 
+function preferredEnglishVoice(voices: SpeechSynthesisVoice[]) {
+  const englishVoices = voices.filter((voice) =>
+    voice.lang.toLowerCase().startsWith("en"),
+  );
+  return englishVoices.sort((left, right) => {
+    const score = (voice: SpeechSynthesisVoice) => {
+      const name = voice.name.toLowerCase();
+      return (
+        (voice.lang.toLowerCase() === "en-us" ? 100 : 0) +
+        (/samantha|alex|google us english|aria|jenny|guy/.test(name) ? 20 : 0) +
+        (voice.localService ? 2 : 0)
+      );
+    };
+    return score(right) - score(left);
+  })[0];
+}
+
 function speak(term: string) {
   if (!("speechSynthesis" in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(term);
-  utterance.lang = "en-US";
-  utterance.rate = 0.82;
-  window.speechSynthesis.speak(utterance);
+  const synthesis = window.speechSynthesis;
+  let started = false;
+  const start = () => {
+    if (started) return;
+    const voice = preferredEnglishVoice(synthesis.getVoices());
+    if (!voice) {
+      window.alert(
+        "이 기기에 영어 음성이 설치되어 있지 않아요. 기기 설정에서 영어(미국) 음성을 추가해 주세요.",
+      );
+      return;
+    }
+    started = true;
+    synthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(term);
+    utterance.voice = voice;
+    utterance.lang = voice.lang;
+    utterance.rate = 0.82;
+    synthesis.speak(utterance);
+  };
+  if (synthesis.getVoices().length) {
+    start();
+    return;
+  }
+  const handleVoicesChanged = () => {
+    window.clearTimeout(fallbackTimer);
+    start();
+  };
+  synthesis.addEventListener("voiceschanged", handleVoicesChanged, {
+    once: true,
+  });
+  const fallbackTimer = window.setTimeout(() => {
+    synthesis.removeEventListener("voiceschanged", handleVoicesChanged);
+    start();
+  }, 500);
 }
 
 function AppHeader({
@@ -498,41 +544,48 @@ function CandidateScreen({
   );
 }
 
-function validateDrafts(drafts: CardDraft[]) {
-  if (
-    drafts.some(
-      (item) =>
-        !item.term.trim() ||
-        !item.meanings.length ||
-        item.meanings.some((meaning) => !meaning.definitionKo.trim()),
-    )
-  )
-    return "모든 카드에 단어와 뜻을 입력해 주세요.";
-  if (
-    drafts.some((item) =>
-      item.meanings.some(
-        (meaning) => !meaning.examples.some((example) => example.en.trim()),
-      ),
-    )
-  )
-    return "각 뜻에 맞는 예문을 하나 이상 입력해 주세요.";
-  if (
-    drafts.some(
-      (item) =>
-        item.testExamples.filter(
-          (example) => example.en.trim() && example.answer?.trim(),
-        ).length < 2,
-    )
-  )
-    return "시험용 새 문맥과 정답 구간을 두 개 이상 준비해 주세요.";
-  if (
-    drafts.some((item) =>
-      item.testExamples.some(
-        (example) => !isSpecificTestContext(example.en, example.answer ?? ""),
-      ),
-    )
-  )
-    return "각 시험 문맥의 정답 구간은 문맥 안에 그대로 포함되어야 해요.";
+type DraftValidationIssue = { cardIndex: number; message: string };
+
+function validateDrafts(drafts: CardDraft[]): DraftValidationIssue | undefined {
+  for (const [cardIndex, item] of drafts.entries()) {
+    const cardLabel = `${cardIndex + 1}번째 카드 ‘${item.term.trim() || "이름 없음"}’`;
+    if (!item.term.trim())
+      return { cardIndex, message: `${cardLabel}: 단어 또는 표현이 비어 있어요.` };
+    if (!item.meanings.length)
+      return { cardIndex, message: `${cardLabel}: 뜻을 하나 이상 추가해 주세요.` };
+    const emptyMeaningIndex = item.meanings.findIndex(
+      (meaning) => !meaning.definitionKo.trim(),
+    );
+    if (emptyMeaningIndex >= 0)
+      return {
+        cardIndex,
+        message: `${cardLabel}: 뜻 ${emptyMeaningIndex + 1}의 내용이 비어 있어요.`,
+      };
+    const missingExampleIndex = item.meanings.findIndex(
+      (meaning) => !meaning.examples.some((example) => example.en.trim()),
+    );
+    if (missingExampleIndex >= 0)
+      return {
+        cardIndex,
+        message: `${cardLabel}: 뜻 ${missingExampleIndex + 1}에 예문을 하나 이상 입력해 주세요.`,
+      };
+    const completeTestExamples = item.testExamples.filter(
+      (example) => example.en.trim() && example.answer?.trim(),
+    );
+    if (completeTestExamples.length < 2)
+      return {
+        cardIndex,
+        message: `${cardLabel}: 시험용 문맥과 정답 구간이 ${completeTestExamples.length}개예요. 두 개 이상 준비해 주세요.`,
+      };
+    const invalidTestIndex = item.testExamples.findIndex(
+      (example) => !isSpecificTestContext(example.en, example.answer ?? ""),
+    );
+    if (invalidTestIndex >= 0)
+      return {
+        cardIndex,
+        message: `${cardLabel}: 시험용 문맥 ${invalidTestIndex + 1}에 정답 구간이 그대로 포함되어야 해요.`,
+      };
+  }
 }
 
 async function saveDrafts(drafts: CardDraft[]) {
@@ -657,19 +710,23 @@ function TagSelector({
 
 function ReviewScreen({
   initial,
+  initialActive,
   onBack,
   onSaved,
   onDeleted,
   notify,
 }: {
   initial: CardDraft[];
+  initialActive: number;
   onBack: () => void;
   onSaved: () => void | Promise<void>;
   onDeleted: () => void | Promise<void>;
   notify: (message: string) => void;
 }) {
   const [drafts, setDrafts] = useState(initial);
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(
+    Math.min(Math.max(initialActive, 0), Math.max(initial.length - 1, 0)),
+  );
   const [busy, setBusy] = useState(false);
   const [batchTags, setBatchTags] = useState<string[]>([]);
   const [createdTags, setCreatedTags] = useState<string[]>([]);
@@ -753,8 +810,13 @@ function ReviewScreen({
   };
 
   const saveAll = async () => {
-    const validationMessage = validateDrafts(drafts);
-    if (validationMessage) return notify(validationMessage);
+    const validationIssue = validateDrafts(drafts);
+    if (validationIssue) {
+      setActive(validationIssue.cardIndex);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      notify(validationIssue.message);
+      return;
+    }
     setBusy(true);
     try {
       await saveDrafts(drafts);
@@ -1657,6 +1719,7 @@ export default function App() {
   const [page, setPage] = useState<Page>("home");
   const [drafts, setDrafts] = useState<CardDraft[]>([]);
   const [candidates, setCandidates] = useState<ExtractedCandidate[]>([]);
+  const [reviewStartIndex, setReviewStartIndex] = useState(0);
   const [reviewOrigin, setReviewOrigin] = useState<"add" | "candidates" | "card">(
     "add",
   );
@@ -1700,6 +1763,7 @@ export default function App() {
     );
   const editCard = (card: VocabularyCard) => {
     setDrafts([cardToDraft(card)]);
+    setReviewStartIndex(0);
     setReviewOrigin("card");
     navigate("review");
   };
@@ -1730,6 +1794,7 @@ export default function App() {
           notify={notify}
           onDrafts={(value) => {
             setDrafts(value);
+            setReviewStartIndex(0);
             setReviewOrigin("add");
             navigate("review");
           }}
@@ -1757,14 +1822,17 @@ export default function App() {
           }}
           onContinue={(value) => {
             setDrafts(value);
+            setReviewStartIndex(0);
             setReviewOrigin("candidates");
             navigate("review");
           }}
           onSaveImmediately={async (value) => {
-            const validationMessage = validateDrafts(value);
-            if (validationMessage) {
-              notify(`${validationMessage} 검토 화면에서 확인해 주세요.`);
+            const validationIssue = validateDrafts(value);
+            if (validationIssue) {
+              notify(`${validationIssue.message} 검토 화면에서 확인해 주세요.`);
               setDrafts(value);
+              setReviewStartIndex(validationIssue.cardIndex);
+              setReviewOrigin("candidates");
               navigate("review");
               return;
             }
@@ -1777,6 +1845,7 @@ export default function App() {
       {page === "review" && (
         <ReviewScreen
           initial={drafts}
+          initialActive={reviewStartIndex}
           onBack={() => {
             if (reviewOrigin === "candidates") {
               let draftIndex = 0;
