@@ -1,7 +1,7 @@
-import { Badge, Chip, Flex, Icon, Menu, Select, TextField } from "@seed-design/react";
+import { Badge, Chip, Flex, Icon, Menu, TextField } from "@seed-design/react";
 import {
   IconArrowLeftLine,
-  IconCheckmarkLine,
+  IconArrowClockwiseCircularLine,
   IconChevronDownSmallLine,
   IconDot3HorizontalLine,
 } from "@karrotmarket/react-monochrome-icon";
@@ -152,8 +152,8 @@ function AppHeader({
   action?: ReactNode;
 }) {
   return (
-    <header className="app-header">
-      <div className="header-row">
+    <header className="sticky top-0 z-10 border-b border-[var(--seed-color-stroke-neutral-subtle)] bg-[color-mix(in_srgb,var(--seed-color-bg-layer-default)_92%,transparent)] px-5 pt-[calc(14px+var(--seed-safe-area-top))] pb-3.5 backdrop-blur-[18px] min-[700px]:rounded-t-[30px] min-[700px]:pt-3.5">
+      <div className="flex min-h-12 items-center gap-3">
         {onBack ? (
           <ActionButton
             variant="neutralWeak"
@@ -165,13 +165,21 @@ function AppHeader({
             <Icon svg={<IconArrowLeftLine />} />
           </ActionButton>
         ) : (
-          <div className="brand-mark">W</div>
+          <div className="grid size-10 place-items-center rounded-[14px] bg-[var(--seed-color-bg-brand-solid)] text-xl font-extrabold text-white shadow-[0_6px_16px_color-mix(in_srgb,var(--seed-color-bg-brand-solid)_28%,transparent)]">
+            W
+          </div>
         )}
-        <div className="header-copy">
-          <h1>{title}</h1>
-          {subtitle && <p>{subtitle}</p>}
+        <div className="min-w-0">
+          <h1 className="m-0 text-[length:var(--seed-font-size-t7)] leading-[var(--seed-line-height-t7)] tracking-[-.03em]">
+            {title}
+          </h1>
+          {subtitle && (
+            <p className="mt-0.5 mb-0 text-[length:var(--seed-font-size-t3)] text-[var(--seed-color-fg-neutral-subtle)]">
+              {subtitle}
+            </p>
+          )}
         </div>
-        {action && <div className="header-action">{action}</div>}
+        {action && <div className="ml-auto shrink-0">{action}</div>}
       </div>
     </header>
   );
@@ -213,7 +221,7 @@ function HomeScreen({
     return (
       <>
         <AppHeader title="Wordseed" subtitle="오늘도 문맥으로 기억해요" />
-        <main className="screen home-screen first-run-home">
+        <main className="min-h-[calc(100vh-84px)] p-5">
           <EmptyState
             title="아직 추가된 단어가 없어요"
             description="추가해볼까요?"
@@ -269,8 +277,8 @@ function HomeScreen({
   return (
     <>
       <AppHeader title="Wordseed" subtitle="오늘도 문맥으로 기억해요" />
-      <main className="screen home-screen">
-        <section className="hero-card">
+      <main className="min-h-[calc(100vh-84px)] p-5">
+        <section className="relative flex justify-between gap-[18px] overflow-hidden rounded-[28px] border border-[var(--seed-color-stroke-brand-weak)] bg-[linear-gradient(135deg,var(--seed-color-bg-brand-weak),#fff8ef)] p-6 after:absolute after:right-[-70px] after:bottom-[-75px] after:size-[150px] after:rounded-full after:border-[28px] after:border-[color-mix(in_srgb,var(--seed-color-bg-brand-solid)_12%,transparent)] after:content-[''] [&_h2]:mt-[18px] [&_h2]:mb-2 [&_h2]:text-[length:var(--seed-font-size-t7)] [&_h2]:leading-[1.28] [&_h2]:tracking-[-.035em] [&_h2_strong]:text-[var(--seed-color-fg-brand)] [&_p]:m-0 [&_p]:text-[length:var(--seed-font-size-t3)] [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
           <div>
             <Badge tone="brand" variant="weak">
               반복 학습
@@ -287,9 +295,14 @@ function HomeScreen({
           </div>
         </section>
 
-        <div className="mode-grid">
-          <button className="mode-card study" onClick={() => onStart("study")}>
-            <span className="mode-icon">▤</span>
+        <div className="my-4 grid gap-3">
+          <button
+            className="grid min-h-[86px] w-full cursor-pointer grid-cols-[48px_1fr_auto] items-center gap-3.5 rounded-[22px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-[var(--seed-color-fg-neutral)] transition-[transform,background] duration-150 active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:mb-1 [&_b]:block [&_b]:text-[length:var(--seed-font-size-t5)] [&_small]:block [&_small]:text-[var(--seed-color-fg-neutral-subtle)] [&>span:last-child]:text-[28px] [&>span:last-child]:text-[var(--seed-color-fg-neutral-subtle)]"
+            onClick={() => onStart("study")}
+          >
+            <span className="grid size-12 place-items-center rounded-2xl bg-[var(--seed-color-bg-positive-weak)] text-[23px] text-[var(--seed-color-fg-positive)]">
+              ▤
+            </span>
             <span>
               <b>학습 모드</b>
               <small>전체 카드를 보며 익혀요</small>
@@ -297,19 +310,26 @@ function HomeScreen({
             <span>›</span>
           </button>
           <button
-            className="mode-card unknown"
+            className="grid min-h-[86px] w-full cursor-pointer grid-cols-[48px_1fr_auto] items-center gap-3.5 rounded-[22px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-[var(--seed-color-fg-neutral)] transition-[transform,background] duration-150 active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] disabled:cursor-default disabled:opacity-50 [&_b]:mb-1 [&_b]:block [&_b]:text-[length:var(--seed-font-size-t5)] [&_small]:block [&_small]:text-[var(--seed-color-fg-neutral-subtle)] [&>span:last-child]:text-[28px] [&>span:last-child]:text-[var(--seed-color-fg-neutral-subtle)]"
             disabled={!focusCount}
             onClick={() => onStart("focus-study")}
           >
-            <span className="mode-icon">!</span>
+            <span className="grid size-12 place-items-center rounded-2xl bg-[var(--seed-color-bg-critical-weak)] text-[23px] font-black text-[var(--seed-color-fg-critical)]">
+              !
+            </span>
             <span>
               <b>몰랐어요 · 헷갈려요 학습</b>
               <small>{focusCount}개를 집중해서 반복해요</small>
             </span>
             <span>›</span>
           </button>
-          <button className="mode-card test" onClick={() => onStart("test")}>
-            <span className="mode-icon">✎</span>
+          <button
+            className="grid min-h-[86px] w-full cursor-pointer grid-cols-[48px_1fr_auto] items-center gap-3.5 rounded-[22px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-[var(--seed-color-fg-neutral)] transition-[transform,background] duration-150 active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:mb-1 [&_b]:block [&_b]:text-[length:var(--seed-font-size-t5)] [&_small]:block [&_small]:text-[var(--seed-color-fg-neutral-subtle)] [&>span:last-child]:text-[28px] [&>span:last-child]:text-[var(--seed-color-fg-neutral-subtle)]"
+            onClick={() => onStart("test")}
+          >
+            <span className="grid size-12 place-items-center rounded-2xl bg-[var(--seed-color-bg-informative-weak)] text-[23px] text-[var(--seed-color-fg-informative)]">
+              ✎
+            </span>
             <span>
               <b>시험 모드</b>
               <small>시험 가능 {testableCount}개 · 빈칸에 직접 입력해요</small>
@@ -321,22 +341,25 @@ function HomeScreen({
         <ActionButton
           size="large"
           onClick={() => onNavigate("add")}
-          className="full-button"
+          className="w-full justify-center"
         >
           ＋ 새 단어 추가
         </ActionButton>
 
-        <section className="section-block">
-          <div className="section-heading">
+        <section className="mt-7">
+          <div className="mb-2.5 flex items-center justify-between [&_h2]:m-0 [&_h2]:text-[length:var(--seed-font-size-t5)] [&_button]:min-h-11 [&_button]:cursor-pointer [&_button]:border-0 [&_button]:bg-transparent [&_button]:font-bold [&_button]:text-[var(--seed-color-fg-brand)]">
             <h2>최근 단어</h2>
             <button onClick={() => onNavigate("library")}>전체 보기</button>
           </div>
-          <div className="content-rail" aria-label="최근 단어">
+          <div
+            className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pt-1 pb-3 [scroll-padding-inline:20px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            aria-label="최근 단어"
+          >
             {recent.map((card) => (
               <button
                 key={card.id}
                 onClick={() => onOpenCard(card)}
-                className="word-tile"
+                className="flex min-h-[142px] w-[184px] shrink-0 snap-start cursor-pointer flex-col items-start justify-between rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-inherit shadow-[0_5px_18px_rgba(0,0,0,.045)] active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:block [&_b]:text-[length:var(--seed-font-size-t6)] [&_span]:block [&_div>span]:mt-1.5 [&_div>span]:line-clamp-2 [&_div>span]:leading-[1.4] [&_div>span]:text-[var(--seed-color-fg-neutral-subtle)]"
               >
                 <div>
                   <b>{card.term}</b>
@@ -354,15 +377,18 @@ function HomeScreen({
         </section>
 
         {tagGroups.length > 0 && (
-          <section className="section-block">
-            <div className="section-heading">
+          <section className="mt-7">
+            <div className="mb-2.5 flex items-center justify-between [&_h2]:m-0 [&_h2]:text-[length:var(--seed-font-size-t5)]">
               <h2>태그별 학습</h2>
             </div>
-            <div className="content-rail tag-rail" aria-label="태그별 학습">
+            <div
+              className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pt-1 pb-3 [scroll-padding-inline:20px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              aria-label="태그별 학습"
+            >
               {tagGroups.map(([tag, taggedCards]) => (
                 <button
                   key={tag}
-                  className="tag-study-tile"
+                  className="flex min-h-[150px] w-[228px] shrink-0 snap-start cursor-pointer flex-col items-start rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-[18px] text-left text-inherit shadow-[0_5px_18px_rgba(0,0,0,.045)] active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:text-[length:var(--seed-font-size-t6)] [&_b]:leading-[1.4] [&>span:last-child]:mt-auto [&>span:last-child]:pt-2.5 [&>span:last-child]:text-[length:var(--seed-font-size-t3)] [&>span:last-child]:text-[var(--seed-color-fg-neutral-subtle)]"
                   onClick={() => onStartTag(tag)}
                 >
                   <b>{tag}</b>
@@ -441,8 +467,8 @@ function AddScreen({
         subtitle="자료를 그대로 가져오고, 빈칸만 AI가 채워요"
         onBack={onBack}
       />
-      <main className="screen add-screen">
-        <section className="input-section">
+      <main className="min-h-[calc(100vh-84px)] p-5 pb-[172px]">
+        <section className="[&_textarea]:min-h-[132px]">
           <label className="field-label" htmlFor="vocabulary-input">
             단어 또는 표현
           </label>
@@ -461,16 +487,20 @@ function AddScreen({
           </p>
         </section>
 
-        <div className="divider-label">
+        <div className="my-[26px] flex items-center gap-3 text-[length:var(--seed-font-size-t2)] text-[var(--seed-color-fg-neutral-subtle)] before:h-px before:flex-1 before:bg-[var(--seed-color-stroke-neutral-subtle)] before:content-[''] after:h-px after:flex-1 after:bg-[var(--seed-color-stroke-neutral-subtle)] after:content-['']">
           <span>또는</span>
         </div>
 
-        <section className={`photo-drop ${image ? "has-image" : ""}`}>
+        <section
+          className={`overflow-hidden rounded-3xl border-[1.5px] p-[18px] text-center ${image ? "border-solid border-[var(--seed-color-stroke-neutral-weak)] bg-[var(--seed-color-bg-layer-default)]" : "border-dashed border-[var(--seed-color-stroke-neutral-weak)] bg-[var(--seed-color-bg-layer-fill)]"} [&>img]:block [&>img]:h-[230px] [&>img]:w-full [&>img]:rounded-2xl [&>img]:object-cover`}
+        >
           {image ? (
             <img src={image} alt="선택한 학습 자료 미리보기" />
           ) : (
-            <div className="photo-placeholder">
-              <span>▧</span>
+            <div className="px-2.5 pt-6 pb-[18px] [&_b]:block [&_b]:text-[length:var(--seed-font-size-t5)] [&_p]:mt-1.5 [&_p]:mb-0 [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
+              <span className="mx-auto mb-3.5 grid size-14 place-items-center rounded-[18px] bg-[var(--seed-color-bg-brand-weak)] text-[28px] text-[var(--seed-color-fg-brand)]">
+                ▧
+              </span>
               <b>교재나 노트를 촬영해 보세요</b>
               <p>한 장에 여러 단어가 있어도 괜찮아요.</p>
             </div>
@@ -490,7 +520,7 @@ function AddScreen({
             hidden
             onChange={(event) => readImage(event.target.files?.[0])}
           />
-          <div className="photo-actions">
+          <div className="mt-3.5 flex justify-center gap-2">
             <ActionButton
               variant="neutralWeak"
               onClick={() => cameraRef.current?.click()}
@@ -510,13 +540,13 @@ function AddScreen({
             )}
           </div>
         </section>
-        <div className="sticky-cta">
+        <div className="sticky-cta !bottom-[calc(68px+var(--seed-safe-area-bottom))]">
           <ActionButton
             size="large"
             loading={busy}
             disabled={busy || (!text.trim() && !image)}
             onClick={createCards}
-            className="full-button"
+            className="w-full justify-center"
           >
             카드 초안 만들기
           </ActionButton>
@@ -561,8 +591,8 @@ function CandidateScreen({
         subtitle={`${items.length}개를 찾았어요. 저장할 단어를 골라 주세요.`}
         onBack={onBack}
       />
-      <main className="screen candidate-screen">
-        <div className="candidate-toolbar">
+      <main className="min-h-[calc(100vh-84px)] p-5 pb-44">
+        <div className="mb-2 flex items-center justify-between [&_button]:min-h-11 [&_button]:cursor-pointer [&_button]:border-0 [&_button]:bg-transparent [&_button]:font-bold [&_button]:text-[var(--seed-color-fg-brand)]">
           <b>{selected.length}개 선택</b>
           <button
             onClick={() =>
@@ -572,11 +602,11 @@ function CandidateScreen({
             전체 선택
           </button>
         </div>
-        <div className="candidate-list">
+        <div className="grid gap-2.5">
           {items.map((item, index) => (
             <article
               key={`${item.term}-${index}`}
-              className={`candidate-card ${item.selected ? "selected" : ""}`}
+              className={`grid cursor-pointer grid-cols-[28px_1fr] gap-3 rounded-[20px] border p-4 transition-[border-color,background] duration-150 ${item.selected ? "border-[var(--seed-color-stroke-brand-solid)] bg-[var(--seed-color-bg-brand-weak)]" : "border-[var(--seed-color-stroke-neutral-subtle)]"} [&_p]:my-[5px] [&_p]:text-[var(--seed-color-fg-neutral-muted)] [&_small]:text-[var(--seed-color-fg-neutral-subtle)]`}
               onClick={() => toggle(index)}
             >
               <span onClick={(event) => event.stopPropagation()}>
@@ -588,8 +618,10 @@ function CandidateScreen({
                 />
               </span>
               <div>
-                <div className="candidate-title">
-                  <h2>{item.term}</h2>
+                <div className="flex items-center justify-between gap-2">
+                  <h2 className="m-0 text-[length:var(--seed-font-size-t6)]">
+                    {item.term}
+                  </h2>
                   <Badge
                     tone={item.confidence > 0.9 ? "positive" : "warning"}
                     variant="weak"
@@ -607,7 +639,7 @@ function CandidateScreen({
             </article>
           ))}
         </div>
-        <div className="sticky-cta candidate-actions">
+        <div className="sticky-cta grid gap-2">
           <ActionButton
             size="large"
             disabled={!selected.length}
@@ -620,7 +652,7 @@ function CandidateScreen({
                 setSaving(false);
               }
             }}
-            className="full-button"
+            className="w-full justify-center"
           >
             선택한 {selected.length}개 바로 저장
           </ActionButton>
@@ -629,7 +661,7 @@ function CandidateScreen({
             variant="neutralWeak"
             disabled={!selected.length || saving}
             onClick={() => onContinue(selectedDrafts())}
-            className="full-button"
+            className="w-full justify-center"
           >
             검토 후 저장
           </ActionButton>
@@ -757,8 +789,8 @@ function TagSelector({
     );
 
   return (
-    <section className="tag-selector">
-      <div className="tag-selector-heading">
+    <section className="mt-5">
+      <div className="flex items-center justify-between gap-3 [&_.field-label]:m-0">
         <label className="field-label">{label}</label>
         <ActionButton
           size="small"
@@ -769,7 +801,7 @@ function TagSelector({
         </ActionButton>
       </div>
       {creating && (
-        <div className="tag-create-row">
+        <div className="mt-2.5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
           <TextField.Root>
             <TextField.Input
               autoFocus
@@ -791,7 +823,10 @@ function TagSelector({
           </ActionButton>
         </div>
       )}
-      <div className="tag-options" aria-label={`${label} 선택`}>
+      <div
+        className="my-2.5 mb-3 flex flex-wrap gap-2 [&_p]:my-1 [&_p]:w-full [&_p]:text-[length:var(--seed-font-size-t2)] [&_p]:text-[var(--seed-color-fg-neutral-subtle)]"
+        aria-label={`${label} 선택`}
+      >
         {options.length ? (
           options.map((tag) => (
             <Chip.Root
@@ -958,9 +993,9 @@ function ReviewScreen({
           ) : undefined
         }
       />
-      <main className="screen review-screen">
+      <main className="min-h-[calc(100vh-84px)] p-5 pb-[116px]">
         {drafts.length > 1 && (
-          <section className="batch-tag-editor">
+          <section className="mb-3.5 rounded-[18px] border border-[var(--seed-color-stroke-brand-weak)] bg-[var(--seed-color-bg-brand-weak)] p-4 [&>section]:mt-0">
             <TagSelector
               label="모든 카드에 추가할 태그"
               options={availableTags}
@@ -969,7 +1004,7 @@ function ReviewScreen({
               onCreate={registerTag}
             />
             <ActionButton
-              className="full-button"
+              className="w-full justify-center"
               variant="neutralSolid"
               disabled={!batchTags.length}
               onClick={applyTagsToAll}
@@ -979,7 +1014,10 @@ function ReviewScreen({
           </section>
         )}
         {drafts.length > 1 && (
-          <Flex className="horizontal-control-rail" align="center">
+          <Flex
+            className="!gap-2 overflow-x-auto !pt-0.5 !pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0"
+            align="center"
+          >
             {drafts.map((item, index) => (
               <Chip.Root
                 key={`${item.term}-${index}`}
@@ -992,7 +1030,7 @@ function ReviewScreen({
             ))}
           </Flex>
         )}
-        <section className="edit-card">
+        <section className="rounded-3xl border border-[var(--seed-color-stroke-neutral-subtle)] p-[18px] [&_textarea]:min-h-[76px]">
           {draft.meanings.some(
             (meaning) =>
               meaning.provenance === "source" ||
@@ -1008,8 +1046,8 @@ function ReviewScreen({
                   example.provenance === "ai",
               ),
           ) && (
-            <div className="source-note">
-              <span>✓</span>
+            <div className="flex gap-3 rounded-2xl bg-[var(--seed-color-bg-positive-weak)] p-3.5 text-[var(--seed-color-fg-positive-contrast)] [&_b]:m-0 [&_b]:block [&_p]:mt-[3px] [&_p]:mb-0 [&_p]:text-[length:var(--seed-font-size-t2)]">
+              <span className="font-black">✓</span>
               <div>
                 <b>원문 정보를 우선했어요</b>
                 <p>AI가 보완한 항목은 파란색으로 표시돼요.</p>
@@ -1031,7 +1069,7 @@ function ReviewScreen({
             onChange={(tags) => update({ tags })}
             onCreate={registerTag}
           />
-          <div className="sense-editor-heading">
+          <div className="mt-5 flex items-center justify-between gap-3 [&_.field-label]:m-0">
             <label className="field-label">뜻과 예문</label>
             <ActionButton
               size="small"
@@ -1041,10 +1079,13 @@ function ReviewScreen({
               ＋ 뜻 추가
             </ActionButton>
           </div>
-          <div className="sense-editor-list">
+          <div className="mt-2.5 grid gap-3">
             {draft.meanings.map((meaning, meaningIndex) => (
-              <section className="sense-editor" key={meaningIndex}>
-                <div className="label-with-tag">
+              <section
+                className="rounded-[18px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-fill)] p-4"
+                key={meaningIndex}
+              >
+                <div className="label-with-tag !mt-0">
                   <b>뜻 {meaningIndex + 1}</b>
                   {meaning.provenance && (
                     <ProvenanceTag value={meaning.provenance} />
@@ -1062,7 +1103,7 @@ function ReviewScreen({
                     placeholder="뜻을 입력해 주세요"
                   />
                 </TextField.Root>
-                <div className="field-grid sense-meta-fields">
+                <div className="grid grid-cols-2 gap-2.5 [&_.field-label]:mt-3.5">
                   <div>
                     <label className="field-label">이 뜻의 품사</label>
                     <TextField.Root>
@@ -1095,7 +1136,7 @@ function ReviewScreen({
                   </div>
                 </div>
                 {meaning.examples.map((example, exampleIndex) => (
-                  <div className="mapped-example-editor" key={exampleIndex}>
+                  <div className="mt-4" key={exampleIndex}>
                     <div className="label-with-tag">
                       <small>이 뜻의 예문 {exampleIndex + 1}</small>
                       {example.provenance && (
@@ -1118,7 +1159,7 @@ function ReviewScreen({
                     </TextField.Root>
                   </div>
                 ))}
-                <div className="sense-editor-actions">
+                <div className="mt-2 flex justify-between gap-2">
                   <ActionButton
                     size="small"
                     variant="ghost"
@@ -1130,7 +1171,7 @@ function ReviewScreen({
                     <ActionButton
                       size="small"
                       variant="ghost"
-                      className="critical-action"
+                      className="!text-[var(--seed-color-fg-critical)]"
                       onClick={() =>
                         update({
                           meanings: draft.meanings.filter(
@@ -1146,19 +1187,16 @@ function ReviewScreen({
               </section>
             ))}
           </div>
-          <section className="test-context-editor">
-            <div className="sense-editor-heading">
+          <section className="mt-[18px] border-t border-[var(--seed-color-stroke-neutral-subtle)] pt-[18px]">
+            <div className="flex items-start justify-between gap-3 [&_.field-label]:m-0 [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[length:var(--seed-font-size-t2)] [&_p]:leading-[1.45] [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
               <div>
                 <label className="field-label">뜻별 시험 문맥</label>
                 <p>각 뜻을 독립적으로 테스트할 새 문맥을 준비해요.</p>
               </div>
             </div>
             {draft.meanings.map((meaning, meaningIndex) => (
-              <section
-                className="test-meaning-editor"
-                key={meaning.id ?? meaningIndex}
-              >
-                <div className="sense-editor-heading">
+              <section className="" key={meaning.id ?? meaningIndex}>
+                <div className="mt-5 flex items-center justify-between gap-3 [&_.field-label]:m-0">
                   <b>
                     뜻 {meaningIndex + 1} ·{" "}
                     {meaning.definitionKo || "뜻 미입력"}
@@ -1171,9 +1209,9 @@ function ReviewScreen({
                     ＋ 문맥 추가
                   </ActionButton>
                 </div>
-                <div className="test-context-list">
+                <div className="grid gap-3.5 [&_textarea]:min-h-[92px]">
                   {(meaning.testExamples ?? []).map((example, exampleIndex) => (
-                    <div className="mapped-example-editor" key={exampleIndex}>
+                    <div className="mt-4" key={exampleIndex}>
                       <div className="label-with-tag">
                         <small>
                           {example.type === "dialogue" ? "대화" : "예문"}{" "}
@@ -1214,7 +1252,7 @@ function ReviewScreen({
                         <ActionButton
                           size="small"
                           variant="ghost"
-                          className="critical-action"
+                          className="!text-[var(--seed-color-fg-critical)]"
                           onClick={() =>
                             updateMeaning(meaningIndex, {
                               testExamples: (meaning.testExamples ?? []).filter(
@@ -1234,14 +1272,14 @@ function ReviewScreen({
           </section>
         </section>
         {draft.id && (
-          <section className="danger-zone">
+          <section className="mt-5 flex items-center justify-between gap-4 rounded-[18px] border border-[var(--seed-color-stroke-critical-weak)] bg-[var(--seed-color-bg-critical-weak)] p-4 [&_b]:m-0 [&_b]:block [&_p]:mt-1 [&_p]:mb-0 [&_p]:text-[length:var(--seed-font-size-t2)] [&_p]:leading-[1.4] [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
             <div>
               <b>카드 삭제</b>
               <p>이 단어와 학습 기록을 단어장에서 삭제해요.</p>
             </div>
             <ActionButton
               variant="ghost"
-              className="critical-action"
+              className="!text-[var(--seed-color-fg-critical)]"
               aria-label={`${draft.term} 카드 삭제`}
               onClick={async () => {
                 if (!window.confirm(`‘${draft.term}’ 카드를 삭제할까요?`))
@@ -1255,8 +1293,11 @@ function ReviewScreen({
             </ActionButton>
           </section>
         )}
-        <div className="review-nav">
-          <span className="review-progress" aria-live="polite">
+        <div className="fixed bottom-0 left-1/2 z-12 grid w-[min(520px,100%)] -translate-x-1/2 grid-cols-[auto_minmax(82px,.35fr)_1fr] items-center gap-2.5 border-t border-[var(--seed-color-stroke-neutral-subtle)] bg-[color-mix(in_srgb,var(--seed-color-bg-layer-default)_94%,transparent)] px-5 pt-3 pb-[calc(12px+var(--seed-safe-area-bottom))] backdrop-blur-[18px]">
+          <span
+            className="min-w-[42px] text-center text-[length:var(--seed-font-size-t2)] font-bold text-[var(--seed-color-fg-neutral-subtle)]"
+            aria-live="polite"
+          >
             {active + 1} / {drafts.length}
           </span>
           <ActionButton
@@ -1295,15 +1336,15 @@ function VocabularyCardView({
     ? card.meanings.filter((meaning) => meaning.id === meaningId)
     : card.meanings;
   return (
-    <article className="vocabulary-card">
-      <div className="word-topline">
+    <article className="rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-6 shadow-[0_8px_30px_rgba(0,0,0,.07)]">
+      <div className="flex items-start justify-between pb-5 [&_h2]:mt-2.5 [&_h2]:mb-0.5 [&_h2]:text-[38px] [&_h2]:leading-none [&_h2]:tracking-[-.04em] [&_p]:mt-2 [&_p]:mb-0 [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
         <div>
           <Badge variant="weak">
             {meaningId ? "이 뜻을 학습 중" : `${card.meanings.length}개 뜻`}
           </Badge>
           <h2>{card.term}</h2>
           {card.tags.length > 0 && (
-            <div className="card-tags">
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
               {card.tags.map((tag) => (
                 <Badge key={tag} tone="neutral" variant="weak">
                   #{tag}
@@ -1313,7 +1354,7 @@ function VocabularyCardView({
           )}
         </div>
         <button
-          className="sound-button"
+          className="grid size-12 cursor-pointer place-items-center rounded-full border-0 bg-[var(--seed-color-bg-neutral-inverted)] text-[var(--seed-color-fg-neutral-inverted)]"
           onClick={() => speak(card.term)}
           aria-label={`${card.term} 발음 듣기`}
         >
@@ -1323,8 +1364,8 @@ function VocabularyCardView({
       <div className="sense-list">
         {visibleMeanings.map((meaning) => (
           <section className="sense-block" key={meaning.id}>
-            <div className="meaning-block">
-              <div className="sense-meta">
+            <div className="border-t border-[var(--seed-color-stroke-neutral-subtle)] py-5 [&_h3]:mt-2 [&_h3]:mb-1 [&_h3]:text-[length:var(--seed-font-size-t6)] [&_h3]:leading-[1.45] [&>p]:m-0 [&>p]:text-[var(--seed-color-fg-neutral-subtle)] [&_small]:font-extrabold [&_small]:tracking-[.04em] [&_small]:text-[var(--seed-color-fg-brand)]">
+              <div className="flex items-center justify-between gap-3 [&_span]:text-[length:var(--seed-font-size-t2)] [&_span]:text-[var(--seed-color-fg-neutral-subtle)]">
                 <small>{resultMeta[meaning.status].label}</small>
                 <span>
                   {meaning.partOfSpeech || "word"}
@@ -1335,7 +1376,10 @@ function VocabularyCardView({
               {meaning.definitionEn && <p>{meaning.definitionEn}</p>}
             </div>
             {meaning.examples.map((example, exampleIndex) => (
-              <div className="example-block" key={exampleIndex}>
+              <div
+                className="border-t border-[var(--seed-color-stroke-neutral-subtle)] py-5 [&_small]:font-extrabold [&_small]:tracking-[.04em] [&_small]:text-[var(--seed-color-fg-brand)] [&>p]:mt-3 [&>p]:mb-2 [&>p]:text-[length:var(--seed-font-size-t5)] [&>p]:leading-[1.55] [&>span]:leading-[1.5] [&>span]:text-[var(--seed-color-fg-neutral-subtle)]"
+                key={exampleIndex}
+              >
                 <div className="label-with-tag">
                   <small>이 뜻의 예문</small>
                   {example.provenance && (
@@ -1399,26 +1443,26 @@ function SwipeableCardStack({
 
   return (
     <div
-      className="swipe-stack"
+      className="relative -mx-5 isolate overflow-hidden px-5 pb-12"
       aria-label={`${item.card.term} 카드, 좌우로 밀어 이전 또는 다음 뜻 보기`}
     >
       {Array.from(
         { length: Math.max(0, layerCount - (nextMeaningInCard ? 2 : 1)) },
         (_, index) => (
-        <div
-          className="swipe-stack-layer"
-          key={index}
-          style={{
-            transform: `translateY(${(index + 2) * stackOffset}px) scale(${1 - (index + 2) * 0.03})`,
-            zIndex: layerCount - index,
-          }}
-          aria-hidden="true"
-        />
+          <div
+            className="absolute inset-x-5 top-0 bottom-12 origin-bottom rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] shadow-[0_10px_28px_rgba(0,0,0,.07)]"
+            key={index}
+            style={{
+              transform: `translateY(${(index + 2) * stackOffset}px) scale(${1 - (index + 2) * 0.03})`,
+              zIndex: layerCount - index,
+            }}
+            aria-hidden="true"
+          />
         ),
       )}
       {nextMeaningInCard && (
         <div
-          className="incoming-card next-meaning"
+          className="absolute inset-x-5 top-0 bottom-12 z-4 will-change-transform [&>article]:h-full"
           style={{
             transform: `translate3d(0, ${stackOffset * (1 - revealProgress)}px, 0) scale(${0.97 + revealProgress * 0.03})`,
           }}
@@ -1432,7 +1476,7 @@ function SwipeableCardStack({
       )}
       {nextCardStarts && (
         <div
-          className="incoming-card"
+          className="absolute inset-x-5 top-0 bottom-12 z-4 will-change-transform [&>article]:h-full"
           style={{
             transform: `translate3d(calc(100% + ${Math.min(0, dragX)}px), 0, 0)`,
           }}
@@ -1446,7 +1490,7 @@ function SwipeableCardStack({
       )}
       {previousItem && items.length > 1 && (
         <div
-          className="incoming-card previous"
+          className="absolute inset-x-5 top-0 bottom-12 z-4 will-change-transform [&>article]:h-full"
           style={{
             transform: `translate3d(calc(-100% + ${Math.max(0, dragX)}px), 0, 0)`,
           }}
@@ -1460,7 +1504,7 @@ function SwipeableCardStack({
       )}
       <div
         ref={cardRef}
-        className={`swipe-card${settling ? " settling" : ""}`}
+        className={`relative z-5 origin-bottom cursor-grab touch-pan-y select-none will-change-[transform,opacity] active:cursor-grabbing ${settling ? "transition-[transform,opacity] duration-200 ease-[cubic-bezier(.2,.8,.2,1)] motion-reduce:transition-opacity motion-reduce:duration-100" : ""}`}
         style={{
           transform: `translate3d(${dragX}px, 0, 0) rotate(${dragX / 28}deg)`,
           opacity: Math.max(0.45, 1 - Math.abs(dragX) / 700),
@@ -1513,12 +1557,20 @@ type SessionMode = "study" | "focus-study" | "test" | "card";
 
 function DialoguePrompt({ prompt }: { prompt: string }) {
   const turns = parseDialogue(prompt);
-  if (turns.length < 2) return <p className="test-prompt">{prompt}</p>;
+  if (turns.length < 2)
+    return (
+      <p className="my-[22px] mb-2.5 whitespace-pre-line text-[length:var(--seed-font-size-t7)] leading-[1.6] tracking-[-.02em]">
+        {prompt}
+      </p>
+    );
   return (
-    <div className="chat-thread" aria-label="두 화자의 대화">
+    <div
+      className="my-6 mb-[18px] flex flex-col gap-3.5"
+      aria-label="두 화자의 대화"
+    >
       {turns.map((turn, index) => (
         <div
-          className={`chat-turn ${index % 2 ? "speaker-two" : "speaker-one"}`}
+          className={`max-w-[86%] ${index % 2 ? "self-end text-right [&_p]:rounded-[18px_18px_5px_18px] [&_p]:bg-[var(--seed-color-bg-brand-weak)] [&_p]:text-[var(--seed-color-fg-brand-contrast)]" : "self-start [&_p]:rounded-[18px_18px_18px_5px] [&_p]:bg-[var(--seed-color-bg-neutral-weak)]"} [&_small]:mx-2 [&_small]:mb-1.5 [&_small]:block [&_small]:font-bold [&_small]:text-[var(--seed-color-fg-neutral-subtle)] [&_p]:m-0 [&_p]:px-[15px] [&_p]:py-[13px] [&_p]:text-left [&_p]:leading-[1.55]`}
           key={`${turn.speaker}-${index}`}
         >
           <small>{turn.speaker}</small>
@@ -1562,7 +1614,7 @@ function SessionScreen({
     return (
       <>
         <AppHeader title={title} onBack={onBack} />
-        <main className="screen">
+        <main className="min-h-[calc(100vh-84px)] p-5">
           <EmptyState
             title={
               mode === "test"
@@ -1662,7 +1714,9 @@ function SessionScreen({
           ) : undefined
         }
       />
-      <main className={`screen session-screen ${mode}`}>
+      <main
+        className={`min-h-[calc(100vh-84px)] bg-[var(--seed-color-bg-layer-basement)] p-5 pb-[130px] ${mode}`}
+      >
         {mode !== "test" ? (
           <SwipeableCardStack
             key={meaning.id}
@@ -1671,17 +1725,21 @@ function SessionScreen({
             onNavigate={navigateWithoutRating}
           />
         ) : testExample ? (
-          <article className="test-card">
+          <article className="flex min-h-[440px] flex-col justify-center rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-6 shadow-[0_8px_30px_rgba(0,0,0,.07)]">
             <Badge tone="informative" variant="weak">
               {testExample.type === "dialogue" ? "대화 빈칸" : "새 문맥 빈칸"}
             </Badge>
             {testExample.type === "dialogue" ? (
               <DialoguePrompt prompt={prompt} />
             ) : (
-              <p className="test-prompt">{prompt}</p>
+              <p className="my-[22px] mb-2.5 whitespace-pre-line text-[length:var(--seed-font-size-t7)] leading-[1.6] tracking-[-.02em]">
+                {prompt}
+              </p>
             )}
             {testExample.ko && (
-              <p className="test-translation">{testExample.ko}</p>
+              <p className="mt-0 mb-[18px] leading-[1.5] text-[var(--seed-color-fg-neutral-subtle)]">
+                {testExample.ko}
+              </p>
             )}
             <label className="field-label" htmlFor="test-answer">
               빈칸에 들어갈 단어
@@ -1704,7 +1762,9 @@ function SessionScreen({
               />
             </TextField.Root>
             {graded && (
-              <div className={`answer-result ${graded}`}>
+              <div
+                className={`mt-4 rounded-2xl p-4 ${graded === "correct" ? "bg-[var(--seed-color-bg-positive-weak)]" : graded === "confusing" ? "bg-[var(--seed-color-bg-warning-weak)]" : "bg-[var(--seed-color-bg-critical-weak)]"} [&_p]:mt-2.5 [&_p]:mb-1 [&_span]:text-[var(--seed-color-fg-neutral-subtle)]`}
+              >
                 <Badge tone={resultMeta[graded].tone}>
                   {resultMeta[graded].label}
                 </Badge>
@@ -1725,12 +1785,18 @@ function SessionScreen({
         )}
       </main>
       {mode !== "test" ? (
-        <div className="rating-bar">
+        <div className="fixed bottom-0 left-1/2 z-12 grid w-[min(520px,100%)] -translate-x-1/2 grid-cols-3 gap-2 border-t border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] px-3.5 pt-3 pb-[calc(12px+var(--seed-safe-area-bottom))] [&_button]:min-h-[68px] [&_button]:cursor-pointer [&_button]:rounded-[18px] [&_button]:border-0 [&_b]:block [&_b]:text-[length:var(--seed-font-size-t4)] [&_span]:mt-1 [&_span]:block [&_span]:text-[length:var(--seed-font-size-t2)]">
           {(["unknown", "confusing", "correct"] as ReviewResult[]).map(
             (result) => (
               <button
                 key={result}
-                className={result}
+                className={
+                  result === "unknown"
+                    ? "bg-[var(--seed-color-bg-critical-weak)] text-[var(--seed-color-fg-critical-contrast)]"
+                    : result === "confusing"
+                      ? "bg-[var(--seed-color-bg-warning-weak)] text-[var(--seed-color-fg-warning-contrast)]"
+                      : "bg-[var(--seed-color-bg-positive-weak)] text-[var(--seed-color-fg-positive-contrast)]"
+                }
                 onClick={() => void submitStudy(result)}
               >
                 <b>{resultMeta[result].label}</b>
@@ -1745,12 +1811,12 @@ function SessionScreen({
         </div>
       ) : mode === "test" ? (
         testExample && (
-          <div className="sticky-cta test-cta">
+          <div className="sticky-cta">
             {graded ? (
               <ActionButton
                 size="large"
                 onClick={() => void commitTest()}
-                className="full-button"
+                className="w-full justify-center"
               >
                 다음 문제
               </ActionButton>
@@ -1759,7 +1825,7 @@ function SessionScreen({
                 size="large"
                 disabled={!answer.trim()}
                 onClick={gradeTest}
-                className="full-button"
+                className="w-full justify-center"
               >
                 정답 확인
               </ActionButton>
@@ -1905,7 +1971,7 @@ function LibraryScreen({
           </Menu.Root>
         }
       />
-      <main className="screen library-screen">
+      <main className="min-h-[calc(100vh-84px)] p-5 pb-[100px]">
         <TextField.Root>
           <TextField.Input
             aria-label="단어 또는 뜻 검색"
@@ -1915,85 +1981,71 @@ function LibraryScreen({
           />
         </TextField.Root>
         <Flex
-          className="horizontal-control-rail horizontal-control-rail--screen-bleed"
+          className="-mx-5 !gap-3 overflow-x-auto !py-3 !pb-3.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0"
           align="center"
           aria-label="정렬과 필터"
         >
-          <Select.Root
-            size="large"
-            placement="bottom-start"
-            gutter={6}
-            value={[sort]}
-            onValueChange={(value) =>
-              setSort(value[0] === "oldest" ? "oldest" : "newest")
-            }
-          >
-            <Select.Trigger className="pill-select-trigger" aria-label="단어 정렬">
-              <Select.Value>
-                {sort === "newest" ? "최신순" : "오래된순"}
-              </Select.Value>
-              <Select.SuffixIcon svg={<IconChevronDownSmallLine />} />
-            </Select.Trigger>
-            <Select.Positioner>
-              <Select.Content>
-                <Select.ScrollArea>
-                  {(["newest", "oldest"] as const).map((value) => (
-                    <Select.Item
-                      key={value}
-                      value={value}
-                      label={value === "newest" ? "최신순" : "오래된순"}
-                    >
-                      <Select.ItemBody>
-                        <Select.ItemLabel />
-                      </Select.ItemBody>
-                      <Select.ItemIndicator selected={<IconCheckmarkLine />} />
-                    </Select.Item>
-                  ))}
-                </Select.ScrollArea>
-              </Select.Content>
-            </Select.Positioner>
-          </Select.Root>
-          <Select.Root
-            size="large"
-            placement="bottom-start"
-            gutter={6}
-            value={filter === "all" ? [] : [filter]}
-            onValueChange={(value) => {
-              const next = value[0];
-              setFilter(
-                next === "unknown" || next === "confusing" || next === "correct"
-                  ? next
-                  : "all",
-              );
-            }}
-          >
-            <Select.Trigger className="pill-select-trigger" aria-label="학습 상태">
-              {filter === "all" ? (
-                <Select.Placeholder>학습 상태</Select.Placeholder>
-              ) : (
-                <Select.Value>{resultMeta[filter].label}</Select.Value>
-              )}
-              <Select.SuffixIcon svg={<IconChevronDownSmallLine />} />
-            </Select.Trigger>
-            <Select.Positioner>
-              <Select.Content>
-                <Select.ScrollArea>
-                  {(["unknown", "confusing", "correct"] as const).map((value) => (
-                    <Select.Item
-                      key={value}
-                      value={value}
-                      label={resultMeta[value].label}
-                    >
-                      <Select.ItemBody>
-                        <Select.ItemLabel />
-                      </Select.ItemBody>
-                      <Select.ItemIndicator selected={<IconCheckmarkLine />} />
-                    </Select.Item>
-                  ))}
-                </Select.ScrollArea>
-              </Select.Content>
-            </Select.Positioner>
-          </Select.Root>
+          {(filter !== "all" || tagFilter !== "all") && (
+            <Chip.Root
+              size="large"
+              layout="iconOnly"
+              variant="outlineStrong"
+              aria-label="필터 초기화"
+              onClick={() => {
+                setFilter("all");
+                setTagFilter("all");
+              }}
+            >
+              <Icon svg={<IconArrowClockwiseCircularLine />} />
+            </Chip.Root>
+          )}
+          <Menu.Root size="medium" placement="bottom-start" gutter={6}>
+            <Menu.Trigger asChild>
+              <Chip.Root size="large" variant="solid" aria-label="단어 정렬">
+                <Chip.Label>
+                  {sort === "newest" ? "최신순" : "오래된순"}
+                </Chip.Label>
+                <Chip.SuffixIcon>
+                  <IconChevronDownSmallLine />
+                </Chip.SuffixIcon>
+              </Chip.Root>
+            </Menu.Trigger>
+            <Menu.Positioner>
+              <Menu.Content>
+                <Menu.Item onClick={() => setSort("newest")}>
+                  <Menu.ItemLabel>최신순</Menu.ItemLabel>
+                </Menu.Item>
+                <Menu.Item onClick={() => setSort("oldest")}>
+                  <Menu.ItemLabel>오래된순</Menu.ItemLabel>
+                </Menu.Item>
+              </Menu.Content>
+            </Menu.Positioner>
+          </Menu.Root>
+          <Menu.Root size="medium" placement="bottom-start" gutter={6}>
+            <Menu.Trigger asChild>
+              <Chip.Root
+                size="large"
+                variant={filter === "all" ? "outlineStrong" : "solid"}
+                aria-label="학습 상태"
+              >
+                <Chip.Label>
+                  {filter === "all" ? "학습 상태" : resultMeta[filter].label}
+                </Chip.Label>
+                <Chip.SuffixIcon>
+                  <IconChevronDownSmallLine />
+                </Chip.SuffixIcon>
+              </Chip.Root>
+            </Menu.Trigger>
+            <Menu.Positioner>
+              <Menu.Content>
+                {(["unknown", "confusing", "correct"] as const).map((value) => (
+                  <Menu.Item key={value} onClick={() => setFilter(value)}>
+                    <Menu.ItemLabel>{resultMeta[value].label}</Menu.ItemLabel>
+                  </Menu.Item>
+                ))}
+              </Menu.Content>
+            </Menu.Positioner>
+          </Menu.Root>
           {(["다의어", "비즈니스"] as const).map((tag) => (
             <Chip.Root
               key={tag}
@@ -2012,16 +2064,21 @@ function LibraryScreen({
           hidden
           onChange={(event) => void restore(event.target.files?.[0])}
         />
-        <div className="word-list">
+        <div className="grid gap-2.5">
           {filtered.map((card, index) => (
-            <article key={card.id} className="word-row">
+            <article
+              key={card.id}
+              className="overflow-hidden rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)]"
+            >
               <button
-                className="word-row-main"
+                className="grid min-h-[100px] w-full cursor-pointer grid-cols-[1fr_auto] gap-3 border-0 bg-transparent p-4 text-left text-inherit [&>span]:self-center [&>span]:text-2xl [&>span]:text-[var(--seed-color-fg-neutral-subtle)] [&_p]:mt-[7px] [&_p]:mb-1 [&_p]:text-[var(--seed-color-fg-neutral-muted)] [&_small]:text-[var(--seed-color-fg-neutral-subtle)]"
                 onClick={() => onOpen(filtered, index)}
               >
                 <div>
-                  <div className="word-row-title">
-                    <h2>{card.term}</h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="m-0 text-[length:var(--seed-font-size-t6)]">
+                      {card.term}
+                    </h2>
                     <Badge
                       tone={resultMeta[getCardStatus(card)].tone}
                       variant="weak"
@@ -2035,7 +2092,7 @@ function LibraryScreen({
                       .join(" · ")}
                   </p>
                   {card.tags.length > 0 && (
-                    <div className="word-row-tags">
+                    <div className="mt-2.5 flex flex-wrap gap-1.5 [&_small]:rounded-full [&_small]:bg-[var(--seed-color-bg-neutral-weak)] [&_small]:px-[7px] [&_small]:py-1">
                       {card.tags.map((tag) => (
                         <small key={tag}>#{tag}</small>
                       ))}
@@ -2183,7 +2240,7 @@ export default function App() {
   };
   const showNav = ["home", "add", "library"].includes(page);
   return (
-    <div className="app-shell">
+    <div className="relative mx-auto min-h-screen w-full max-w-[520px] bg-[var(--seed-color-bg-layer-default)] pb-[calc(76px+var(--seed-safe-area-bottom))] shadow-[0_0_40px_rgba(0,0,0,.06)] min-[700px]:min-h-[calc(100vh-48px)] min-[700px]:rounded-[30px]">
       {page === "home" && (
         <HomeScreen
           cards={cards}

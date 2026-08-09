@@ -21,3 +21,5 @@
 - Prefer clear visual affordances over explanatory UX copy. Do not add instructions when the interaction is already apparent from the interface itself.
 - Before creating or styling a UI pattern directly, check whether SEED Design already provides a component, layout primitive, template, or documented composition for it.
 - Prefer composing installed SEED Design components and primitives over custom UI implementations. Add custom styling only for requirements that SEED Design does not cover, and keep that styling minimal.
+- When SEED Design does not cover a styling need, prefer Tailwind utilities in the component over adding reusable layout rules to a shared CSS file.
+- Name reusable styles after their visual or layout behavior, not the first feature that uses them. Extract repeated behavior into shared patterns and remove obsolete selectors as part of related changes.
