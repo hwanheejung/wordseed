@@ -20,11 +20,13 @@ function preferredEnglishVoice(voices: SpeechSynthesisVoice[]) {
 
 export function speak(term: string) {
   if (!("speechSynthesis" in window)) return;
+
   const synthesis = window.speechSynthesis;
   let started = false;
 
   const start = () => {
     if (started) return;
+
     const voice = preferredEnglishVoice(synthesis.getVoices());
     if (!voice) {
       window.alert(
@@ -33,6 +35,7 @@ export function speak(term: string) {
 
       return;
     }
+
     started = true;
     synthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(term);

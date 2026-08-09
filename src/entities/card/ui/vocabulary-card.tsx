@@ -1,4 +1,6 @@
-import { Badge } from "@seed-design/react";
+import { IconSpeakerWave2Line } from "@karrotmarket/react-monochrome-icon";
+import { Badge, Icon } from "@seed-design/react";
+import { ActionButton } from "seed-design/ui/action-button";
 import type { CardDetailFragment } from "../types/card-fragments";
 
 export function VocabularyCard({
@@ -38,7 +40,7 @@ export function VocabularyCard({
             onClick={() => onPronounce(displayExpression)}
             aria-label={`${displayExpression} 발음 듣기`}
           >
-            ◖)))
+            <Icon svg={<IconSpeakerWave2Line />} />
           </button>
         )}
       </div>
@@ -75,7 +77,20 @@ export function VocabularyCard({
                 className="border-t border-[var(--seed-color-stroke-neutral-subtle)] py-5 [&_small]:font-extrabold [&_small]:tracking-[.04em] [&_small]:text-[var(--seed-color-fg-brand)] [&>p]:mt-3 [&>p]:mb-2 [&>p]:text-[length:var(--seed-font-size-t5)] [&>p]:leading-[1.55] [&>span]:leading-[1.5] [&>span]:text-[var(--seed-color-fg-neutral-subtle)]"
                 key={exampleIndex}
               >
-                <small>예문</small>
+                <div className="flex items-center justify-between gap-3">
+                  <small>예문</small>
+                  {onPronounce && (
+                    <ActionButton
+                      size="small"
+                      variant="neutralWeak"
+                      layout="iconOnly"
+                      onClick={() => onPronounce(example.en)}
+                      aria-label={`예문 ${exampleIndex + 1} 발음 듣기`}
+                    >
+                      <Icon svg={<IconSpeakerWave2Line />} />
+                    </ActionButton>
+                  )}
+                </div>
                 <p>{example.en}</p>
                 {example.ko && <span>{example.ko}</span>}
               </div>
