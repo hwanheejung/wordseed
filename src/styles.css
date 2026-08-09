@@ -8,7 +8,8 @@
 
 * { box-sizing: border-box; }
 html { background: var(--seed-color-bg-layer-basement); }
-body { margin: 0; min-width: 320px; min-height: 100vh; }
+body { margin: 0; min-width: 320px; height: 100dvh; overflow: hidden; }
+#root { height: 100%; }
 button, input, textarea { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--seed-color-stroke-focus-ring); outline-offset: 2px; }

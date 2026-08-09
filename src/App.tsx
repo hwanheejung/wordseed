@@ -154,7 +154,7 @@ function AppHeader({
   action?: ReactNode;
 }) {
   return (
-    <header className="sticky top-0 z-10 border-b border-[var(--seed-color-stroke-neutral-subtle)] bg-[color-mix(in_srgb,var(--seed-color-bg-layer-default)_92%,transparent)] px-5 pt-[calc(14px+var(--seed-safe-area-top))] pb-3.5 backdrop-blur-[18px] min-[700px]:rounded-t-[30px] min-[700px]:pt-3.5">
+    <header className="z-10 shrink-0 border-b border-[var(--seed-color-stroke-neutral-subtle)] bg-[color-mix(in_srgb,var(--seed-color-bg-layer-default)_92%,transparent)] px-5 pt-[calc(14px+var(--seed-safe-area-top))] pb-3.5 backdrop-blur-[18px] min-[700px]:rounded-t-[30px] min-[700px]:pt-3.5">
       <div className="flex min-h-12 items-center gap-3">
         {onBack ? (
           <ActionButton
@@ -1372,7 +1372,7 @@ function VocabularyCardView({
     ? card.meanings.filter((meaning) => meaning.id === meaningId)
     : card.meanings;
   return (
-    <article className="rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-6 shadow-[0_8px_30px_rgba(0,0,0,.07)]">
+    <article className="max-h-full overflow-y-auto overscroll-contain rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-6 shadow-[0_8px_30px_rgba(0,0,0,.07)]">
       <div className="flex items-start justify-between pb-5 [&_h2]:mt-2.5 [&_h2]:mb-0.5 [&_h2]:text-[38px] [&_h2]:leading-none [&_h2]:tracking-[-.04em] [&_p]:mt-2 [&_p]:mb-0 [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
         <div>
           <h2>{card.term}</h2>
@@ -1485,7 +1485,7 @@ function SwipeableCardStack({
 
   return (
     <div
-      className="relative -mx-5 isolate px-5 pb-12"
+      className="relative -mx-5 isolate h-full min-h-0 px-5 pb-12"
       aria-label={`${item.card.term} 카드, 좌우로 밀어 이전 또는 다음 뜻 보기`}
     >
       {Array.from({ length: Math.max(0, layerCount - 1) }, (_, index) => (
@@ -1501,12 +1501,12 @@ function SwipeableCardStack({
       ))}
       <div
         ref={viewportRef}
-        className="relative z-5 overflow-hidden touch-pan-y"
+        className="relative z-5 h-[calc(100%-48px)] overflow-hidden touch-pan-y"
       >
-        <div className="-ml-5 flex cursor-grab select-none active:cursor-grabbing">
+        <div className="-ml-5 flex h-full cursor-grab select-none active:cursor-grabbing">
           {slides.map((slide, index) => (
             <div
-              className="min-w-0 flex-[0_0_100%] pl-5"
+              className="h-full min-w-0 flex-[0_0_100%] pl-5 [&>article]:h-full"
               key={`${index}-${slide.meaning.id}`}
               aria-hidden={index !== 1}
             >
@@ -1723,7 +1723,7 @@ function SessionScreen({
         }
       />
       <main
-        className={`min-h-[calc(100vh-84px)] bg-[var(--seed-color-bg-layer-basement)] p-5 pb-[130px] ${mode}`}
+        className={`min-h-[calc(100vh-84px)] overflow-y-hidden! bg-[var(--seed-color-bg-layer-basement)] p-5 pb-[130px] ${mode}`}
       >
         {mode !== "test" ? (
           <SwipeableCardStack
@@ -1732,7 +1732,7 @@ function SessionScreen({
             onNavigate={navigateWithoutRating}
           />
         ) : testExample ? (
-          <article className="flex min-h-[440px] flex-col overflow-hidden rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] shadow-[0_8px_30px_rgba(0,0,0,.07)]">
+          <article className="flex max-h-full min-h-0 flex-col overflow-y-auto overscroll-contain rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] shadow-[0_8px_30px_rgba(0,0,0,.07)]">
             <div className="flex flex-1 flex-col justify-center p-6">
               <InlineTestPrompt
                 text={testExample.en}
@@ -2240,7 +2240,9 @@ export default function App() {
   };
   const showNav = ["home", "add", "library"].includes(page);
   return (
-    <div className="relative mx-auto min-h-screen w-full max-w-[520px] bg-[var(--seed-color-bg-layer-default)] pb-[calc(76px+var(--seed-safe-area-bottom))] shadow-[0_0_40px_rgba(0,0,0,.06)] min-[700px]:min-h-[calc(100vh-48px)] min-[700px]:rounded-[30px]">
+    <div
+      className={`relative mx-auto flex h-dvh w-full max-w-[520px] flex-col overflow-hidden bg-[var(--seed-color-bg-layer-default)] shadow-[0_0_40px_rgba(0,0,0,.06)] [&>main]:min-h-0! [&>main]:flex-1 [&>main]:overflow-x-hidden [&>main]:overflow-y-auto [&>main]:overscroll-contain min-[700px]:h-[calc(100dvh-48px)] min-[700px]:rounded-[30px] ${showNav ? "pb-[calc(76px+var(--seed-safe-area-bottom))]" : ""}`}
+    >
       {page === "home" && (
         <HomeScreen
           cards={cards}
