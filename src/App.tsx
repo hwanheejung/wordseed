@@ -4,6 +4,15 @@ import { useRef, useState, type ReactNode } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import { Checkbox } from "seed-design/ui/checkbox";
 import {
+  db,
+  exportDatabase,
+  importDatabase,
+  normalizeTags,
+  recordReview,
+  saveDraft,
+} from "./data/db";
+import { parseDialogue } from "./domain/dialogue";
+import {
   buildFocusQueue,
   buildStudyQueue,
   buildTestQueue,
@@ -11,12 +20,10 @@ import {
   startQueueAt,
   updateFocusQueue,
 } from "./domain/scheduler";
-import { parseDialogue } from "./domain/dialogue";
 import {
   blankTerm,
   getTestAnswer,
   isSpecificTestContext,
-  normalizeAnswer,
   scoreAnswer,
 } from "./domain/scoring";
 import type {
@@ -28,14 +35,6 @@ import type {
   ReviewResult,
   VocabularyCard,
 } from "./domain/types";
-import {
-  db,
-  exportDatabase,
-  importDatabase,
-  normalizeTags,
-  recordReview,
-  saveDraft,
-} from "./data/db";
 import { enrichText, extractImage } from "./services/ai";
 
 type Page =
