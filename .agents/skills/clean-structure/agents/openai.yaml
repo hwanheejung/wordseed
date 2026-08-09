@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clean Structure"
+  short_description: "Apply pragmatic FSD and Relay-ready ownership rules"
+  default_prompt: "Use $clean-structure to place and reorganize this frontend code according to the project's FSD conventions."

@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint .",
+    "structure:check": "node scripts/check-structure.mjs",
     "test": "vitest run",
     "seed:compat": "seed-design compat"
   },

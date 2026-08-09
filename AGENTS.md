@@ -1,5 +1,12 @@
 # Engineering Principles
 
+## Project Skills
+
+- Load `clean-structure` before adding, moving, splitting, or reviewing modules, imports, FSD layers, route composition, Relay ownership, or slice public APIs.
+- Load `clean-code` before implementing or reviewing React components, hooks, state, reducers, effects, handlers, TypeScript contracts, validation, control flow, errors, dependencies, or tests.
+- Load both skills when a task changes implementation and structure.
+- Treat these project-local skills and their routed references as the canonical engineering conventions. Do not duplicate their detailed rules in `AGENTS.md`.
+
 ## Implementation
 
 - Choose the simplest implementation that fully satisfies the current requirements.

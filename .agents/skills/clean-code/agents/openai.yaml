@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clean Code"
+  short_description: "Apply predictable AI-friendly TypeScript and React conventions"
+  default_prompt: "Use $clean-code to implement or review this code with the project coding conventions."
