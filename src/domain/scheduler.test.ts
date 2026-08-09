@@ -11,7 +11,7 @@ import {
 
 describe("meaning-level review scheduling", () => {
   it("keeps every meaning with a valid test context available", () => {
-    expect(buildTestQueue(seedCards, () => 0.5)).toHaveLength(3);
+    expect(buildTestQueue(seedCards, () => 0.5)).toHaveLength(8);
   });
 
   it("excludes meanings that only have generic fallback prompts", () => {
@@ -35,7 +35,7 @@ describe("meaning-level review scheduling", () => {
   });
 
   it("sorts meanings by unknown, confusing, then known", () => {
-    const cards = seedCards.map((card, index) => ({
+    const cards = seedCards.slice(1, 4).map((card, index) => ({
       ...card,
       meanings: [
         {
@@ -52,21 +52,29 @@ describe("meaning-level review scheduling", () => {
     ).toEqual(["confusing", "unknown"]);
   });
 
+  it("keeps meanings from the same card adjacent and in position order", () => {
+    const queue = buildStudyQueue([seedCards[0], seedCards[1]]);
+    expect(queue.slice(0, 3).map(({ card }) => card.id)).toEqual([
+      "seed-account",
+      "seed-account",
+      "seed-account",
+    ]);
+    expect(queue.slice(0, 3).map(({ meaning }) => meaning.position)).toEqual([
+      0, 1, 2,
+    ]);
+  });
+
   it("preserves order cyclically and moves a reviewed meaning to the back", () => {
     const items = buildStudyQueue(seedCards);
     const started = startQueueAt(items, 1);
-    expect(started.map(({ meaning }) => meaning.id)).toEqual([
-      items[1].meaning.id,
-      items[2].meaning.id,
-      items[0].meaning.id,
-    ]);
+    expect(started[0].meaning.id).toBe(items[1].meaning.id);
+    expect(started.at(-1)?.meaning.id).toBe(items[0].meaning.id);
     expect(
       moveReviewedCardToBack(started, started[0]).map(
         ({ meaning }) => meaning.id,
       ),
     ).toEqual([
-      started[1].meaning.id,
-      started[2].meaning.id,
+      ...started.slice(1).map(({ meaning }) => meaning.id),
       started[0].meaning.id,
     ]);
   });

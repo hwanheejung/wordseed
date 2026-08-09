@@ -129,6 +129,13 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .linear-progress { height: 4px; background: var(--seed-color-bg-neutral-weak); position: sticky; top: 82px; z-index: 11; }
 .linear-progress span { height: 100%; display: block; background: var(--seed-color-bg-brand-solid); transition: width .3s ease; }
 .session-screen { background: var(--seed-color-bg-layer-basement); padding-bottom: 130px; }
+.swipe-stack { position: relative; padding-bottom: 48px; isolation: isolate; overflow: hidden; margin-inline: -20px; padding-inline: 20px; }
+.swipe-stack-layer { position: absolute; inset: 0 20px 48px; border-radius: 28px; background: var(--seed-color-bg-layer-default); border: 1px solid var(--seed-color-stroke-neutral-subtle); box-shadow: 0 10px 28px rgba(0, 0, 0, .07); transform-origin: center bottom; }
+.incoming-card { position: absolute; z-index: 4; inset: 0 20px 48px; will-change: transform; }
+.incoming-card .vocabulary-card { height: 100%; }
+.swipe-card { position: relative; z-index: 5; touch-action: pan-y; user-select: none; cursor: grab; will-change: transform, opacity; transform-origin: center bottom; }
+.swipe-card:active { cursor: grabbing; }
+.swipe-card.settling { transition: transform 220ms cubic-bezier(.2, .8, .2, 1), opacity 180ms ease-out; }
 .vocabulary-card, .test-card { background: var(--seed-color-bg-layer-default); border-radius: 28px; padding: 24px; box-shadow: 0 8px 30px rgba(0, 0, 0, .07); border: 1px solid var(--seed-color-stroke-neutral-subtle); }
 .word-topline { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 20px; }
 .word-topline h2 { margin: 10px 0 2px; font-size: 38px; line-height: 1; letter-spacing: -.04em; }
@@ -152,6 +159,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .rating-bar .unknown { background: var(--seed-color-bg-critical-weak); color: var(--seed-color-fg-critical-contrast); }
 .rating-bar .confusing { background: var(--seed-color-bg-warning-weak); color: var(--seed-color-fg-warning-contrast); }
 .rating-bar .correct { background: var(--seed-color-bg-positive-weak); color: var(--seed-color-fg-positive-contrast); }
+@media (prefers-reduced-motion: reduce) {
+  .swipe-card.settling { transition: opacity 120ms ease-out; }
+}
 .test-card { min-height: 440px; display: flex; flex-direction: column; justify-content: center; }
 .test-prompt { font-size: var(--seed-font-size-t7); line-height: 1.6; letter-spacing: -.02em; margin: 22px 0 10px; white-space: pre-line; }
 .chat-thread { display: flex; flex-direction: column; gap: 14px; margin: 24px 0 18px; }

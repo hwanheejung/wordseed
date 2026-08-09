@@ -85,9 +85,23 @@ export async function getCard(id: string) {
 }
 
 export async function ensureSeedData() {
-  if ((await db.cards.count()) > 0) return;
+  const existingCards = await db.cards.toArray();
+  const shouldRefreshSeedOnlyDatabase =
+    existingCards.length > 0 &&
+    existingCards.every((card) => card.id.startsWith("seed-")) &&
+    (await db.reviewEvents.count()) === 0 &&
+    (existingCards.length !== seedCards.length ||
+      seedCards.some(
+        (seed) =>
+          !existingCards.some((existing) => existing.id === seed.id),
+      ));
+  if (existingCards.length > 0 && !shouldRefreshSeedOnlyDatabase) return;
   await db.transaction("rw", db.cards, db.meanings, async () => {
-    await db.cards.bulkAdd(
+    if (shouldRefreshSeedOnlyDatabase) {
+      await db.cards.clear();
+      await db.meanings.clear();
+    }
+    await db.cards.bulkPut(
       seedCards.map(
         ({ id, term, normalizedTerm, tags, createdAt, updatedAt }) => ({
           id,
@@ -99,7 +113,7 @@ export async function ensureSeedData() {
         }),
       ),
     );
-    await db.meanings.bulkAdd(seedCards.flatMap((card) => card.meanings));
+    await db.meanings.bulkPut(seedCards.flatMap((card) => card.meanings));
   });
 }
 

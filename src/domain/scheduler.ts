@@ -18,15 +18,22 @@ export function toStudyItems(cards: VocabularyCard[]): StudyItem[] {
 }
 
 export function buildStudyQueue(cards: VocabularyCard[]) {
-  return toStudyItems(cards)
-    .map((item, index) => ({ item, index }))
+  return cards
+    .map((card, index) => ({
+      card,
+      index,
+      priority: Math.min(
+        ...card.meanings.map((meaning) => STATUS_PRIORITY[meaning.status]),
+      ),
+    }))
     .sort(
       (left, right) =>
-        STATUS_PRIORITY[left.item.meaning.status] -
-          STATUS_PRIORITY[right.item.meaning.status] ||
+        left.priority - right.priority ||
         left.index - right.index,
     )
-    .map(({ item }) => item);
+    .flatMap(({ card }) =>
+      card.meanings.map((meaning) => ({ card, meaning })),
+    );
 }
 
 export function buildFocusQueue(cards: VocabularyCard[]) {

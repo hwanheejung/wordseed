@@ -15,3 +15,7 @@
 
 - Make architectural decisions with the long term in mind.
 - Do not accept short-lived workarounds that merely defer an inevitable replacement or rewrite.
+
+## Product UX
+
+- Prefer clear visual affordances over explanatory UX copy. Do not add instructions when the interaction is already apparent from the interface itself.
