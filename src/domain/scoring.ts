@@ -1,4 +1,4 @@
-import type { Example, ReviewResult } from "./types";
+import type { ReviewResult } from "./types";
 
 export function normalizeAnswer(value: string) {
   return value
@@ -54,7 +54,10 @@ export function hasExactTerm(text: string, term: string) {
   return termExpression(term).test(text);
 }
 
-export function getTestAnswer(example: Example, fallbackTerm: string) {
+export function getTestAnswer(
+  example: { en: string; answer?: string },
+  fallbackTerm: string,
+) {
   return example.answer?.trim() || (hasExactTerm(example.en, fallbackTerm) ? fallbackTerm : "");
 }
 

@@ -64,19 +64,15 @@ export function manualDraft(text: string): CardDraft {
       type: "sentence" as const,
       provenance: index === 0 && sourceExample ? "source" as const : "user" as const,
     }],
-    synonyms: [],
-    antonyms: [],
+    acceptedVariants: [term],
+    testExamples: [
+      { en: "", answer: "", type: "sentence" as const, provenance: "user" as const },
+      { en: "", answer: "", type: "dialogue" as const, provenance: "user" as const },
+    ],
   }));
   return {
     term,
-    acceptedVariants: [],
     meanings,
-    testExamples: [
-      { en: "", type: "sentence", provenance: "user" },
-      { en: "", type: "dialogue", provenance: "user" },
-    ],
-    sourceText: sourceExample || undefined,
-    sourceLabel: "직접 입력",
   };
 }
 
@@ -87,12 +83,11 @@ export const demoPhotoCandidates: ExtractedCandidate[] = [
       definitionKo: "완화하다, 경감하다",
       provenance: "source",
       examples: [{ en: "The new policy could mitigate the harmful effects of air pollution.", type: "sentence", provenance: "source" }],
-      synonyms: ["alleviate", "reduce"],
-      antonyms: [],
+      acceptedVariants: ["mitigate", "mitigates", "mitigated", "mitigating"],
+      testExamples: [],
     }],
     selected: true,
     confidence: 0.96,
-    sourceLabel: "사진에서 추출 · 데모",
   },
   {
     ...manualDraft("subsequent"),
@@ -100,12 +95,11 @@ export const demoPhotoCandidates: ExtractedCandidate[] = [
       definitionKo: "그다음의, 이후의",
       provenance: "source",
       examples: [{ en: "Subsequent experiments confirmed the initial finding.", type: "sentence", provenance: "ai" }],
-      synonyms: [],
-      antonyms: [],
+      acceptedVariants: ["subsequent"],
+      testExamples: [],
     }],
     selected: true,
     confidence: 0.91,
-    sourceLabel: "사진에서 추출 · 데모",
   },
   {
     ...manualDraft("ambiguous"),
@@ -113,11 +107,10 @@ export const demoPhotoCandidates: ExtractedCandidate[] = [
       definitionKo: "모호한, 여러 의미로 해석되는",
       provenance: "ai",
       examples: [{ en: "The instructions were ambiguous, so the students interpreted them differently.", type: "sentence", provenance: "ai" }],
-      synonyms: [],
-      antonyms: [],
+      acceptedVariants: ["ambiguous"],
+      testExamples: [],
     }],
     selected: false,
     confidence: 0.82,
-    sourceLabel: "사진에서 추출 · 데모",
   },
 ];

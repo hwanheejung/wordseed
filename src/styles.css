@@ -110,7 +110,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .sense-editor { padding: 16px; border-radius: 18px; background: var(--seed-color-bg-layer-fill); border: 1px solid var(--seed-color-stroke-neutral-subtle); }
 .sense-editor .label-with-tag:first-child { margin-top: 0; }
 .sense-meta-fields .field-label { margin-top: 14px; }
-.relation-editor-fields { margin-top: 8px; }
 .mapped-example-editor { margin-top: 16px; }
 .sense-editor-actions { display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; }
 .critical-action { color: var(--seed-color-fg-critical) !important; }
@@ -140,13 +139,11 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .sense-block:first-child .meaning-block { border-top: 1px solid var(--seed-color-stroke-neutral-subtle); }
 .sense-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .sense-meta span { color: var(--seed-color-fg-neutral-subtle); font-size: var(--seed-font-size-t2); }
-.meaning-block small, .example-block small, .relations small { font-weight: 800; color: var(--seed-color-fg-brand); letter-spacing: .04em; }
+.meaning-block small, .example-block small { font-weight: 800; color: var(--seed-color-fg-brand); letter-spacing: .04em; }
 .meaning-block h3 { margin: 8px 0 4px; font-size: var(--seed-font-size-t6); line-height: 1.45; }
 .meaning-block p { margin: 0; color: var(--seed-color-fg-neutral-subtle); }
 .example-block p { font-size: var(--seed-font-size-t5); line-height: 1.55; margin: 12px 0 8px; }
 .example-block > span { color: var(--seed-color-fg-neutral-subtle); line-height: 1.5; }
-.relations { padding-top: 18px; border-top: 1px solid var(--seed-color-stroke-neutral-subtle); display: grid; gap: 16px; }
-.relations p { margin: 6px 0 0; line-height: 1.5; }
 .rating-bar { position: fixed; z-index: 12; bottom: 0; left: 50%; transform: translateX(-50%); width: min(520px, 100%); padding: 12px 14px calc(12px + var(--seed-safe-area-bottom)); background: var(--seed-color-bg-layer-default); display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; border-top: 1px solid var(--seed-color-stroke-neutral-subtle); }
 .rating-bar button { min-height: 68px; border: 0; border-radius: 18px; cursor: pointer; }
 .rating-bar b, .rating-bar span { display: block; }

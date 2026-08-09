@@ -14,24 +14,17 @@ const TestExampleSchema = ExampleSchema.extend({
 const MeaningSchema = z.object({
   definitionKo: z.string().min(1),
   definitionEn: z.string().nullable(),
-  context: z.string().nullable(),
   partOfSpeech: z.string().nullable(),
   pronunciation: z.string().nullable(),
+  acceptedVariants: z.array(z.string()),
   provenance: z.enum(["source", "ai", "user"]),
   examples: z.array(ExampleSchema).min(1).max(3),
-  synonyms: z.array(z.string()),
-  antonyms: z.array(z.string()),
+  testExamples: z.array(TestExampleSchema).min(2).max(4),
 });
 
 export const CardSchema = z.object({
   term: z.string(),
-  acceptedVariants: z.array(z.string()),
-  partOfSpeech: z.string().nullable(),
-  pronunciation: z.string().nullable(),
   meanings: z.array(MeaningSchema).min(1),
-  testExamples: z.array(TestExampleSchema).min(2).max(4),
-  sourceText: z.string().nullable(),
-  sourceLabel: z.string().nullable(),
 });
 
 export const CardsResponseSchema = z.object({ cards: z.array(CardSchema).min(1).max(20) });
@@ -40,11 +33,20 @@ export const CandidatesResponseSchema = z.object({ candidates: z.array(Candidate
 
 export function hasValidTestContexts(card: z.infer<typeof CardSchema>) {
   const genericPattern = /(used? (?:the )?(?:term|word|expression)|meaning of|which (?:term|word|expression)|fits? (?:the|this|a) (?:new )?context|clarify the central idea)/i;
-  return card.testExamples.length >= 2 && card.testExamples.every((example) => {
-    const escapedAnswer = example.answer.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return new RegExp(escapedAnswer, "i").test(example.en)
-      && !genericPattern.test(example.en);
-  });
+  return card.meanings.every(
+    (meaning) =>
+      meaning.testExamples.length >= 2 &&
+      meaning.testExamples.every((example) => {
+        const escapedAnswer = example.answer.replace(
+          /[.*+?^${}()|[\]\\]/g,
+          "\\$&",
+        );
+        return (
+          new RegExp(escapedAnswer, "i").test(example.en) &&
+          !genericPattern.test(example.en)
+        );
+      }),
+  );
 }
 
 export function stripNulls<T extends Record<string, unknown>>(value: T) {
@@ -57,7 +59,7 @@ export function toClientCard<T extends z.infer<typeof CardSchema>>(card: T) {
     meanings: card.meanings.map((meaning) => ({
       ...stripNulls(meaning),
       examples: meaning.examples.map(stripNulls),
+      testExamples: meaning.testExamples.map(stripNulls),
     })),
-    testExamples: card.testExamples.map(stripNulls),
   };
 }

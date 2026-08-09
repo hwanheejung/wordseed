@@ -1,46 +1,49 @@
 export type ReviewResult = "unknown" | "confusing" | "correct";
 export type Provenance = "source" | "ai" | "user" | "fallback";
 
-export interface Meaning {
-  definitionKo: string;
-  definitionEn?: string;
-  context?: string;
-  partOfSpeech?: string;
-  pronunciation?: string;
-  provenance: Provenance;
-  examples: Example[];
-  synonyms: string[];
-  antonyms: string[];
-}
-
 export interface Example {
   en: string;
   ko?: string;
-  answer?: string;
   type: "sentence" | "dialogue";
-  provenance: Provenance;
+  provenance?: Provenance;
 }
 
-export interface VocabularyCard {
+export interface TestExample extends Example {
+  answer: string;
+}
+
+export interface Meaning {
+  id: string;
+  cardId: string;
+  position: number;
+  definitionKo: string;
+  definitionEn?: string;
+  searchTokens: string[];
+  partOfSpeech?: string;
+  pronunciation?: string;
+  acceptedVariants: string[];
+  examples: Example[];
+  testExamples: TestExample[];
+  status: ReviewResult;
+}
+
+export interface CardRecord {
   id: string;
   term: string;
   normalizedTerm: string;
-  acceptedVariants: string[];
-  partOfSpeech?: string;
-  pronunciation?: string;
-  meanings: Meaning[];
   tags: string[];
-  testExamples: Example[];
-  sourceText?: string;
-  sourceLabel?: string;
-  status: ReviewResult;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface VocabularyCard extends CardRecord {
+  meanings: Meaning[];
 }
 
 export interface ReviewEvent {
   id?: number;
   cardId: string;
+  meaningId: string;
   mode: "study" | "test";
   prompt?: string;
   submittedAnswer?: string;
@@ -48,20 +51,39 @@ export interface ReviewEvent {
   timestamp: string;
 }
 
+export interface DraftExample {
+  en: string;
+  ko?: string;
+  answer?: string;
+  type: "sentence" | "dialogue";
+  provenance?: Provenance;
+}
+
+export interface DraftMeaning {
+  id?: string;
+  definitionKo: string;
+  definitionEn?: string;
+  partOfSpeech?: string;
+  pronunciation?: string;
+  acceptedVariants?: string[];
+  provenance?: Provenance;
+  examples: DraftExample[];
+  testExamples?: DraftExample[];
+}
+
 export interface CardDraft {
   id?: string;
   term: string;
-  acceptedVariants?: string[];
-  partOfSpeech?: string;
-  pronunciation?: string;
-  meanings: Meaning[];
+  meanings: DraftMeaning[];
   tags?: string[];
-  testExamples: Example[];
-  sourceText?: string;
-  sourceLabel?: string;
 }
 
 export interface ExtractedCandidate extends CardDraft {
   selected: boolean;
   confidence: number;
+}
+
+export interface StudyItem {
+  card: VocabularyCard;
+  meaning: Meaning;
 }
