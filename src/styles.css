@@ -75,7 +75,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .sticky-cta { position: fixed; z-index: 12; bottom: 0; left: 50%; transform: translateX(-50%); width: min(520px, 100%); padding: 12px 20px calc(12px + var(--seed-safe-area-bottom)); background: color-mix(in srgb, var(--seed-color-bg-layer-default) 94%, transparent); border-top: 1px solid var(--seed-color-stroke-neutral-subtle); backdrop-filter: blur(18px); }
 .add-screen .sticky-cta { bottom: calc(68px + var(--seed-safe-area-bottom)); }
 .add-screen { padding-bottom: 172px; }
-.candidate-screen { padding-bottom: 104px; }
+.candidate-screen { padding-bottom: 176px; }
+.candidate-actions { display: grid; gap: 8px; }
 
 .candidate-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .candidate-list { display: grid; gap: 10px; }
@@ -119,7 +120,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .test-context-editor .sense-editor-heading p { margin: 5px 0 0; color: var(--seed-color-fg-neutral-subtle); font-size: var(--seed-font-size-t2); line-height: 1.45; }
 .test-context-list { display: grid; gap: 14px; }
 .test-context-list textarea { min-height: 92px; }
-.review-nav { display: grid; grid-template-columns: minmax(96px, .35fr) 1fr; gap: 10px; margin-top: 16px; }
+.review-screen { padding-bottom: 116px; }
+.review-nav { position: fixed; z-index: 12; bottom: 0; left: 50%; transform: translateX(-50%); width: min(520px, 100%); display: grid; grid-template-columns: auto minmax(82px, .35fr) 1fr; align-items: center; gap: 10px; padding: 12px 20px calc(12px + var(--seed-safe-area-bottom)); background: color-mix(in srgb, var(--seed-color-bg-layer-default) 94%, transparent); border-top: 1px solid var(--seed-color-stroke-neutral-subtle); backdrop-filter: blur(18px); }
+.review-progress { min-width: 42px; color: var(--seed-color-fg-neutral-subtle); font-size: var(--seed-font-size-t2); font-weight: 700; text-align: center; }
+.danger-zone { margin-top: 20px; padding: 16px; border: 1px solid var(--seed-color-stroke-critical-weak); border-radius: 18px; background: var(--seed-color-bg-critical-weak); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.danger-zone b, .danger-zone p { display: block; margin: 0; }
+.danger-zone p { margin-top: 4px; color: var(--seed-color-fg-neutral-subtle); font-size: var(--seed-font-size-t2); line-height: 1.4; }
 
 .linear-progress { height: 4px; background: var(--seed-color-bg-neutral-weak); position: sticky; top: 82px; z-index: 11; }
 .linear-progress span { height: 100%; display: block; background: var(--seed-color-bg-brand-solid); transition: width .3s ease; }
@@ -178,7 +184,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .word-row-main small { color: var(--seed-color-fg-neutral-subtle); }
 .word-row-tags small { padding: 4px 7px; border-radius: 999px; background: var(--seed-color-bg-neutral-weak); }
 .word-row-main > span { align-self: center; font-size: 24px; color: var(--seed-color-fg-neutral-subtle); }
-.delete-button { border: 0; border-top: 1px solid var(--seed-color-stroke-neutral-subtle); width: 100%; min-height: 44px; background: var(--seed-color-bg-layer-fill); color: var(--seed-color-fg-critical); font-weight: 700; cursor: pointer; }
 .empty-state { text-align: center; padding: 80px 24px; }
 .empty-state > span { font-size: 52px; }
 .empty-state h2 { margin: 18px 0 8px; }
@@ -195,7 +200,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 12px); } }
 @media (min-width: 700px) {
   body { padding: 24px 0; }
-  .app-shell { min-height: calc(100vh - 48px); border-radius: 30px; overflow: hidden; }
+  .app-shell { min-height: calc(100vh - 48px); border-radius: 30px; }
+  .app-header { border-radius: 30px 30px 0 0; }
   .app-header { padding-top: 14px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .001ms !important; animation-duration: .001ms !important; } }

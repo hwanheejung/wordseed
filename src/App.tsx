@@ -310,7 +310,8 @@ function AddScreen({
             />
           </TextField.Root>
           <p className="field-help">
-            문장을 함께 넣으면 그 문맥의 뜻을 가장 먼저 정리해요.
+            문장을 함께 넣으면 그 문맥의 뜻을 가장 먼저 정리해요. 생성 후
+            바로 저장하거나 내용을 검토할 수 있어요.
           </p>
         </section>
 
@@ -371,7 +372,7 @@ function AddScreen({
             onClick={createCards}
             className="full-button"
           >
-            카드 만들기
+            카드 초안 만들기
           </ActionButton>
         </div>
       </main>
@@ -380,19 +381,35 @@ function AddScreen({
 }
 
 function CandidateScreen({
-  initial,
+  items,
+  onChange,
   onBack,
   onContinue,
+  onSaveImmediately,
 }: {
-  initial: ExtractedCandidate[];
+  items: ExtractedCandidate[];
+  onChange: (items: ExtractedCandidate[]) => void;
   onBack: () => void;
   onContinue: (drafts: CardDraft[]) => void;
+  onSaveImmediately: (drafts: CardDraft[]) => void | Promise<void>;
 }) {
-  const [items, setItems] = useState(initial);
+  const [saving, setSaving] = useState(false);
   const selected = items.filter((item) => item.selected);
+  const selectedDrafts = () =>
+    selected.map((item) => ({
+      term: item.term,
+      acceptedVariants: item.acceptedVariants,
+      partOfSpeech: item.partOfSpeech,
+      pronunciation: item.pronunciation,
+      meanings: item.meanings,
+      tags: item.tags,
+      testExamples: item.testExamples,
+      sourceText: item.sourceText,
+      sourceLabel: item.sourceLabel,
+    }));
   const toggle = (index: number) =>
-    setItems((current) =>
-      current.map((item, itemIndex) =>
+    onChange(
+      items.map((item, itemIndex) =>
         itemIndex === index ? { ...item, selected: !item.selected } : item,
       ),
     );
@@ -408,9 +425,7 @@ function CandidateScreen({
           <b>{selected.length}개 선택</b>
           <button
             onClick={() =>
-              setItems((current) =>
-                current.map((item) => ({ ...item, selected: true })),
-              )
+              onChange(items.map((item) => ({ ...item, selected: true })))
             }
           >
             전체 선택
@@ -451,33 +466,85 @@ function CandidateScreen({
             </article>
           ))}
         </div>
-        <div className="sticky-cta">
+        <div className="sticky-cta candidate-actions">
           <ActionButton
             size="large"
             disabled={!selected.length}
-            onClick={() =>
-              onContinue(
-                selected.map((item) => ({
-                  term: item.term,
-                  acceptedVariants: item.acceptedVariants,
-                  partOfSpeech: item.partOfSpeech,
-                  pronunciation: item.pronunciation,
-                  meanings: item.meanings,
-                  tags: item.tags,
-                  testExamples: item.testExamples,
-                  sourceText: item.sourceText,
-                  sourceLabel: item.sourceLabel,
-                })),
-              )
-            }
+            loading={saving}
+            onClick={async () => {
+              setSaving(true);
+              try {
+                await onSaveImmediately(selectedDrafts());
+              } finally {
+                setSaving(false);
+              }
+            }}
             className="full-button"
           >
-            선택한 {selected.length}개 검토하기
+            선택한 {selected.length}개 바로 저장
+          </ActionButton>
+          <ActionButton
+            size="large"
+            variant="neutralWeak"
+            disabled={!selected.length || saving}
+            onClick={() => onContinue(selectedDrafts())}
+            className="full-button"
+          >
+            검토 후 저장
           </ActionButton>
         </div>
       </main>
     </>
   );
+}
+
+function validateDrafts(drafts: CardDraft[]) {
+  if (
+    drafts.some(
+      (item) =>
+        !item.term.trim() ||
+        !item.meanings.length ||
+        item.meanings.some((meaning) => !meaning.definitionKo.trim()),
+    )
+  )
+    return "모든 카드에 단어와 뜻을 입력해 주세요.";
+  if (
+    drafts.some((item) =>
+      item.meanings.some(
+        (meaning) => !meaning.examples.some((example) => example.en.trim()),
+      ),
+    )
+  )
+    return "각 뜻에 맞는 예문을 하나 이상 입력해 주세요.";
+  if (
+    drafts.some(
+      (item) =>
+        item.testExamples.filter(
+          (example) => example.en.trim() && example.answer?.trim(),
+        ).length < 2,
+    )
+  )
+    return "시험용 새 문맥과 정답 구간을 두 개 이상 준비해 주세요.";
+  if (
+    drafts.some((item) =>
+      item.testExamples.some(
+        (example) => !isSpecificTestContext(example.en, example.answer ?? ""),
+      ),
+    )
+  )
+    return "각 시험 문맥의 정답 구간은 문맥 안에 그대로 포함되어야 해요.";
+}
+
+async function saveDrafts(drafts: CardDraft[]) {
+  for (const item of drafts) {
+    const result = await saveDraft(item);
+    if (result.duplicate && !result.saved) {
+      const overwrite = window.confirm(
+        `‘${item.term}’ 카드가 이미 있어요. 기존 카드를 업데이트할까요?\n취소하면 이 카드는 건너뜁니다.`,
+      );
+      if (overwrite) await saveDraft(item, true);
+    }
+  }
 }
 
 function ProvenanceTag({ value }: { value: Provenance }) {
@@ -592,11 +659,13 @@ function ReviewScreen({
   initial,
   onBack,
   onSaved,
+  onDeleted,
   notify,
 }: {
   initial: CardDraft[];
   onBack: () => void;
   onSaved: () => void | Promise<void>;
+  onDeleted: () => void | Promise<void>;
   notify: (message: string) => void;
 }) {
   const [drafts, setDrafts] = useState(initial);
@@ -684,53 +753,11 @@ function ReviewScreen({
   };
 
   const saveAll = async () => {
-    if (
-      drafts.some(
-        (item) =>
-          !item.term.trim() ||
-          !item.meanings.length ||
-          item.meanings.some((meaning) => !meaning.definitionKo.trim()),
-      )
-    )
-      return notify("모든 카드에 단어와 뜻을 입력해 주세요.");
-    if (
-      drafts.some((item) =>
-        item.meanings.some(
-          (meaning) => !meaning.examples.some((example) => example.en.trim()),
-        ),
-      )
-    )
-      return notify("각 뜻에 맞는 예문을 하나 이상 입력해 주세요.");
-    if (
-      drafts.some(
-        (item) =>
-          item.testExamples.filter(
-            (example) => example.en.trim() && example.answer?.trim(),
-          ).length < 2,
-      )
-    )
-      return notify("시험용 새 문맥과 정답 구간을 두 개 이상 준비해 주세요.");
-    if (
-      drafts.some((item) =>
-        item.testExamples.some(
-          (example) => !isSpecificTestContext(example.en, example.answer ?? ""),
-        ),
-      )
-    )
-      return notify(
-        "각 시험 문맥의 정답 구간은 문맥 안에 그대로 포함되어야 해요.",
-      );
+    const validationMessage = validateDrafts(drafts);
+    if (validationMessage) return notify(validationMessage);
     setBusy(true);
     try {
-      for (const item of drafts) {
-        const result = await saveDraft(item);
-        if (result.duplicate && !result.saved) {
-          const overwrite = window.confirm(
-            `‘${item.term}’ 카드가 이미 있어요. 기존 카드를 업데이트할까요?\n취소하면 이 카드는 건너뜁니다.`,
-          );
-          if (overwrite) await saveDraft(item, true);
-        }
-      }
+      await saveDrafts(drafts);
       notify(`${drafts.length}개의 카드를 저장했어요.`);
       await onSaved();
     } finally {
@@ -745,6 +772,18 @@ function ReviewScreen({
         title="카드 검토"
         subtitle={`${active + 1} / ${drafts.length} · 저장 전에 수정할 수 있어요`}
         onBack={onBack}
+        action={
+          drafts.length > 1 ? (
+            <ActionButton
+              size="small"
+              variant="neutralWeak"
+              loading={busy}
+              onClick={saveAll}
+            >
+              모두 저장
+            </ActionButton>
+          ) : undefined
+        }
       />
       <main className="screen review-screen">
         {drafts.length > 1 && (
@@ -1023,7 +1062,32 @@ function ReviewScreen({
             </div>
           </section>
         </section>
+        {draft.id && (
+          <section className="danger-zone">
+            <div>
+              <b>카드 삭제</b>
+              <p>이 단어와 학습 기록을 단어장에서 삭제해요.</p>
+            </div>
+            <ActionButton
+              variant="ghost"
+              className="critical-action"
+              aria-label={`${draft.term} 카드 삭제`}
+              onClick={async () => {
+                if (!window.confirm(`‘${draft.term}’ 카드를 삭제할까요?`))
+                  return;
+                await db.cards.delete(draft.id!);
+                notify(`‘${draft.term}’ 카드를 삭제했어요.`);
+                await onDeleted();
+              }}
+            >
+              삭제
+            </ActionButton>
+          </section>
+        )}
         <div className="review-nav">
+          <span className="review-progress" aria-live="polite">
+            {active + 1} / {drafts.length}
+          </span>
           <ActionButton
             variant="neutralWeak"
             disabled={active === 0}
@@ -1543,16 +1607,6 @@ function LibraryScreen({
                 </div>
                 <span>›</span>
               </button>
-              <button
-                className="delete-button"
-                onClick={() => {
-                  if (window.confirm(`‘${card.term}’ 카드를 삭제할까요?`))
-                    void db.cards.delete(card.id);
-                }}
-                aria-label={`${card.term} 삭제`}
-              >
-                삭제
-              </button>
             </article>
           ))}
           {!filtered.length && (
@@ -1603,6 +1657,9 @@ export default function App() {
   const [page, setPage] = useState<Page>("home");
   const [drafts, setDrafts] = useState<CardDraft[]>([]);
   const [candidates, setCandidates] = useState<ExtractedCandidate[]>([]);
+  const [reviewOrigin, setReviewOrigin] = useState<"add" | "candidates" | "card">(
+    "add",
+  );
   const [sessionCards, setSessionCards] = useState<VocabularyCard[]>([]);
   const [toast, setToast] = useState<string>();
   const toastTimer = useRef<number | undefined>(undefined);
@@ -1643,6 +1700,7 @@ export default function App() {
     );
   const editCard = (card: VocabularyCard) => {
     setDrafts([cardToDraft(card)]);
+    setReviewOrigin("card");
     navigate("review");
   };
   const refreshEditedDeck = async () => {
@@ -1672,6 +1730,7 @@ export default function App() {
           notify={notify}
           onDrafts={(value) => {
             setDrafts(value);
+            setReviewOrigin("add");
             navigate("review");
           }}
           onCandidates={(value) => {
@@ -1682,25 +1741,65 @@ export default function App() {
       )}
       {page === "candidates" && (
         <CandidateScreen
-          initial={candidates}
-          onBack={() => navigate("add")}
+          items={candidates}
+          onChange={setCandidates}
+          onBack={() => {
+            if (
+              candidates.length &&
+              !window.confirm(
+                "추출한 단어 선택을 종료할까요? 돌아가면 현재 추출 결과가 모두 사라지고 다시 추출해야 해요.",
+              )
+            )
+              return;
+            setCandidates([]);
+            setDrafts([]);
+            navigate("add");
+          }}
           onContinue={(value) => {
             setDrafts(value);
+            setReviewOrigin("candidates");
             navigate("review");
+          }}
+          onSaveImmediately={async (value) => {
+            const validationMessage = validateDrafts(value);
+            if (validationMessage) {
+              notify(`${validationMessage} 검토 화면에서 확인해 주세요.`);
+              setDrafts(value);
+              navigate("review");
+              return;
+            }
+            await saveDrafts(value);
+            notify(`${value.length}개의 카드를 저장했어요.`);
+            navigate("home");
           }}
         />
       )}
       {page === "review" && (
         <ReviewScreen
           initial={drafts}
-          onBack={() =>
-            navigate(drafts.some((item) => item.id) ? "card" : "add")
-          }
+          onBack={() => {
+            if (reviewOrigin === "candidates") {
+              let draftIndex = 0;
+              setCandidates((current) =>
+                current.map((candidate) => {
+                  if (!candidate.selected) return candidate;
+                  const reviewedDraft = drafts[draftIndex++];
+                  return reviewedDraft
+                    ? { ...candidate, ...reviewedDraft, selected: true }
+                    : candidate;
+                }),
+              );
+              navigate("candidates");
+              return;
+            }
+            navigate(reviewOrigin === "card" ? "card" : "add");
+          }}
           onSaved={() =>
             drafts.some((item) => item.id)
               ? refreshEditedDeck()
               : navigate("home")
           }
+          onDeleted={() => navigate("library")}
           notify={notify}
         />
       )}
