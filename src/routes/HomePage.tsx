@@ -2,7 +2,8 @@ import { Badge } from "@seed-design/react";
 import { ActionButton } from "seed-design/ui/action-button";
 import {
   type VocabularyCard,
-  useCardCollection,
+  useCardsQuery,
+  useReviewStatsQuery,
 } from "@/entities/card";
 import {
   getCardStatus,
@@ -10,29 +11,13 @@ import {
 } from "@/entities/card";
 import { shouldRecheckMeaning } from "@/features/study-session";
 import { buildFillInTheBlankQueue } from "@/features/fill-in-the-blank-test";
+import { navigate } from "@/shared/navigation";
 import { AppHeader } from "../shared/ui/app-header";
 import { EmptyState } from "../shared/ui/empty-state";
 
-export function HomePage({
-  onAdd,
-  onOpenLibrary,
-  onStartStudy,
-  onStartFocusStudy,
-  onStartFillInTheBlankTest,
-  onStartMeaning,
-  onOpenCards,
-  onStartTag,
-}: {
-  onAdd: () => void;
-  onOpenLibrary: () => void;
-  onStartStudy: () => void;
-  onStartFocusStudy: () => void;
-  onStartFillInTheBlankTest: () => void;
-  onStartMeaning: (meaningId: string) => void;
-  onOpenCards: (cardIds: string[], startIndex: number) => void;
-  onStartTag: (tag: string) => void;
-}) {
-  const { cards, reviewStats } = useCardCollection();
+export function HomePage() {
+  const { cards } = useCardsQuery();
+  const reviewStats = useReviewStatsQuery();
 
   if (!cards.length) {
     return (
@@ -46,7 +31,7 @@ export function HomePage({
               <ActionButton
                 size="small"
                 variant="neutralWeak"
-                onClick={onAdd}
+                onClick={() => navigate({ page: "add" })}
               >
                 단어 추가하기
               </ActionButton>
@@ -128,7 +113,7 @@ export function HomePage({
         <div className="my-4 grid gap-3">
           <button
             className="grid min-h-[86px] w-full cursor-pointer grid-cols-[48px_1fr_auto] items-center gap-3.5 rounded-[22px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-[var(--seed-color-fg-neutral)] transition-[transform,background] duration-150 active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:mb-1 [&_b]:block [&_b]:text-[length:var(--seed-font-size-t5)] [&_small]:block [&_small]:text-[var(--seed-color-fg-neutral-subtle)] [&>span:last-child]:text-[28px] [&>span:last-child]:text-[var(--seed-color-fg-neutral-subtle)]"
-            onClick={onStartStudy}
+            onClick={() => navigate({ page: "study" })}
           >
             <span className="grid size-12 place-items-center rounded-2xl bg-[var(--seed-color-bg-positive-weak)] text-[23px] text-[var(--seed-color-fg-positive)]">
               ▤
@@ -142,7 +127,7 @@ export function HomePage({
           <button
             className="grid min-h-[86px] w-full cursor-pointer grid-cols-[48px_1fr_auto] items-center gap-3.5 rounded-[22px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-[var(--seed-color-fg-neutral)] transition-[transform,background] duration-150 active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] disabled:cursor-default disabled:opacity-50 [&_b]:mb-1 [&_b]:block [&_b]:text-[length:var(--seed-font-size-t5)] [&_small]:block [&_small]:text-[var(--seed-color-fg-neutral-subtle)] [&>span:last-child]:text-[28px] [&>span:last-child]:text-[var(--seed-color-fg-neutral-subtle)]"
             disabled={!focusCount}
-            onClick={onStartFocusStudy}
+            onClick={() => navigate({ page: "focus-study" })}
           >
             <span className="grid size-12 place-items-center rounded-2xl bg-[var(--seed-color-bg-critical-weak)] text-[23px] font-black text-[var(--seed-color-fg-critical)]">
               !
@@ -155,7 +140,7 @@ export function HomePage({
           </button>
           <button
             className="grid min-h-[86px] w-full cursor-pointer grid-cols-[48px_1fr_auto] items-center gap-3.5 rounded-[22px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-[var(--seed-color-fg-neutral)] transition-[transform,background] duration-150 active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:mb-1 [&_b]:block [&_b]:text-[length:var(--seed-font-size-t5)] [&_small]:block [&_small]:text-[var(--seed-color-fg-neutral-subtle)] [&>span:last-child]:text-[28px] [&>span:last-child]:text-[var(--seed-color-fg-neutral-subtle)]"
-            onClick={onStartFillInTheBlankTest}
+            onClick={() => navigate({ page: "fill-in-the-blank-test" })}
           >
             <span className="grid size-12 place-items-center rounded-2xl bg-[var(--seed-color-bg-informative-weak)] text-[23px] text-[var(--seed-color-fg-informative)]">
               ✎
@@ -170,7 +155,7 @@ export function HomePage({
 
         <ActionButton
           size="large"
-          onClick={onAdd}
+          onClick={() => navigate({ page: "add" })}
           className="w-full justify-center"
         >
           ＋ 새 단어 추가
@@ -179,7 +164,9 @@ export function HomePage({
         <section className="mt-7">
           <div className="mb-2.5 flex items-center justify-between [&_h2]:m-0 [&_h2]:text-[length:var(--seed-font-size-t5)] [&_button]:min-h-11 [&_button]:cursor-pointer [&_button]:border-0 [&_button]:bg-transparent [&_button]:font-bold [&_button]:text-[var(--seed-color-fg-brand)]">
             <h2>최근 단어</h2>
-            <button onClick={onOpenLibrary}>전체 보기</button>
+            <button onClick={() => navigate({ page: "library" })}>
+              전체 보기
+            </button>
           </div>
           <div
             className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pt-1 pb-3 [scroll-padding-inline:20px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -189,13 +176,14 @@ export function HomePage({
               <button
                 key={card.id}
                 onClick={() =>
-                  onOpenCards(
-                    cards.map((item) => item.id),
-                    Math.max(
+                  navigate({
+                    page: "card",
+                    cardIds: cards.map((item) => item.id),
+                    startIndex: Math.max(
                       0,
                       cards.findIndex((item) => item.id === card.id),
                     ),
-                  )
+                  })
                 }
                 className="flex min-h-[142px] w-[184px] shrink-0 snap-start cursor-pointer flex-col items-start justify-between rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-inherit shadow-[0_5px_18px_rgba(0,0,0,.045)] active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:block [&_b]:text-[length:var(--seed-font-size-t6)] [&_span]:block [&_div>span]:mt-1.5 [&_div>span]:line-clamp-2 [&_div>span]:leading-[1.4] [&_div>span]:text-[var(--seed-color-fg-neutral-subtle)]"
               >
@@ -226,7 +214,9 @@ export function HomePage({
               {reviewCandidates.map(({ meaning, stats }) => (
                 <button
                   key={meaning.id}
-                  onClick={() => onStartMeaning(meaning.id)}
+                  onClick={() =>
+                    navigate({ page: "study", meaningId: meaning.id })
+                  }
                   className="flex min-h-[142px] w-[184px] shrink-0 snap-start cursor-pointer flex-col items-start justify-between rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-inherit shadow-[0_5px_18px_rgba(0,0,0,.045)] active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:block [&_b]:text-[length:var(--seed-font-size-t6)] [&_span]:block [&_div>span]:mt-1.5 [&_div>span]:line-clamp-2 [&_div>span]:leading-[1.4] [&_div>span]:text-[var(--seed-color-fg-neutral-subtle)]"
                 >
                   <div>
@@ -255,7 +245,7 @@ export function HomePage({
                 <button
                   key={tag}
                   className="flex min-h-[150px] w-[228px] shrink-0 snap-start cursor-pointer flex-col items-start rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-[18px] text-left text-inherit shadow-[0_5px_18px_rgba(0,0,0,.045)] active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:text-[length:var(--seed-font-size-t6)] [&_b]:leading-[1.4] [&>span:last-child]:mt-auto [&>span:last-child]:pt-2.5 [&>span:last-child]:text-[length:var(--seed-font-size-t3)] [&>span:last-child]:text-[var(--seed-color-fg-neutral-subtle)]"
-                  onClick={() => onStartTag(tag)}
+                  onClick={() => navigate({ page: "study", tag })}
                 >
                   <b>{tag}</b>
                   <span>{taggedCards.length}개 단어</span>

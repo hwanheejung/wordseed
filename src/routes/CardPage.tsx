@@ -1,84 +1,115 @@
-import { useState } from "react";
-import {
-  normalizeTags,
-  type VocabularyCard,
-  useCardCollection,
-} from "@/entities/card";
-import {
-  cardToDraft,
-  CardReview,
-  type CardDraft,
-} from "@/features/manage-cards";
-import {
-  LearningCardSession,
-  startQueueAt,
-} from "@/features/study-session";
-
-interface EditState {
-  drafts: CardDraft[];
-  active: number;
-}
+import { useReducer, useState } from "react";
+import { ActionButton } from "seed-design/ui/action-button";
+import { navigate } from "@/shared/navigation";
+import { normalizeTags, type VocabularyCard, useCardsQuery } from "@/entities/card";
+import { CardVisibilitySheet, useCardVisibilityPreferences } from "@/features/configure-card-visibility";
+import { CardActionsMenu, CardEditor } from "@/features/manage-cards";
+import { createStudySession, getCurrentStudyItem, getNextStudyItem, getPreviousStudyItem, LearningCardSession, startQueueAt, studySessionReducer, submitStudyReview, type StudyQueueItem } from "@/features/study-session";
+import { AppHeader } from "@/shared/ui/app-header";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { PageLoadingState } from "@/shared/ui/page-loading-state";
 
 interface CardPageProps {
   cardIds: string[];
   startIndex: number;
-  onBack: () => void;
-  onDeleted: () => void | Promise<void>;
 }
 
-export function CardPage({
-  cardIds,
-  startIndex,
-  onBack,
-  onDeleted,
-}: CardPageProps) {
-  const { cards } = useCardCollection();
-  const [editState, setEditState] = useState<EditState>();
-  const cardsById = new Map(cards.map((card) => [card.id, card]));
-  const orderedCards = cardIds
-    .map((cardId) => cardsById.get(cardId))
-    .filter((card): card is VocabularyCard => Boolean(card));
-  const items = startQueueAt(orderedCards, startIndex).flatMap((card) =>
+export function CardPage({ cardIds, startIndex }: CardPageProps) {
+  const { cards, isLoading } = useCardsQuery({ ids: cardIds });
+
+  if (isLoading)
+    return (
+      <>
+        <AppHeader title="단어 카드" onBack={() => navigate({ page: "library" })} />
+        <PageLoadingState />
+      </>
+    );
+
+  const items = startQueueAt(cards, startIndex).flatMap((card) =>
     card.meanings.map((meaning) => ({ card, meaning })),
   );
 
-  const handleEdit = (card: VocabularyCard) =>
-    setEditState({ drafts: [cardToDraft(card)], active: 0 });
+  return <CardPageSession cards={cards} items={items} />;
+}
 
-  const handleSaved = () => setEditState(undefined);
+interface CardPageSessionProps {
+  cards: VocabularyCard[];
+  items: StudyQueueItem[];
+}
 
-  if (editState)
+function CardPageSession({ cards, items }: CardPageSessionProps) {
+  const [session, dispatch] = useReducer(studySessionReducer, items, createStudySession);
+  const item = getCurrentStudyItem(session);
+  const { preferences, savePreferences } = useCardVisibilityPreferences();
+  const [editingCard, setEditingCard] = useState<VocabularyCard>();
+  const [visibilityOpen, setVisibilityOpen] = useState(false);
+
+  if (editingCard)
     return (
-      <CardReview
-        drafts={editState.drafts}
+      <CardEditor
+        card={editingCard}
         availableTags={normalizeTags(cards.flatMap((card) => card.tags))}
-        active={editState.active}
-        onDraftsChange={(drafts) =>
-          setEditState((current) =>
-            current ? { ...current, drafts } : current,
-          )
-        }
-        onActiveChange={(active) =>
-          setEditState((current) =>
-            current ? { ...current, active } : current,
-          )
-        }
-        onBack={() => setEditState(undefined)}
-        onSaved={handleSaved}
-        onDeleted={onDeleted}
+        onClose={() => setEditingCard(undefined)}
+        onSaved={(card) => dispatch({ type: "cardReplaced", card })}
+        onDeleted={(cardId) => {
+          dispatch({ type: "cardRemoved", cardId });
+          setEditingCard(undefined);
+        }}
       />
     );
 
+  if (!item)
+    return (
+      <>
+        <AppHeader title="단어 카드" onBack={() => navigate({ page: "library" })} />
+        <main className="min-h-[calc(100vh-84px)] p-5">
+          <EmptyState
+            title="표시할 단어가 없어요"
+            description="단어장에서 다른 카드를 선택해 주세요."
+            action={<ActionButton onClick={() => navigate({ page: "library" })}>단어장으로</ActionButton>}
+          />
+        </main>
+      </>
+    );
+
   return (
-    <LearningCardSession
-      key={items.map((item) => item.card.updatedAt).join("|")}
-      title="단어 카드"
-      items={items}
-      emptyTitle="표시할 단어가 없어요"
-      emptyDescription="단어장에서 다른 카드를 선택해 주세요."
-      onBack={onBack}
-      onEdit={handleEdit}
-      subtitle={(item) => `${item.card.meanings.length}개 뜻`}
-    />
+    <>
+      <AppHeader
+        title="단어 카드"
+        subtitle={`${item.card.meanings.length}개 뜻`}
+        onBack={() => navigate({ page: "library" })}
+        action={
+          <CardActionsMenu
+            card={item.card}
+            onEdit={() => setEditingCard(item.card)}
+            onDeleted={(cardId) => dispatch({ type: "cardRemoved", cardId })}
+            onVisibility={() => setVisibilityOpen(true)}
+          />
+        }
+      />
+      <LearningCardSession
+        item={item}
+        previousItem={getPreviousStudyItem(session)}
+        nextItem={getNextStudyItem(session)}
+        layerCount={Math.max(session.queue.length, session.history.length)}
+        navigationRevision={session.revision}
+        concealedFields={preferences.concealedFields}
+        onNavigate={(direction) => dispatch({ type: "navigated", direction })}
+        onReview={async (result) =>
+          dispatch({
+            type: "reviewRecorded",
+            item: await submitStudyReview(item, result),
+            removeCorrectFromQueue: false,
+          })
+        }
+      />
+      <CardVisibilitySheet
+        key={preferences.concealedFields.join("|")}
+        open={visibilityOpen}
+        preferences={preferences}
+        onOpenChange={setVisibilityOpen}
+        onApply={savePreferences}
+      />
+    </>
   );
 }

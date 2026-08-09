@@ -1,5 +1,16 @@
 export type ReviewResult = "unknown" | "confusing" | "correct";
 
+export type ConcealableCardField =
+  | "expression"
+  | "partOfSpeech"
+  | "pronunciation"
+  | "definitionKo"
+  | "definitionEn"
+  | "synonyms"
+  | "antonyms"
+  | "exampleEn"
+  | "exampleKo";
+
 export interface Example {
   en: string;
   ko?: string;

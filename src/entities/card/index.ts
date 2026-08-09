@@ -8,10 +8,12 @@ export {
   replaceCardRepositorySnapshot,
   saveCard,
 } from "./api/local-card-repository";
-export { useCardCollection } from "./hooks/use-card-collection";
+export { useCardsQuery, type CardsQueryInput } from "./hooks/use-cards-query";
+export { useReviewStatsQuery } from "./hooks/use-review-stats-query";
 export type {
   CardRepositorySnapshot,
   CardWriteInput,
+  ConcealableCardField,
   Meaning,
   ReviewHistoryStats,
   ReviewResult,

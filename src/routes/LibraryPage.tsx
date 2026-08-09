@@ -6,57 +6,69 @@ import {
   Menu,
   TextField,
 } from "@seed-design/react";
+import { useEffect, useReducer } from "react";
 import {
   IconArrowClockwiseCircularLine,
   IconChevronDownSmallLine,
 } from "@karrotmarket/react-monochrome-icon";
-import { useCardCollection } from "@/entities/card";
+import { useCardsQuery } from "@/entities/card";
 import {
   getCardStatus,
   reviewResultMeta,
 } from "@/entities/card";
 import { LibraryBackupMenu } from "@/features/backup-library";
-import { TagFilterSheet, useCardFilters } from "@/features/filter-cards";
+import {
+  libraryFiltersReducer,
+  readLibraryFilters,
+  TagFilterSheet,
+} from "@/features/filter-cards";
+import { navigate } from "@/shared/navigation";
 import { AppHeader } from "../shared/ui/app-header";
 import { EmptyState } from "../shared/ui/empty-state";
 
-export function LibraryPage({
-  onBack,
-  onOpen,
-}: {
-  onBack: () => void;
-  onOpen: (cardIds: string[], index: number) => void;
-}) {
-  const { cards } = useCardCollection();
-  const {
-    availableTags,
-    filter,
-    filtered,
-    hasFilters,
-    resetFilters,
-    search,
-    setFilter,
-    setSearch,
-    setSort,
-    setTagFilter,
-    sort,
-    tagFilter,
-  } = useCardFilters(cards);
+export function LibraryPage() {
+  const [filters, dispatch] = useReducer(
+    libraryFiltersReducer,
+    undefined,
+    readLibraryFilters,
+  );
+  const { cards, availableTags, totalCount } = useCardsQuery({
+    search: filters.search,
+    status: filters.status === "all" ? undefined : filters.status,
+    tags: filters.tags,
+    sort: filters.sort,
+  });
+
+  // Synchronize the declarative library query variables with the browser URL.
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set("sort", filters.sort);
+    if (filters.status !== "all") params.set("status", filters.status);
+    filters.tags.forEach((tag) => params.append("tag", tag));
+    if (filters.search.trim()) params.set("q", filters.search.trim());
+    window.history.replaceState(
+      { entry: { page: "library" } },
+      "",
+      `/library?${params.toString()}`,
+    );
+  }, [filters]);
 
   return (
     <>
       <AppHeader
         title="내 단어"
-        subtitle={`전체 ${cards.length}개`}
-        onBack={onBack}
+        subtitle={`전체 ${totalCount}개`}
+        onBack={() => navigate({ page: "home" })}
         action={<LibraryBackupMenu />}
       />
       <main className="min-h-[calc(100vh-84px)] p-5 pb-[100px]">
         <TextField.Root>
           <TextField.Input
             aria-label="단어 또는 뜻 검색"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            value={filters.search}
+            onChange={(event) =>
+              dispatch({ type: "searchChanged", search: event.target.value })
+            }
             placeholder="단어 또는 뜻 검색"
           />
         </TextField.Root>
@@ -65,13 +77,13 @@ export function LibraryPage({
           align="center"
           aria-label="정렬과 필터"
         >
-          {hasFilters && (
+          {(filters.status !== "all" || filters.tags.length > 0) && (
             <Chip.Root
               size="large"
               layout="iconOnly"
               variant="outlineStrong"
               aria-label="필터 초기화"
-              onClick={resetFilters}
+              onClick={() => dispatch({ type: "filtersReset" })}
             >
               <Icon svg={<IconArrowClockwiseCircularLine />} />
             </Chip.Root>
@@ -80,7 +92,7 @@ export function LibraryPage({
             <Menu.Trigger asChild>
               <Chip.Root size="large" variant="solid" aria-label="단어 정렬">
                 <Chip.Label>
-                  {sort === "newest" ? "최신순" : "오래된순"}
+                  {filters.sort === "newest" ? "최신순" : "오래된순"}
                 </Chip.Label>
                 <Chip.SuffixIcon>
                   <IconChevronDownSmallLine />
@@ -89,10 +101,10 @@ export function LibraryPage({
             </Menu.Trigger>
             <Menu.Positioner>
               <Menu.Content>
-                <Menu.Item onClick={() => setSort("newest")}>
+                <Menu.Item onClick={() => dispatch({ type: "sortChanged", sort: "newest" })}>
                   <Menu.ItemLabel>최신순</Menu.ItemLabel>
                 </Menu.Item>
-                <Menu.Item onClick={() => setSort("oldest")}>
+                <Menu.Item onClick={() => dispatch({ type: "sortChanged", sort: "oldest" })}>
                   <Menu.ItemLabel>오래된순</Menu.ItemLabel>
                 </Menu.Item>
               </Menu.Content>
@@ -102,11 +114,11 @@ export function LibraryPage({
             <Menu.Trigger asChild>
               <Chip.Root
                 size="large"
-                variant={filter === "all" ? "outlineStrong" : "solid"}
+                variant={filters.status === "all" ? "outlineStrong" : "solid"}
                 aria-label="학습 상태"
               >
                 <Chip.Label>
-                  {filter === "all" ? "학습 상태" : reviewResultMeta[filter].label}
+                  {filters.status === "all" ? "학습 상태" : reviewResultMeta[filters.status].label}
                 </Chip.Label>
                 <Chip.SuffixIcon>
                   <IconChevronDownSmallLine />
@@ -116,7 +128,7 @@ export function LibraryPage({
             <Menu.Positioner>
               <Menu.Content>
                 {(["unknown", "confusing", "correct"] as const).map((value) => (
-                  <Menu.Item key={value} onClick={() => setFilter(value)}>
+                  <Menu.Item key={value} onClick={() => dispatch({ type: "statusChanged", status: value })}>
                     <Menu.ItemLabel>{reviewResultMeta[value].label}</Menu.ItemLabel>
                   </Menu.Item>
                 ))}
@@ -126,13 +138,13 @@ export function LibraryPage({
           {availableTags.length > 0 && (
             <TagFilterSheet
               options={availableTags}
-              selected={tagFilter}
-              onChange={setTagFilter}
+              selected={filters.tags}
+              onChange={(tags) => dispatch({ type: "tagsChanged", tags })}
             />
           )}
         </Flex>
         <div className="grid gap-2.5">
-          {filtered.map((card, index) => (
+          {cards.map((card, index) => (
             <article
               key={card.id}
               className="overflow-hidden rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)]"
@@ -140,10 +152,11 @@ export function LibraryPage({
               <button
                 className="grid min-h-[100px] w-full cursor-pointer grid-cols-[1fr_auto] gap-3 border-0 bg-transparent p-4 text-left text-inherit [&>span]:self-center [&>span]:text-2xl [&>span]:text-[var(--seed-color-fg-neutral-subtle)] [&_p]:mt-[7px] [&_p]:mb-1 [&_p]:text-[var(--seed-color-fg-neutral-muted)] [&_small]:text-[var(--seed-color-fg-neutral-subtle)]"
                 onClick={() =>
-                  onOpen(
-                    filtered.map((item) => item.id),
-                    index,
-                  )
+                  navigate({
+                    page: "card",
+                    cardIds: cards.map((item) => item.id),
+                    startIndex: index,
+                  })
                 }
               >
                 <div>
@@ -175,7 +188,7 @@ export function LibraryPage({
               </button>
             </article>
           ))}
-          {!filtered.length && (
+          {!cards.length && (
             <EmptyState
               title="일치하는 단어가 없어요"
               description="검색어나 필터를 바꿔 보세요."

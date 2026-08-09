@@ -8,6 +8,8 @@ export type {
   Provenance,
 } from "./types/card-draft";
 export { CardReview } from "./ui/card-review";
+export { CardEditor } from "./ui/card-editor";
+export { CardActionsMenu } from "./ui/card-actions-menu";
 export { CandidateSelection } from "./ui/candidate-selection";
 export { CaptureCards } from "./ui/capture-cards";
 export {

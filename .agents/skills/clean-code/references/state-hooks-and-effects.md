@@ -36,7 +36,10 @@ Prefer:
 Avoid:
 
 ```ts
-{ type: "setStep"; step: string }
+{
+  type: "setStep";
+  step: string;
+}
 ```
 
 ## Custom hooks
@@ -57,6 +60,8 @@ Avoid vague names and responsibilities:
 - `usePageLogic`
 
 Never hide navigation, unrelated mutations, and multiple feature states inside one hook.
+
+Treat a hook returning more than four top-level values as an architectural smell. Before adding another value, reconsider whether the hook mixes query data, UI state, navigation, or mutations that should remain page-owned or be split into narrower contracts. The threshold is a review trigger, not permission to bundle four unrelated values.
 
 ## Effects
 

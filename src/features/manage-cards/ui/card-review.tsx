@@ -2,6 +2,7 @@ import { Chip, Flex, TextField } from "@seed-design/react";
 import { useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import { normalizeTags } from "@/entities/card";
+import type { VocabularyCard } from "@/entities/card";
 import { useAppSnackbar } from "@/shared/hooks/use-app-snackbar";
 import { AppHeader } from "@/shared/ui/app-header";
 import { deleteVocabularyCard } from "../actions/delete-card";
@@ -22,7 +23,7 @@ interface CardReviewProps {
   onDraftsChange: (drafts: CardDraft[]) => void;
   onActiveChange: (active: number) => void;
   onBack: () => void;
-  onSaved: () => void | Promise<void>;
+  onSaved: (cards: VocabularyCard[]) => void | Promise<void>;
   onDeleted: () => void | Promise<void>;
 }
 
@@ -188,9 +189,9 @@ export function CardReview({
     }
     setBusy(true);
     try {
-      await saveDrafts(drafts, confirmOverwrite);
+      const savedCards = await saveDrafts(drafts, confirmOverwrite);
       notify(`${drafts.length}개의 카드를 저장했어요.`, "positive");
-      await onSaved();
+      await onSaved(savedCards);
     } finally {
       setBusy(false);
     }

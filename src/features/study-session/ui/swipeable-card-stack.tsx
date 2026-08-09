@@ -1,6 +1,7 @@
 import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useRef } from "react";
 import { VocabularyCardView } from "@/entities/card";
+import type { ConcealableCardField } from "@/entities/card";
 import type { StudyQueueItem } from "../types/study-queue-item";
 import { speak } from "@/shared/utils/speech";
 
@@ -10,6 +11,7 @@ export function SwipeableCardStack({
   nextItem,
   itemCount,
   navigationRevision,
+  concealedFields = [],
   showAllMeanings = false,
   onNavigate,
 }: {
@@ -18,10 +20,13 @@ export function SwipeableCardStack({
   nextItem?: StudyQueueItem;
   itemCount: number;
   navigationRevision: number;
+  concealedFields?: ConcealableCardField[];
   showAllMeanings?: boolean;
   onNavigate: (direction: "next" | "previous") => void;
 }) {
   const navigationPending = useRef(false);
+  const dragIntent = useRef(false);
+  const dragStartX = useRef(0);
   const [viewportRef, emblaApi] = useEmblaCarousel({
     active: Boolean(previousItem || nextItem),
     align: "center",
@@ -44,14 +49,22 @@ export function SwipeableCardStack({
       const selectedIndex = emblaApi.selectedScrollSnap();
       if (selectedIndex === 1 || navigationPending.current) return;
 
+      if (!dragIntent.current) {
+        emblaApi.scrollTo(1, true);
+
+        return;
+      }
+
       const destination = selectedIndex === 2 ? nextItem : previousItem;
       if (!destination) {
+        dragIntent.current = false;
         emblaApi.scrollTo(1);
 
         return;
       }
 
       navigationPending.current = true;
+      dragIntent.current = false;
       onNavigate(selectedIndex === 2 ? "next" : "previous");
     };
 
@@ -68,6 +81,7 @@ export function SwipeableCardStack({
     emblaApi.reInit({ startIndex: 1 });
     emblaApi.scrollTo(1, true);
     navigationPending.current = false;
+    dragIntent.current = false;
   }, [emblaApi, navigationRevision]);
 
   return (
@@ -89,6 +103,18 @@ export function SwipeableCardStack({
       <div
         ref={viewportRef}
         className="relative z-5 h-[calc(100%-48px)] overflow-hidden touch-pan-y"
+        onPointerDown={(event) => {
+          dragStartX.current = event.clientX;
+          dragIntent.current = false;
+        }}
+        onPointerMove={(event) => {
+          if (Math.abs(event.clientX - dragStartX.current) > 24)
+            dragIntent.current = true;
+        }}
+        onPointerUp={() => window.setTimeout(() => (dragIntent.current = false))}
+        onPointerCancel={() => {
+          dragIntent.current = false;
+        }}
       >
         <div className="-ml-5 flex h-full cursor-grab select-none active:cursor-grabbing">
           {slides.map((slide, index) => (
@@ -101,6 +127,7 @@ export function SwipeableCardStack({
                 fragment={slide.card}
                 meaningId={showAllMeanings ? undefined : slide.meaning.id}
                 onPronounce={speak}
+                concealedFields={concealedFields}
               />
             </div>
           ))}

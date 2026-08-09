@@ -8,10 +8,10 @@ import { StudyPage } from "../routes/StudyPage";
 import { FillInTheBlankTestPage } from "../routes/FillInTheBlankTestPage";
 import { BottomNavigation } from "@/widgets/bottom-navigation";
 import { SnackbarAvoidOverlap } from "seed-design/ui/snackbar";
-import { useAppNavigation } from "./navigation/use-app-navigation";
+import { useNavigationEntry } from "@/shared/navigation";
 
 export default function App() {
-  const { entry, navigate } = useAppNavigation();
+  const entry = useNavigationEntry();
 
   return (
     <div
@@ -19,61 +19,25 @@ export default function App() {
     >
       {match(entry)
         .with({ page: "home" }, () => (
-          <HomePage
-            onAdd={() => navigate({ page: "add" })}
-            onOpenLibrary={() => navigate({ page: "library" })}
-            onStartStudy={() => navigate({ page: "study" })}
-            onStartFocusStudy={() => navigate({ page: "focus-study" })}
-            onStartFillInTheBlankTest={() =>
-              navigate({ page: "fill-in-the-blank-test" })
-            }
-            onStartMeaning={(meaningId) =>
-              navigate({ page: "study", meaningId })
-            }
-            onOpenCards={(cardIds, startIndex) =>
-              navigate({ page: "card", cardIds, startIndex })
-            }
-            onStartTag={(tag) => navigate({ page: "study", tag })}
-          />
+          <HomePage />
         ))
         .with({ page: "add" }, () => (
-          <AddCardPage
-            onBack={() => navigate({ page: "home" })}
-            onComplete={() => navigate({ page: "home" })}
-          />
+          <AddCardPage />
         ))
         .with({ page: "study" }, ({ tag, meaningId }) => (
-          <StudyPage
-            tag={tag}
-            meaningId={meaningId}
-            onBack={() => navigate({ page: "home" })}
-          />
+          <StudyPage tag={tag} meaningId={meaningId} />
         ))
         .with({ page: "focus-study" }, () => (
-          <FocusStudyPage
-            onBack={() => navigate({ page: "home" })}
-          />
+          <FocusStudyPage />
         ))
         .with({ page: "fill-in-the-blank-test" }, () => (
-          <FillInTheBlankTestPage
-            onBack={() => navigate({ page: "home" })}
-          />
+          <FillInTheBlankTestPage />
         ))
         .with({ page: "card" }, ({ cardIds, startIndex }) => (
-          <CardPage
-            cardIds={cardIds}
-            startIndex={startIndex}
-            onBack={() => navigate({ page: "library" })}
-            onDeleted={() => navigate({ page: "library" })}
-          />
+          <CardPage cardIds={cardIds} startIndex={startIndex} />
         ))
         .with({ page: "library" }, () => (
-          <LibraryPage
-            onBack={() => navigate({ page: "home" })}
-            onOpen={(cardIds, startIndex) =>
-              navigate({ page: "card", cardIds, startIndex })
-            }
-          />
+          <LibraryPage />
         ))
         .exhaustive()}
       {(entry.page === "home" ||
@@ -82,9 +46,6 @@ export default function App() {
         <SnackbarAvoidOverlap>
           <BottomNavigation
             activePage={entry.page}
-            onHome={() => navigate({ page: "home" })}
-            onAdd={() => navigate({ page: "add" })}
-            onLibrary={() => navigate({ page: "library" })}
           />
         </SnackbarAvoidOverlap>
       )}

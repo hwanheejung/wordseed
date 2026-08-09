@@ -1,3 +1,4 @@
+import type { VocabularyCard } from "@/entities/card";
 import type { StudyQueueItem } from "../types/study-queue-item";
 import { moveReviewedCardToBack, updateFocusQueue } from "./scheduler";
 
@@ -143,6 +144,56 @@ export function reviewStudySession(
       : queue.length
         ? undefined
         : state.historyIndex,
+    revision: state.revision + 1,
+  };
+}
+
+export function replaceCardInStudySession(
+  state: StudySessionState,
+  card: VocabularyCard,
+): StudySessionState {
+  const replaceItem = (item: StudyQueueItem) => {
+    if (item.card.id !== card.id) return item;
+    const meaning = card.meanings.find(
+      (candidate) => candidate.id === item.meaning.id,
+    );
+
+    return meaning ? { card, meaning } : undefined;
+  };
+
+  const queue = state.queue
+    .map(replaceItem)
+    .filter((item): item is StudyQueueItem => Boolean(item));
+  const history = state.history
+    .map(replaceItem)
+    .filter((item): item is StudyQueueItem => Boolean(item));
+
+  return {
+    queue,
+    history,
+    historyIndex:
+      state.historyIndex === undefined
+        ? undefined
+        : Math.min(state.historyIndex, Math.max(0, history.length - 1)),
+    revision: state.revision + 1,
+  };
+}
+
+export function removeCardFromStudySession(
+  state: StudySessionState,
+  cardId: string,
+): StudySessionState {
+  const queue = state.queue.filter(({ card }) => card.id !== cardId);
+  const history = state.history.filter(({ card }) => card.id !== cardId);
+
+  return {
+    queue,
+    history,
+    historyIndex: queue.length
+      ? undefined
+      : history.length
+        ? history.length - 1
+        : undefined,
     revision: state.revision + 1,
   };
 }

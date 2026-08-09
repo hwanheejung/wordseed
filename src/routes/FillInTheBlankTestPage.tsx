@@ -1,26 +1,27 @@
-import { useCardCollection } from "@/entities/card";
+import { useCardsQuery } from "@/entities/card";
 import {
   buildFillInTheBlankQueue,
   FillInTheBlankTestSession,
 } from "@/features/fill-in-the-blank-test";
 import { PageLoadingState } from "../shared/ui/page-loading-state";
+import { navigate } from "@/shared/navigation";
+import { AppHeader } from "@/shared/ui/app-header";
 
-interface FillInTheBlankTestPageProps {
-  onBack: () => void;
-}
-
-export function FillInTheBlankTestPage({
-  onBack,
-}: FillInTheBlankTestPageProps) {
-  const { cards, isLoading } = useCardCollection();
+export function FillInTheBlankTestPage() {
+  const { cards, isLoading } = useCardsQuery();
 
   if (isLoading)
-    return <PageLoadingState title="빈칸 채우기" onBack={onBack} />;
+    return (
+      <>
+        <AppHeader title="빈칸 채우기" onBack={() => navigate({ page: "home" })} />
+        <PageLoadingState />
+      </>
+    );
 
   return (
     <FillInTheBlankTestSession
       items={buildFillInTheBlankQueue(cards)}
-      onBack={onBack}
+      onBack={() => navigate({ page: "home" })}
     />
   );
 }

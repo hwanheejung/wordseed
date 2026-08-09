@@ -1,7 +1,8 @@
 import { useEffect, useReducer } from "react";
 import { match } from "ts-pattern";
 import { z } from "zod";
-import { normalizeTags, useCardCollection } from "@/entities/card";
+import { navigate } from "@/shared/navigation";
+import { normalizeTags, useCardsQuery } from "@/entities/card";
 import {
   CardReview,
   type CardDraft,
@@ -46,16 +47,8 @@ type AddCardAction =
   | { type: "activeCardChanged"; active: number }
   | { type: "reviewCancelled" };
 
-interface AddCardPageProps {
-  onBack: () => void;
-  onComplete: () => void;
-}
-
-export function AddCardPage({
-  onBack,
-  onComplete,
-}: AddCardPageProps) {
-  const { cards } = useCardCollection();
+export function AddCardPage() {
+  const { cards } = useCardsQuery();
   const notify = useAppSnackbar();
   const [state, dispatch] = useReducer(
     addCardReducer,
@@ -99,7 +92,7 @@ export function AddCardPage({
     await saveDrafts(drafts, confirmOverwrite);
     notify(`${drafts.length}개의 카드를 저장했어요.`, "positive");
     clearAddCardSession();
-    onComplete();
+    navigate({ page: "home" });
   };
 
   const handleDraftChange = (drafts: CardDraft[]) =>
@@ -113,7 +106,7 @@ export function AddCardPage({
 
   const handleComplete = () => {
     clearAddCardSession();
-    onComplete();
+    navigate({ page: "home" });
   };
 
   // Synchronize the in-progress Add Card flow with sessionStorage.
@@ -128,7 +121,7 @@ export function AddCardPage({
         image={input.image}
         onTextChange={(text) => handleInputChange({ ...input, text })}
         onImageChange={(image) => handleInputChange({ ...input, image })}
-        onBack={onBack}
+        onBack={() => navigate({ page: "home" })}
         onDrafts={handleDrafts}
         onCandidates={handleCandidates}
       />
