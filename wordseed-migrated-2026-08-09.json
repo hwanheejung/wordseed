@@ -3009,7 +3009,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The painting is intrinsically beautiful, even without its famous signature.",
           "ko": "그 그림은 유명한 서명이 없어도 본질적으로 아름답다.",
@@ -3056,7 +3056,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The scandal diminished public trust in the company.",
           "ko": "그 스캔들은 회사에 대한 대중의 신뢰를 약화시켰다.",
@@ -3105,7 +3105,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The residents elected a new mayor.",
           "type": "sentence",
@@ -3153,7 +3153,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The report exposed flaws in the safety system.",
           "ko": "그 보고서는 안전 시스템의 결함을 드러냈다.",
@@ -3200,7 +3200,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "High costs remain a barrier to education.",
           "ko": "높은 비용은 여전히 교육의 장애물이다.",
@@ -3252,7 +3252,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "He struggled to come to terms with the news.",
           "ko": "그는 그 소식을 받아들이는 데 어려움을 겪었다.",
@@ -3304,7 +3304,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Be careful not to spill coffee on the report.",
           "type": "sentence",
@@ -3357,7 +3357,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The goods are currently in transit to the warehouse.",
           "ko": "물품은 현재 창고로 운송 중이다.",
@@ -3407,7 +3407,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The jeweler delivered a flawless diamond.",
           "ko": "보석상은 흠이 없는 다이아몬드를 전달했다.",
@@ -3461,7 +3461,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The cold draft came through the window.",
           "type": "sentence",
@@ -3508,7 +3508,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The report was based on an erroneous assumption.",
           "ko": "그 보고서는 잘못된 가정에 근거했다.",
@@ -3558,7 +3558,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A piece of glass lodged in his shoe.",
           "type": "sentence",
@@ -3603,7 +3603,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The latest trend in office design is toward flexible shared spaces.",
           "ko": "사무실 디자인의 최신 추세는 유연한 공유 공간을 향하고 있다.",
@@ -3652,7 +3652,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Doctors said the premature baby was viable with intensive care.",
           "type": "sentence",
@@ -3711,7 +3711,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The factory replaced most manual tasks with mechanized equipment.",
           "ko": "그 공장은 대부분의 수작업을 기계화된 장비로 대체했다.",
@@ -3765,7 +3765,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Who manages the restaurant while the owner is away?",
           "ko": "주인이 없는 동안 누가 그 식당을 관리하나요?",
@@ -3816,7 +3816,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Did you finish the report?\nB: Yes, I managed to send it before the deadline.",
           "ko": "A: 보고서 끝냈어?\nB: 응, 마감 전에 간신히 보냈어.",
@@ -3863,7 +3863,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A figure emerged from the fog.",
           "type": "sentence",
@@ -3909,7 +3909,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: What happened after the audit?\nB: Several problems emerged.",
           "type": "dialogue",
@@ -3958,7 +3958,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "International aid helped the country recover from famine.",
           "ko": "국제 원조가 그 나라의 기근 회복을 도왔다.",
@@ -4007,7 +4007,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Under no circumstances should you share your password.",
           "type": "sentence",
@@ -4062,7 +4062,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The nurses may go on strike next month.",
           "ko": "간호사들이 다음 달에 파업에 들어갈 수도 있다.",
@@ -4109,7 +4109,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The report examines the economic impact of tourism.",
           "type": "sentence",
@@ -4161,7 +4161,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "His aptitude for math became clear in high school.",
           "ko": "그의 수학적 재능은 고등학교에서 분명해졌다.",
@@ -4221,7 +4221,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We were looking for a move-in ready house because we didn't have time for repairs.",
           "ko": "우리는 수리할 시간이 없어서 바로 입주할 수 있는 집을 찾고 있었다.",
@@ -4268,7 +4268,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She struggled to maintain her balance.",
           "ko": "그녀는 균형을 유지하려고 애썼다.",
@@ -4314,7 +4314,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Place the package on the balance.",
           "ko": "소포를 저울 위에 올려놓아라.",
@@ -4362,7 +4362,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Can I afford this purchase?\nB: Check your account balance first.",
           "type": "dialogue",
@@ -4408,7 +4408,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "It is difficult to balance work and family.",
           "ko": "일과 가정의 균형을 잡기는 어렵다.",
@@ -4456,7 +4456,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The music helped me relax after work.",
           "type": "sentence",
@@ -4501,7 +4501,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The guide told us a fascinating story about the ancient temple.",
           "ko": "가이드는 고대 사원에 관한 매혹적인 이야기를 들려주었다.",
@@ -4551,7 +4551,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "I will coordinate the meeting times.",
           "ko": "내가 회의 시간을 조정할게.",
@@ -4604,7 +4604,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The blue pillows coordinate with the rug.",
           "ko": "파란 베개가 깔개와 조화를 이룬다.",
@@ -4660,7 +4660,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Selling the house should be our last resort.",
           "ko": "집을 파는 것은 우리의 최후의 수단이어야 한다.",
@@ -4722,7 +4722,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Volunteering there was worthwhile.",
           "ko": "그곳에서 자원봉사한 것은 애쓸 가치가 있었다.",
@@ -4776,7 +4776,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The weather is variable in the mountains.",
           "ko": "산에서는 날씨가 자주 변한다.",
@@ -4831,7 +4831,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Researchers controlled every variable except age.",
           "ko": "연구진은 나이를 제외한 모든 변수를 통제했다.",
@@ -4882,7 +4882,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The court will judge the case next week.",
           "ko": "법원은 다음 주에 그 사건을 재판할 것이다.",
@@ -4931,7 +4931,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Should I judge the proposal now?\nB: Wait until you review all the evidence.",
           "type": "dialogue",
@@ -4979,7 +4979,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The judge sentenced the defendant to two years in prison.",
           "type": "sentence",
@@ -5026,7 +5026,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The publisher rejected his manuscript.",
           "type": "sentence",
@@ -5077,7 +5077,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Their goals are incompatible, so they cannot work together.",
           "ko": "그들의 목표는 양립할 수 없어서 함께 일할 수 없다.",
@@ -5132,7 +5132,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Her greatest virtue is her honesty.",
           "ko": "그녀의 가장 큰 미덕은 정직함이다.",
@@ -5184,7 +5184,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Stir the sugar into the coffee.",
           "ko": "커피에 설탕을 저어 넣으세요.",
@@ -5232,7 +5232,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Did you prepare remarks for the meeting?\nB: No, I just spoke off the cuff.",
           "type": "dialogue",
@@ -5276,7 +5276,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The new policy substantially reduced waiting times.",
           "ko": "새 정책은 대기 시간을 크게 줄였다.",
@@ -5319,7 +5319,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Has the neighborhood changed much?\nB: No, it is substantially the same.",
           "ko": "A: 동네가 많이 변했나요?\nB: 아니요, 대체로 똑같아요.",
@@ -5368,7 +5368,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "I found a job advertisement on the bulletin board.",
           "ko": "게시판에서 구인 광고를 찾았다.",
@@ -5417,7 +5417,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Ignoring the leak will exacerbate the damage.",
           "ko": "누수를 무시하면 피해가 악화될 것이다.",
@@ -5474,7 +5474,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The farmers learned to exploit the fertile land.",
           "ko": "농부들은 비옥한 땅을 개발하는 법을 배웠다.",
@@ -5527,7 +5527,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We need a reliable source for this information.",
           "ko": "이 정보에 대한 믿을 수 있는 출처가 필요하다.",
@@ -5575,7 +5575,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The negotiations ultimately led to a new agreement.",
           "ko": "협상은 결국 새로운 합의로 이어졌다.",
@@ -5637,7 +5637,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The hospital augmented its staff during the winter surge.",
           "ko": "그 병원은 겨울철 급증 기간에 직원을 늘렸다.",
@@ -5689,7 +5689,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A prudent investor checks the risks before buying shares.",
           "type": "sentence",
@@ -5744,7 +5744,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The witness gave a credible account of what happened.",
           "ko": "그 목격자는 무슨 일이 있었는지 믿을 수 있는 설명을 했다.",
@@ -5795,7 +5795,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "I had to adjust the schedule because of the delay.",
           "ko": "지연 때문에 일정을 조정해야 했다.",
@@ -5838,7 +5838,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The cake had a beautifully stratified structure.",
           "ko": "그 케이크는 아름답게 층으로 이루어진 구조를 보였다.",
@@ -5890,7 +5890,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We need to book a larger venue for the annual conference.",
           "ko": "연례 학회를 위해 더 큰 장소를 예약해야 한다.",
@@ -5941,7 +5941,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The company fulfilled all the contract requirements.",
           "ko": "그 회사는 계약의 모든 요구 사항을 이행했다.",
@@ -5987,7 +5987,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The team accomplished the task before noon.",
           "ko": "팀은 정오 전에 그 일을 완수했다.",
@@ -6034,7 +6034,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Her score was above average.",
           "type": "sentence",
@@ -6083,7 +6083,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Can this space help us?\nB: Yes, we can utilize it for storage.",
           "type": "dialogue",
@@ -6129,7 +6129,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The committee issued new guidelines with regard to workplace safety.",
           "ko": "위원회는 직장 안전에 관한 새로운 지침을 발표했다.",
@@ -6182,7 +6182,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We need a comprehensive plan before starting the project.",
           "type": "sentence",
@@ -6240,7 +6240,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The committee nominated Maria as its new chair.",
           "ko": "위원회는 마리아를 새 의장으로 지명했다.",
@@ -6291,7 +6291,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Taking the train is a good alternative to driving.",
           "ko": "기차를 타는 것은 운전의 좋은 대안이다.",
@@ -6339,7 +6339,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The evidence compelled her to change her decision.",
           "ko": "그 증거는 그녀가 결정을 바꾸도록 강요했다.",
@@ -6390,7 +6390,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "It took a lot of effort to finish the report on time.",
           "ko": "보고서를 제때 끝내려면 많은 노력이 필요했다.",
@@ -6438,7 +6438,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please report any immediate danger to the police.",
           "type": "sentence",
@@ -6482,7 +6482,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The zoo will release the rescued bird tomorrow.",
           "ko": "동물원은 내일 구조한 새를 풀어 줄 것이다.",
@@ -6535,7 +6535,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We compared prices before buying.",
           "ko": "우리는 구매 전에 가격을 비교했다.",
@@ -6596,7 +6596,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The flashing light was our cue to leave.",
           "ko": "깜박이는 불빛은 우리가 떠나야 한다는 신호였다.",
@@ -6655,7 +6655,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The director cued the musicians to begin.",
           "ko": "감독은 음악가들에게 시작하라는 신호를 보냈다.",
@@ -6700,7 +6700,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Her workday is varied and never boring.",
           "ko": "그녀의 근무일은 다양해서 결코 지루하지 않다.",
@@ -6748,7 +6748,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please quote the source accurately.",
           "ko": "출처를 정확히 인용해 주세요.",
@@ -6798,7 +6798,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "That quote comes from a nineteenth-century novel.",
           "ko": "그 인용구는 19세기 소설에서 나온 것이다.",
@@ -6847,7 +6847,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The curtains complement the furniture.",
           "type": "sentence",
@@ -6895,7 +6895,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Her term as chair ends in December.",
           "ko": "그녀의 의장 임기는 12월에 끝난다.",
@@ -6947,7 +6947,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The report defines each technical term.",
           "ko": "그 보고서는 각 전문 용어를 정의한다.",
@@ -6996,7 +6996,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Payment within thirty days is a standard term of the agreement.",
           "ko": "30일 이내 지급은 그 계약의 표준 조건이다.",
@@ -7053,7 +7053,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Water the basil before it starts to wilt.",
           "ko": "바질이 시들기 시작하기 전에 물을 줘.",
@@ -7106,7 +7106,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The new library is slated to open next spring.",
           "ko": "새 도서관은 내년 봄에 문을 열 예정이다.",
@@ -7160,7 +7160,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Her imaginative design won first prize.",
           "ko": "그녀의 상상력 풍부한 디자인이 1등을 했다.",
@@ -7209,7 +7209,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The study examines how gender affects career choices.",
           "type": "sentence",
@@ -7255,7 +7255,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Use the app to magnify the text.",
           "ko": "앱을 사용해 글자를 확대하세요.",
@@ -7307,7 +7307,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Fear can magnify a small problem.",
           "ko": "두려움은 작은 문제를 과장할 수 있다.",
@@ -7358,7 +7358,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The hotel is located near the airport.",
           "ko": "그 호텔은 공항 근처에 위치해 있다.",
@@ -7409,7 +7409,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The board meets once a month.",
           "ko": "이사회는 한 달에 한 번 회의를 연다.",
@@ -7463,7 +7463,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Lay the board across the two supports.",
           "ko": "두 받침대 위에 판자를 걸쳐 놓으세요.",
@@ -7514,7 +7514,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She pinned the announcement to the board.",
           "ko": "그녀는 공지를 게시판에 고정했다.",
@@ -7570,7 +7570,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We boarded the train just before departure.",
           "ko": "우리는 출발 직전에 기차에 탔다.",
@@ -7629,7 +7629,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "It was plain that she was upset.",
           "ko": "그녀가 화났다는 것은 명백했다.",
@@ -7676,7 +7676,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The scientist proposed a brilliant solution.",
           "type": "sentence",
@@ -7721,7 +7721,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "It was apparent that he was tired.",
           "ko": "그가 피곤하다는 것이 명백했다.",
@@ -7768,7 +7768,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The washing machine started to vibrate loudly.",
           "ko": "세탁기가 큰 소리를 내며 진동하기 시작했다.",
@@ -7812,7 +7812,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The twins wore identical jackets.",
           "type": "sentence",
@@ -7862,7 +7862,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The judge gave him a harsh sentence.",
           "ko": "판사는 그에게 가혹한 형을 선고했다.",
@@ -7924,7 +7924,7 @@
           "type": "dialogue"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The scientist affirmed that the results were reliable.",
           "ko": "그 과학자는 그 결과가 신뢰할 만하다고 확언했다.",
@@ -7980,7 +7980,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The court affirmed the lower court’s decision.",
           "ko": "법원은 하급심의 판결을 유지했다.",
@@ -8029,7 +8029,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The report accused the manager of ignoring safety rules.",
           "ko": "그 보고서는 관리자가 안전 규칙을 무시했다고 비난했다.",
@@ -8073,7 +8073,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Our principal goal is to improve customer service.",
           "type": "sentence",
@@ -8119,7 +8119,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The principal announced the new school policy.",
           "type": "sentence",
@@ -8162,7 +8162,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The lawyer's tenuous argument failed to convince the jury.",
           "ko": "그 변호사의 빈약한 주장은 배심원을 설득하지 못했다.",
@@ -8212,7 +8212,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Teaching children is his greatest passion.",
           "type": "sentence",
@@ -8262,7 +8262,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Our store competes with larger chains on price.",
           "ko": "우리 가게는 가격 면에서 더 큰 체인점들과 경쟁한다.",
@@ -8311,7 +8311,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The conference attracted a diverse group of artists and engineers.",
           "ko": "그 회의에는 다양한 예술가와 엔지니어들이 모였다.",
@@ -8366,7 +8366,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Only specially adapted plants can survive in this arid region.",
           "type": "sentence",
@@ -8420,7 +8420,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The charity was founded by local doctors.",
           "type": "sentence",
@@ -8470,7 +8470,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The team expended considerable energy solving the problem.",
           "type": "sentence",
@@ -8523,7 +8523,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The lecture covers a difficult subject.",
           "type": "sentence",
@@ -8575,7 +8575,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "My daughter is in the fifth grade.",
           "ko": "내 딸은 5학년이다.",
@@ -8624,7 +8624,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "After years of work, her dream materialized.",
           "type": "sentence",
@@ -8668,7 +8668,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Lack of funding became a major impediment to the project.",
           "type": "sentence",
@@ -8715,7 +8715,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "This custom is peculiar to the northern region.",
           "ko": "이 관습은 북부 지역 특유의 것이다.",
@@ -8759,7 +8759,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The machine made a peculiar noise during the test.",
           "ko": "그 기계는 시험 중 이상한 소리를 냈다.",
@@ -8811,7 +8811,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The city took several measures to prevent flooding.",
           "ko": "시는 홍수를 막기 위해 여러 대책을 마련했다.",
@@ -8869,7 +8869,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: How wide is the window?\nB: I’ll measure it before we order the blinds.",
           "ko": "A: 창문 너비가 얼마나 돼?\nB: 블라인드를 주문하기 전에 재 볼게.",
@@ -8918,7 +8918,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The interview revealed his generous character.",
           "ko": "그 면접은 그의 관대한 성품을 보여 주었다.",
@@ -8968,7 +8968,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Wood gives the room a warm character.",
           "ko": "목재는 그 방에 따뜻한 분위기를 더한다.",
@@ -9020,7 +9020,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "My favorite character appears in the final chapter.",
           "ko": "내가 가장 좋아하는 등장인물은 마지막 장에 나온다.",
@@ -9071,7 +9071,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Enter the verification code as six characters.",
           "ko": "인증 코드를 여섯 문자로 입력하세요.",
@@ -9124,7 +9124,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A small stream flows beneath the bridge.",
           "type": "sentence",
@@ -9171,7 +9171,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "This technology has important applications in medicine.",
           "type": "sentence",
@@ -9225,7 +9225,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The statue is made of solid stone.",
           "ko": "그 조각상은 단단한 돌로 만들어졌다.",
@@ -9270,7 +9270,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She is a strong proponent of public transportation.",
           "ko": "그녀는 대중교통의 열렬한 지지자다.",
@@ -9318,7 +9318,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The team anticipates strong demand for the new product.",
           "ko": "팀은 신제품에 대한 높은 수요를 예상한다.",
@@ -9367,7 +9367,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The legislature enacted strict safety regulations last year.",
           "ko": "입법부는 지난해 엄격한 안전 규정을 제정했다.",
@@ -9417,7 +9417,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Both teams agreed that the result was fair.",
           "ko": "두 팀 모두 결과가 공정했다고 인정했다.",
@@ -9474,7 +9474,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We walked a fair distance before finding a taxi.",
           "ko": "우리는 택시를 찾기 전까지 꽤 먼 거리를 걸었다.",
@@ -9529,7 +9529,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Use sunscreen to protect fair skin.",
           "ko": "밝은 피부를 보호하려면 자외선 차단제를 사용하세요.",
@@ -9586,7 +9586,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The science fair attracted hundreds of students.",
           "ko": "과학 박람회에는 수백 명의 학생이 참가했다.",
@@ -9635,7 +9635,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The family showed us great hospitality during our visit.",
           "ko": "그 가족은 우리가 방문하는 동안 큰 환대를 베풀었다.",
@@ -9684,7 +9684,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The crew followed the captain's order.",
           "ko": "승무원들은 선장의 명령을 따랐다.",
@@ -9741,7 +9741,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "I placed an order for two sandwiches.",
           "ko": "나는 샌드위치 두 개를 주문했다.",
@@ -9796,7 +9796,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The names appear in order of arrival.",
           "ko": "이름은 도착 순서대로 표시된다.",
@@ -9851,7 +9851,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Security staff maintained order during the event.",
           "ko": "보안 요원들은 행사 중 질서를 유지했다.",
@@ -9904,7 +9904,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The overnight flight exhausted the children.",
           "ko": "밤샘 비행이 아이들을 지치게 했다.",
@@ -9951,7 +9951,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The mechanic checked the exhaust for leaks.",
           "ko": "정비사는 배기가스 장치의 누출을 점검했다.",
@@ -10012,7 +10012,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Will the CEO have to appear in court tomorrow?\nB: No, her deposition was recorded last week.",
           "ko": "A: CEO가 내일 법정에 출석해야 하나요?\nB: 아니요, 그녀의 증언 녹취는 지난주에 진행됐어요.",
@@ -10065,7 +10065,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "They built a small cabin in a remote mountain valley.",
           "type": "sentence",
@@ -10119,7 +10119,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Can you count the boxes in the truck?",
           "ko": "트럭 안의 상자 수를 셀 수 있나요?",
@@ -10175,7 +10175,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Be sure to count the delivery fee in the final price.",
           "ko": "최종 가격을 계산할 때 배송비를 반드시 포함하세요.",
@@ -10227,7 +10227,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Every small effort counts.",
           "ko": "모든 작은 노력이 중요하다.",
@@ -10275,7 +10275,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Can we count on you?\nB: Absolutely.",
           "type": "dialogue",
@@ -10324,7 +10324,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The color of the shirt began to fade in the sun.",
           "ko": "햇빛에 셔츠 색이 바래기 시작했다.",
@@ -10374,7 +10374,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The manager's praise gratified the employee's need for recognition.",
           "type": "sentence",
@@ -10423,7 +10423,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Did the results make you happy?\nB: Yes, they really gratified me.",
           "type": "dialogue",
@@ -10471,7 +10471,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She wrote an excellent article for the magazine.",
           "type": "sentence",
@@ -10516,7 +10516,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Each article is carefully packaged before shipping.",
           "ko": "각 물품은 배송 전에 주의 깊게 포장된다.",
@@ -10562,7 +10562,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: What does Article 12 cover?\nB: It explains the privacy rules.",
           "type": "dialogue",
@@ -10614,7 +10614,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We need to analyze the data before drawing conclusions.",
           "type": "sentence",
@@ -10678,7 +10678,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The company reduced its workforce through attrition rather than layoffs.",
           "ko": "그 회사는 해고가 아니라 자연 감소를 통해 인력을 줄였다.",
@@ -10725,7 +10725,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The current policy expires next month.",
           "ko": "현행 정책은 다음 달에 만료된다.",
@@ -10782,7 +10782,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The swimmer was pulled away by the current.",
           "ko": "수영하던 사람은 물살에 떠밀려 갔다.",
@@ -10832,7 +10832,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The rules do not permit outside food.",
           "ko": "규정상 외부 음식은 허용되지 않는다.",
@@ -10886,7 +10886,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The builder applied for a construction permit.",
           "ko": "건축업자는 건축 허가증을 신청했다.",
@@ -10938,7 +10938,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The study excluded children under five.",
           "ko": "그 연구는 5세 미만의 어린이를 제외했다.",
@@ -10986,7 +10986,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The country endured several turbulent years after the revolution.",
           "ko": "그 나라는 혁명 후 몇 년간 격동의 시기를 견뎠다.",
@@ -11042,7 +11042,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Everyone applauded when the singer finished.",
           "ko": "가수가 끝냈을 때 모두가 박수를 보냈다.",
@@ -11093,7 +11093,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please obey the warning signs in the park.",
           "ko": "공원의 경고 표지판을 따라 주세요.",
@@ -11141,7 +11141,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "People who skip breakfast are prone to overeating later.",
           "type": "sentence",
@@ -11188,7 +11188,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The charity provides meals to families in need.",
           "ko": "그 자선단체는 도움이 필요한 가족들에게 식사를 제공한다.",
@@ -11235,7 +11235,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The researchers sought evidence that would confirm the theory.",
           "ko": "연구자들은 그 이론을 확인해 줄 증거를 찾았다.",
@@ -11281,7 +11281,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: What is the committee trying to do?\nB: It seeks to improve access to public services.",
           "ko": "A: 위원회는 무엇을 하려고 하나요?\nB: 공공 서비스에 대한 접근성을 개선하려고 노력합니다.",
@@ -11326,7 +11326,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Can you remind me about the deadline on Monday?",
           "type": "sentence",
@@ -11380,7 +11380,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Let’s meet near the concession stand after the game.",
           "ko": "경기 후에 매점 근처에서 만나자.",
@@ -11433,7 +11433,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "My brother graduated with honors in engineering.",
           "ko": "내 동생은 공학을 우등으로 졸업했다.",
@@ -11478,7 +11478,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Residents were ordered to vacate the building immediately.",
           "ko": "주민들은 즉시 건물을 비우라는 명령을 받았다.",
@@ -11529,7 +11529,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The coach blamed the loss on poor preparation.",
           "type": "sentence",
@@ -11579,7 +11579,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The committee voted to amend the law.",
           "ko": "위원회는 그 법을 개정하기로 표결했다.",
@@ -11627,7 +11627,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "There has been a gradual improvement in sales.",
           "type": "sentence",
@@ -11678,7 +11678,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The rumor led to widespread speculation about the company’s future.",
           "ko": "그 소문은 회사의 미래에 대한 광범위한 추측을 불러일으켰다.",
@@ -11727,7 +11727,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The campaign aims to eradicate corruption from local government.",
           "type": "sentence",
@@ -11774,7 +11774,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The plant purifies wastewater before it reaches the river.",
           "ko": "그 공장은 폐수가 강에 도달하기 전에 정화한다.",
@@ -11822,7 +11822,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The lesson engaged everyone in the room.",
           "ko": "그 수업은 방 안의 모든 사람을 참여시켰다.",
@@ -11866,7 +11866,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Who will handle the tax issue?\nB: We engaged an accountant.",
           "type": "dialogue",
@@ -11921,7 +11921,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "They became engaged last year.",
           "ko": "그들은 지난해 약혼했다.",
@@ -11974,7 +11974,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Who will administer the new safety program?",
           "ko": "새 안전 프로그램을 누가 관리할 것인가?",
@@ -12022,7 +12022,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The sum of the expenses was higher than expected.",
           "ko": "비용 총계가 예상보다 높았다.",
@@ -12071,7 +12071,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Could you sum up the proposal in one sentence?",
           "ko": "그 제안을 한 문장으로 요약해 주시겠어요?",
@@ -12129,7 +12129,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Which category does this product belong to?\nB: Household equipment.",
           "type": "dialogue",
@@ -12182,7 +12182,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She invested her savings in a small business.",
           "type": "sentence",
@@ -12231,7 +12231,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "It was just an ordinary day at work.",
           "ko": "직장에서의 그저 평범한 하루였다.",
@@ -12284,7 +12284,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The company's reliance on a single supplier created serious risks.",
           "ko": "그 회사가 단일 공급업체에 의존한 것은 심각한 위험을 초래했다.",
@@ -12335,7 +12335,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "As winter approaches, the days become shorter.",
           "ko": "겨울이 다가오면서 낮이 짧아진다.",
@@ -12387,7 +12387,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The festival supports local businesses.",
           "ko": "그 축제는 지역 사업체를 지원한다.",
@@ -12438,7 +12438,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We ate at a local restaurant.",
           "ko": "우리는 현지 식당에서 식사했다.",
@@ -12486,7 +12486,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Ask a local for directions to the station.",
           "ko": "현지인에게 역으로 가는 길을 물어보세요.",
@@ -12546,7 +12546,7 @@
           "type": "dialogue"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please transfer the refund to my savings account.",
           "ko": "환불금을 제 저축 계좌로 이체해 주세요.",
@@ -12604,7 +12604,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The manager couldn't account for the missing equipment.",
           "ko": "관리자는 사라진 장비를 설명할 수 없었다.",
@@ -12664,7 +12664,7 @@
           "type": "dialogue"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Renewable energy now accounts for 30 percent of the country's electricity.",
           "ko": "재생 에너지는 이제 그 나라 전력의 30퍼센트를 차지한다.",
@@ -12717,7 +12717,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The report gives a general overview of the problem.",
           "type": "sentence",
@@ -12762,7 +12762,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Blend the sauce until it is smooth.",
           "ko": "소스가 부드러워질 때까지 섞으세요.",
@@ -12814,7 +12814,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Her voice blended beautifully with the choir.",
           "ko": "그녀의 목소리는 합창단과 아름답게 어울렸다.",
@@ -12864,7 +12864,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She always goes the extra mile for her clients.",
           "ko": "그녀는 고객들을 위해 항상 특별히 더 노력한다.",
@@ -12910,7 +12910,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Her kindness and patience are the embodiment of good leadership.",
           "ko": "그녀의 친절과 인내심은 훌륭한 리더십의 전형이다.",
@@ -12956,7 +12956,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A sudden shortage of staff affected the quality of customer service.",
           "ko": "갑작스러운 인력 부족이 고객 서비스의 질에 영향을 미쳤다.",
@@ -13001,7 +13001,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The visitors beheld the ancient statue in silence.",
           "type": "sentence",
@@ -13053,7 +13053,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please fold the towels and put them in the drawer.",
           "ko": "수건을 접어서 서랍에 넣어 주세요.",
@@ -13108,7 +13108,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The engineer embedded a sensor in the wall.",
           "ko": "엔지니어는 벽에 센서를 깊숙이 박았다.",
@@ -13158,7 +13158,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "At high altitude, the air is thinner.",
           "ko": "고도가 높은 곳에서는 공기가 더 희박하다.",
@@ -13203,7 +13203,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please attach the document to your email.",
           "ko": "이메일에 문서를 첨부해 주세요.",
@@ -13253,7 +13253,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Experts assessed the damage after the earthquake.",
           "ko": "전문가들은 지진 후 피해를 평가했다.",
@@ -13301,7 +13301,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please revise your report before Friday.",
           "type": "sentence",
@@ -13349,7 +13349,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please be aware of the wet floor.",
           "ko": "바닥이 젖어 있다는 점을 알아두세요.",
@@ -13404,7 +13404,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Sleep is important for cognitive performance.",
           "ko": "수면은 인지 수행에 중요하다.",
@@ -13450,7 +13450,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We considered every imaginable risk.",
           "ko": "우리는 상상할 수 있는 모든 위험을 고려했다.",
@@ -13498,7 +13498,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She suddenly realized the door was unlocked.",
           "type": "sentence",
@@ -13550,7 +13550,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Dust can trigger an allergic reaction.",
           "ko": "먼지는 알레르기 반응을 유발할 수 있다.",
@@ -13607,7 +13607,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Pulling the trigger activates the alarm.",
           "ko": "방아쇠를 당기면 경보가 작동한다.",
@@ -13653,7 +13653,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "I was merely asking a question.",
           "ko": "나는 그저 질문을 하나 했을 뿐이다.",
@@ -13702,7 +13702,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please include your phone number on the form.",
           "ko": "양식에 전화번호를 기입해 주세요.",
@@ -13747,7 +13747,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "It would be absurd to cancel the event because of a little rain.",
           "ko": "약간의 비 때문에 행사를 취소하는 것은 불합리할 것이다.",
@@ -13797,7 +13797,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Higher sales increased the company's profit.",
           "ko": "매출 증가가 회사의 이익을 늘렸다.",
@@ -13843,7 +13843,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Let the pasta drain before serving.",
           "ko": "내기 전에 파스타의 물을 빼라.",
@@ -13892,7 +13892,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The kitchen drain is clogged.",
           "ko": "부엌 배수구가 막혔다.",
@@ -13937,7 +13937,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The witness gave an absolute guarantee that the package would arrive today.",
           "ko": "목격자는 소포가 오늘 도착할 것이라고 완전한 보증을 했다.",
@@ -13982,7 +13982,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The nurse provided invaluable support during the crisis.",
           "ko": "간호사는 위기 동안 매우 귀중한 지원을 제공했다.",
@@ -14027,7 +14027,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Invasive plants quickly colonize disturbed soil.",
           "ko": "외래 식물은 교란된 토양에 빠르게 서식한다.",
@@ -14069,7 +14069,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "European powers competed to colonize overseas territories.",
           "ko": "유럽 열강들은 해외 영토를 식민지화하기 위해 경쟁했다.",
@@ -14120,7 +14120,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Her sudden silence was a clear manifestation of her disappointment.",
           "ko": "그녀의 갑작스러운 침묵은 실망감이 명확히 드러난 것이었다.",
@@ -14172,7 +14172,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The sculpture became a powerful manifestation of the artist's grief.",
           "ko": "그 조각상은 예술가의 슬픔이 강력하게 구현된 것이 되었다.",
@@ -14229,7 +14229,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The advertising agency created a memorable campaign.",
           "ko": "그 광고 대행사는 기억에 남는 캠페인을 만들었다.",
@@ -14274,7 +14274,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The road was built on unconsolidated sand and began to shift.",
           "ko": "그 도로는 굳지 않은 모래 위에 건설되어 움직이기 시작했다.",
@@ -14322,7 +14322,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The smell of bread spread through the kitchen.",
           "ko": "빵 냄새가 부엌 전체로 퍼졌다.",
@@ -14375,7 +14375,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "I can't afford to take a month off work.",
           "ko": "나는 한 달 동안 일을 쉴 여유가 없다.",
@@ -14425,7 +14425,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Our hotel is opposite the museum.",
           "ko": "우리 호텔은 박물관 맞은편에 있다.",
@@ -14475,7 +14475,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The principle of supply and demand affects prices.",
           "ko": "수요와 공급의 원리는 가격에 영향을 준다.",
@@ -14528,7 +14528,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Why did you reject the offer?\nB: It went against my principles.",
           "type": "dialogue",
@@ -14572,7 +14572,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The figure rose by ten percent this year.",
           "ko": "그 수치는 올해 10퍼센트 올랐다.",
@@ -14616,7 +14616,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A dark figure stood by the door.",
           "ko": "어두운 모습이 문 옆에 서 있었다.",
@@ -14662,7 +14662,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Who is that figure in the painting?\nB: It is the artist’s mother.",
           "ko": "A: 그림 속 인물은 누구인가요?\nB: 화가의 어머니예요.",
@@ -14705,7 +14705,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Draw a triangle in the figure.",
           "ko": "도형 안에 삼각형을 그려라.",
@@ -14753,7 +14753,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She refuses to put up with rude customers.",
           "ko": "그녀는 무례한 고객들을 참기를 거부한다.",
@@ -14801,7 +14801,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The manager resigned out of the blue.",
           "ko": "그 관리자는 갑자기 사임했다.",
@@ -14850,7 +14850,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "No one can predict the outcome with certainty.",
           "ko": "아무도 결과를 확실히 예측할 수 없다.",
@@ -14896,7 +14896,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The delay was attributable to a mechanical failure.",
           "ko": "지연은 기계 고장에 기인했다.",
@@ -14940,7 +14940,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The guards sensed hostility from the crowd.",
           "ko": "경비원들은 군중에게서 적개심을 느꼈다.",
@@ -14991,7 +14991,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Without the signature, the document is valueless.",
           "ko": "서명이 없으면 그 문서는 가치가 없다.",
@@ -15041,7 +15041,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A celebrity opened the charity event.",
           "ko": "유명인사가 자선 행사를 열었다.",
@@ -15105,7 +15105,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "From my perspective, the plan is affordable.",
           "ko": "내 관점에서는 그 계획이 감당할 만하다.",
@@ -15156,7 +15156,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The painting’s perspective makes the road look long.",
           "ko": "그 그림의 원근법은 길을 길게 보이게 한다.",
@@ -15204,7 +15204,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The baby gazed at the colorful toy.",
           "ko": "아기는 알록달록한 장난감을 바라보았다.",
@@ -15249,7 +15249,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Her steady gaze made him nervous.",
           "ko": "그녀의 꾸준한 주시가 그를 긴장시켰다.",
@@ -15302,7 +15302,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The factory manufactures electric vehicles.",
           "ko": "그 공장은 전기 자동차를 제조한다.",
@@ -15355,7 +15355,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She had the audacity to demand a refund after damaging the product herself.",
           "ko": "그녀는 자신이 직접 제품을 망가뜨리고도 환불을 요구하는 뻔뻔함을 보였다.",
@@ -15403,7 +15403,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "He made an attempt to repair the old radio.",
           "ko": "그는 낡은 라디오를 고치려고 시도했다.",
@@ -15460,7 +15460,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The nurse comforted the frightened child.",
           "ko": "간호사는 겁먹은 아이를 위로했다.",
@@ -15509,7 +15509,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "I bumped into a table in the dark.",
           "ko": "나는 어둠 속에서 탁자에 부딪혔다.",
@@ -15561,7 +15561,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Don't mention the surprise party to Maya.",
           "type": "sentence",
@@ -15604,7 +15604,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The fireworks exploded above the stadium.",
           "ko": "불꽃놀이가 경기장 위에서 폭발했다.",
@@ -15652,7 +15652,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The scientists isolated the virus.",
           "type": "sentence",
@@ -15701,7 +15701,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The plumber replaced the broken faucet.",
           "ko": "배관공이 고장 난 수도꼭지를 교체했다.",
@@ -15747,7 +15747,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The peace talks began to gather momentum after both sides agreed to meet again.",
           "type": "sentence",
@@ -15800,7 +15800,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The subdivision of the report into five sections made it easier to read.",
           "ko": "보고서를 다섯 부분으로 나누니 읽기가 더 쉬워졌다.",
@@ -15855,7 +15855,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The city approved plans for a 200-home subdivision.",
           "ko": "시는 200가구 규모의 주택 단지 계획을 승인했다.",
@@ -15902,7 +15902,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Drivers must remain alert in heavy traffic.",
           "ko": "운전자들은 교통량이 많을 때 계속 주의해야 한다.",
@@ -15948,7 +15948,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The sensor alerted staff to the leak.",
           "ko": "센서가 직원들에게 누출을 경고했다.",
@@ -15996,7 +15996,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The city was placed on high alert.",
           "ko": "도시는 최고 경계 태세에 들어갔다.",
@@ -16043,7 +16043,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The election became a complicated affair.",
           "ko": "그 선거는 복잡한 일이 되었다.",
@@ -16093,7 +16093,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Despite the setback, he remained optimistic.",
           "ko": "좌절에도 불구하고 그는 낙관적인 태도를 유지했다.",
@@ -16150,7 +16150,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The government censored the newspaper article.",
           "ko": "정부는 그 신문 기사를 검열했다.",
@@ -16202,7 +16202,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The program aims to provide universal access to education.",
           "ko": "그 프로그램은 교육에 대한 보편적 접근을 제공하는 것을 목표로 한다.",
@@ -16259,7 +16259,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Why are you still awake?\nB: I've been dealing with insomnia for weeks.",
           "ko": "A: 왜 아직 깨어 있어?\nB: 몇 주째 불면증에 시달리고 있어.",
@@ -16304,7 +16304,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Her compelling presentation won over the skeptical committee.",
           "ko": "그녀의 설득력 있는 발표는 회의적인 위원회를 설득했다.",
@@ -16348,7 +16348,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The chef received an award for her outstanding contribution to local cuisine.",
           "ko": "그 요리사는 지역 요리에 대한 뛰어난 공헌으로 상을 받았다.",
@@ -16394,7 +16394,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please settle any outstanding balance before closing the account.",
           "ko": "계좌를 해지하기 전에 미지불 잔액을 정산해 주세요.",
@@ -16445,7 +16445,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We appreciate your patience during the delay.",
           "ko": "지연되는 동안 기다려 주셔서 감사합니다.",
@@ -16490,7 +16490,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The nonprofit will launch a public health campaign next month.",
           "ko": "그 비영리 단체는 다음 달 공중 보건 캠페인을 시작할 것이다.",
@@ -16541,7 +16541,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The company acquired a smaller competitor.",
           "ko": "그 회사는 더 작은 경쟁사를 인수했다.",
@@ -16588,7 +16588,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The committee represents a constellation of interests and perspectives.",
           "ko": "그 위원회는 다양한 이해관계와 관점을 대표한다.",
@@ -16634,7 +16634,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The city approved plans for a new library.",
           "ko": "시는 새 도서관 계획을 승인했다.",
@@ -16682,7 +16682,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The hikers encountered heavy rain near the summit.",
           "ko": "등산객들은 정상 근처에서 폭우를 만났다.",
@@ -16730,7 +16730,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "This sentence has three clauses.",
           "ko": "이 문장에는 세 개의 절이 있다.",
@@ -16776,7 +16776,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The judge reduced his sentence.",
           "ko": "판사는 그의 형을 감형했다.",
@@ -16825,7 +16825,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The judge sentenced the thief to two years in prison.",
           "ko": "판사는 도둑에게 2년의 징역형을 선고했다.",
@@ -16870,7 +16870,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "He refused to answer the question.",
           "type": "sentence",
@@ -16919,7 +16919,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She swore to keep the information confidential.",
           "type": "sentence",
@@ -16968,7 +16968,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The injured cyclist was taken to the hospital.",
           "type": "sentence",
@@ -17022,7 +17022,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She finally confessed that she had taken the money.",
           "ko": "그녀는 마침내 돈을 가져갔다고 자백했다.",
@@ -17072,7 +17072,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The restaurant added a service charge to the bill.",
           "ko": "식당은 계산서에 봉사료를 추가했다.",
@@ -17118,7 +17118,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: How much cash do you have?\nB: Just one twenty-dollar bill.",
           "type": "dialogue",
@@ -17165,7 +17165,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The bill passed the Senate.",
           "ko": "그 법안은 상원을 통과했다.",
@@ -17213,7 +17213,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The bird carried the twig in its bill.",
           "ko": "그 새는 부리에 나뭇가지를 물고 있었다.",
@@ -17261,7 +17261,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She wiped a tear from her eye.",
           "ko": "그녀는 눈에서 눈물 한 방울을 닦았다.",
@@ -17308,7 +17308,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "There is a tear in my jacket.",
           "ko": "내 재킷에 구멍이 있다.",
@@ -17355,7 +17355,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Be careful not to tear the envelope.",
           "ko": "봉투를 찢지 않도록 조심해.",
@@ -17405,7 +17405,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She pressed a rose flower petal between the pages of her book.",
           "ko": "그녀는 장미 꽃잎을 책장 사이에 눌러 넣었다.",
@@ -17453,7 +17453,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The purpose of the survey is to improve customer service.",
           "ko": "그 설문조사의 목적은 고객 서비스를 개선하는 것이다.",
@@ -17501,7 +17501,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Could you make ten copies on the photocopier?",
           "ko": "복사기로 열 부 복사해 줄래요?",
@@ -17551,7 +17551,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please use caution when crossing the road.",
           "ko": "길을 건널 때 조심하세요.",
@@ -17604,7 +17604,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Late submissions will be penalized.",
           "ko": "늦게 제출하면 불이익을 받는다.",
@@ -17656,7 +17656,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Rotate the screen to view the image horizontally.",
           "type": "sentence",
@@ -17704,7 +17704,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The clinic operates on Mondays.",
           "type": "sentence",
@@ -17749,7 +17749,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The thick carpet cushions the floor from falling objects.",
           "ko": "두꺼운 카펫은 떨어지는 물건으로부터 바닥을 보호한다.",
@@ -17798,7 +17798,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please scrub the pan before it dries.",
           "ko": "마르기 전에 팬을 문질러 닦아 주세요.",
@@ -17846,7 +17846,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The teacher discussed the child’s behavior.",
           "type": "sentence",
@@ -17893,7 +17893,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "He gave me a compliment on my presentation.",
           "type": "sentence",
@@ -17937,7 +17937,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The manager scheduled my annual appraisal for Friday.",
           "ko": "관리자는 금요일에 내 연례 평가를 잡았다.",
@@ -17985,7 +17985,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "This compact car is economical to run.",
           "type": "sentence",
@@ -18030,7 +18030,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The store expanded its delivery service.",
           "type": "sentence",
@@ -18080,7 +18080,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The primary reason for the delay was heavy rain.",
           "ko": "지연의 주요 원인은 폭우였다.",
@@ -18124,7 +18124,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The farmer diversified his crops to reduce risk.",
           "ko": "농부는 위험을 줄이기 위해 작물을 다양화했다.",
@@ -18172,7 +18172,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please accept my apology for the delay.",
           "ko": "지연에 대해 제 사과를 받아 주세요.",
@@ -18223,7 +18223,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The survey measured the extent of public concern.",
           "ko": "그 조사는 대중의 우려 정도를 측정했다.",
@@ -18279,7 +18279,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: How does this year's bonus compare with last year's?\nB: It's comparable, but not significantly higher.",
           "type": "dialogue",
@@ -18331,7 +18331,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The night shift starts at 10 p.m.",
           "ko": "야간 근무는 밤 10시에 시작한다.",
@@ -18373,7 +18373,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The company faced criticism for its inordinate spending on luxury offices.",
           "ko": "그 회사는 호화 사무실에 과도하게 지출한 것에 대해 비판을 받았다.",
@@ -18429,7 +18429,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Are you traveling alone?\nB: No, I have a companion.",
           "type": "dialogue",
@@ -18489,7 +18489,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "This companion guide explains the technical terms used in the documentary.",
           "ko": "이 보충 안내서는 다큐멘터리에 사용된 전문 용어를 설명한다.",
@@ -18540,7 +18540,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The landlord checked my credit before approving the application.",
           "type": "sentence",
@@ -18587,7 +18587,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Who should get credit for the successful launch?\nB: The entire design team.",
           "type": "dialogue",
@@ -18647,7 +18647,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The bank posted a credit to my account.",
           "ko": "은행이 내 계좌에 입금액을 반영했다.",
@@ -18696,7 +18696,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "An eerie silence filled the abandoned hospital.",
           "ko": "기묘한 침묵이 버려진 병원을 가득 채웠다.",
@@ -18741,7 +18741,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The disputatious committee spent hours arguing over minor details.",
           "ko": "논쟁을 좋아하는 위원회는 사소한 세부 사항을 두고 몇 시간이나 논쟁했다.",
@@ -18788,7 +18788,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The delay compounded the frustration of the passengers.",
           "ko": "지연은 승객들의 좌절감을 악화시켰다.",
@@ -18837,7 +18837,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Scientists identified a new chemical compound in the sample.",
           "ko": "과학자들은 표본에서 새로운 화합물을 확인했다.",
@@ -18887,7 +18887,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The band rehearsed before the concert.",
           "ko": "밴드는 콘서트 전에 리허설을 했다.",
@@ -18937,7 +18937,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Don't rush; we still have plenty of time.",
           "ko": "서두르지 마. 아직 시간이 많아.",
@@ -18985,7 +18985,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Can you recommend a quiet café nearby?",
           "ko": "근처의 조용한 카페를 추천해 줄 수 있나요?",
@@ -19036,7 +19036,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Economics helps explain why markets change.",
           "type": "sentence",
@@ -19093,7 +19093,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The successful trial was an auspicious beginning for the new treatment.",
           "ko": "성공적인 시험은 새로운 치료법에 유망한 출발이었다.",
@@ -19146,7 +19146,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A common mistake is forgetting to save the file.",
           "type": "sentence",
@@ -19207,7 +19207,7 @@
           "type": "dialogue"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "After a stressful week, Mina likes to unwind by watching old movies.",
           "ko": "스트레스가 많은 한 주를 보낸 후 미나는 오래된 영화를 보며 긴장을 푸는 것을 좋아한다.",
@@ -19262,7 +19262,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "He gently unwound the cable before connecting the speakers.",
           "ko": "그는 스피커를 연결하기 전에 케이블을 부드럽게 풀었다.",
@@ -19309,7 +19309,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Leave the beans to soak overnight.",
           "ko": "콩을 하룻밤 동안 물에 담가 두세요.",
@@ -19353,7 +19353,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "People came from various countries.",
           "ko": "사람들은 여러 나라에서 왔다.",
@@ -19403,7 +19403,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The hotel agreed to extend our stay by two days.",
           "ko": "호텔은 우리의 숙박을 이틀 연장하기로 했다.",
@@ -19455,7 +19455,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The bank agreed to finance the new factory.",
           "ko": "은행은 새 공장에 자금을 조달하기로 했다.",
@@ -19500,7 +19500,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The hotel is close to the station; furthermore, it offers free breakfast.",
           "type": "sentence",
@@ -19548,7 +19548,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She completely neglected her responsibilities.",
           "ko": "그녀는 자신의 책임을 완전히 소홀히 했다.",
@@ -19598,7 +19598,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Did you water the plants?\nB: No, I neglected them while I was away.",
           "type": "dialogue",
@@ -19647,7 +19647,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The instructions confused the new employees.",
           "type": "sentence",
@@ -19696,7 +19696,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The treatment was empirically shown to reduce pain.",
           "ko": "그 치료법은 통증을 줄이는 것으로 실증적으로 입증되었다.",
@@ -19739,7 +19739,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "They had to call off the meeting.",
           "ko": "그들은 회의를 취소해야 했다.",
@@ -19792,7 +19792,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "We need to draw a line between work and family time.",
           "ko": "일과 가족 시간 사이에 선을 그어야 한다.",
@@ -19844,7 +19844,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She kept boasting about her exam score.",
           "type": "sentence",
@@ -19894,7 +19894,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Scientists are skeptical of the unsupported claim.",
           "ko": "과학자들은 근거 없는 주장에 회의적이다.",
@@ -19943,7 +19943,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please split the orange into four pieces.",
           "ko": "오렌지를 네 조각으로 나눠 주세요.",
@@ -19992,7 +19992,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Please explain the process in comprehensible language.",
           "type": "sentence",
@@ -20040,7 +20040,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The team grew stronger through years of adversity.",
           "ko": "그 팀은 수년간의 역경을 통해 더 강해졌다.",
@@ -20086,7 +20086,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Don't put off your doctor's appointment.",
           "ko": "병원 예약을 미루지 마.",
@@ -20136,7 +20136,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Why are you attending the meeting?\nB: I have a professional obligation.",
           "type": "dialogue",
@@ -20186,7 +20186,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The museum works hard to maintain the historic building.",
           "ko": "그 박물관은 역사적인 건물을 유지하기 위해 열심히 노력한다.",
@@ -20233,7 +20233,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "They had to abandon the damaged car.",
           "ko": "그들은 손상된 차를 버려야 했다.",
@@ -20281,7 +20281,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The hikers abandoned their attempt because of the storm.",
           "type": "sentence",
@@ -20336,7 +20336,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The monastery had an austere interior with bare stone walls.",
           "ko": "그 수도원은 돌벽만 있는 소박한 내부를 갖고 있었다.",
@@ -20390,7 +20390,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "He became financially independent at twenty-two.",
           "type": "sentence",
@@ -20451,7 +20451,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The players ran onto the field before the match.",
           "type": "sentence",
@@ -20502,7 +20502,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The danger was only imaginary.",
           "ko": "그 위험은 단지 상상의 것이었다.",
@@ -20546,7 +20546,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "It was raining; nevertheless, they continued the game.",
           "ko": "비가 오고 있었지만 그럼에도 불구하고 그들은 경기를 계속했다.",
@@ -20597,7 +20597,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Dark colors absorb more heat from sunlight.",
           "ko": "어두운 색은 햇빛의 열을 더 많이 흡수한다.",
@@ -20642,7 +20642,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The two companies merged to create a larger organization.",
           "ko": "두 회사는 합병하여 더 큰 조직을 만들었다.",
@@ -20691,7 +20691,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The internet connection worked intermittently during the storm.",
           "type": "sentence",
@@ -20744,7 +20744,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "She sounded regretful after the argument.",
           "type": "sentence",
@@ -20789,7 +20789,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "An unanticipated delay forced us to change the schedule.",
           "ko": "예상하지 못한 지연으로 우리는 일정을 바꿔야 했다.",
@@ -20835,7 +20835,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The company took an aggressive approach to expansion.",
           "type": "sentence",
@@ -20886,7 +20886,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "“B” is a consonant, while “A” is a vowel.",
           "ko": "‘B’는 자음이고 ‘A’는 모음이다.",
@@ -20930,7 +20930,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A: Is “sh” one consonant sound?\nB: Yes, it is treated as a single consonant sound in this word.",
           "ko": "A: ‘sh’는 하나의 자음 소리인가요?\nB: 네, 이 단어에서는 하나의 자음 소리로 취급됩니다.",
@@ -20979,7 +20979,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The board appointed him as director.",
           "ko": "이사회는 그를 이사로 임명했다.",
@@ -21023,7 +21023,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The outcome of the election surprised everyone.",
           "ko": "선거 결과는 모두를 놀라게 했다.",
@@ -21080,7 +21080,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The doctor told him to cut back on salty foods.",
           "ko": "의사는 그에게 짠 음식 섭취를 줄이라고 말했다.",
@@ -21127,7 +21127,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The gallery will exhibit her latest sculptures.",
           "type": "sentence",
@@ -21177,7 +21177,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "A respectful attitude matters in customer service.",
           "ko": "고객 서비스에서는 존중하는 태도가 중요하다.",
@@ -21227,7 +21227,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The first rule is to wear a helmet.",
           "ko": "첫 번째 규칙은 헬멧을 쓰는 것이다.",
@@ -21273,7 +21273,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "As a rule, I arrive early.",
           "ko": "나는 보통 일찍 도착한다.",
@@ -21318,7 +21318,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The dynasty ruled the region for centuries.",
           "ko": "그 왕조는 수 세기 동안 그 지역을 지배했다.",
@@ -21371,7 +21371,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The company raised capital to expand.",
           "ko": "그 회사는 확장하기 위해 자본을 모았다.",
@@ -21414,7 +21414,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Scientists investigated the cause of the disease.",
           "ko": "과학자들은 그 질병의 원인을 조사했다.",
@@ -21467,7 +21467,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The editor asked readers to comment on the proposal.",
           "type": "sentence",
@@ -21514,7 +21514,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The restaurant buys rice in bulk to reduce costs.",
           "ko": "그 식당은 비용을 줄이기 위해 쌀을 대량으로 구매한다.",
@@ -21560,7 +21560,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The bulk of the work is finished, so we can leave early.",
           "ko": "일의 대부분이 끝났으니 우리는 일찍 떠나도 된다.",
@@ -21606,7 +21606,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The cleaner removed the sticky residue from the glass.",
           "type": "sentence",
@@ -21665,7 +21665,7 @@
           "type": "dialogue"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The office printer is jammed, so I can't print the report.",
           "ko": "사무실 프린터가 걸려서 보고서를 인쇄할 수 없어.",
@@ -21719,7 +21719,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Agriculture remains the predominant industry in the region.",
           "type": "sentence",
@@ -21777,7 +21777,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "After a prolonged delay, the train finally arrived.",
           "ko": "오랜 지연 끝에 기차가 마침내 도착했다.",
@@ -21829,7 +21829,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The museum protects several valuable paintings.",
           "ko": "그 박물관은 몇 점의 귀중한 그림을 보호한다.",
@@ -21881,7 +21881,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The athlete made an astonishing recovery after the accident.",
           "type": "sentence",
@@ -21931,7 +21931,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The doctor warned that the medication could induce drowsiness, so I shouldn't drive.",
           "ko": "의사는 그 약이 졸음을 유발할 수 있으므로 운전하면 안 된다고 경고했다.",
@@ -21982,7 +21982,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "Smartphone use has become so pervasive that many restaurants now offer charging stations.",
           "ko": "스마트폰 사용이 매우 보편화되어 이제 많은 식당에서 충전 시설을 제공한다.",
@@ -22034,7 +22034,7 @@
           "type": "sentence"
         }
       ],
-      "testExamples": [
+      "fillInBlankExamples": [
         {
           "en": "The courtroom was silent, held in thrall by the witness's unexpected testimony.",
           "ko": "법정은 증인의 예상치 못한 증언에 완전히 사로잡혀 조용해졌다.",

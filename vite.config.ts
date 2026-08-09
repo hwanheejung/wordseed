@@ -40,6 +40,11 @@ export default defineConfig({
   test: {
     environment: "node",
     setupFiles: ["./src/test/setup.ts"],
+    server: {
+      deps: {
+        inline: [/@seed-design/],
+      },
+    },
     coverage: { reporter: ["text", "json", "html"] }
   }
 });

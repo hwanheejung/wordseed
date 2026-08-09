@@ -1,7 +1,13 @@
 import js from "@eslint/js";
+import stylistic from "@stylistic/eslint-plugin";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
+
+const functionVariable = {
+  selector:
+    "VariableDeclaration:has(VariableDeclarator[init.type='ArrowFunctionExpression'], VariableDeclarator[init.type='FunctionExpression'])"
+};
 
 export default tseslint.config(
   { ignores: ["dist", "coverage", "seed-design", "work"] },
@@ -10,8 +16,27 @@ export default tseslint.config(
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
-    plugins: { "react-hooks": reactHooks },
-    rules: reactHooks.configs.recommended.rules
+    plugins: {
+      "@stylistic": stylistic,
+      "react-hooks": reactHooks
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      "@stylistic/padding-line-between-statements": [
+        "error",
+        { blankLine: "always", prev: "*", next: "return" },
+        {
+          blankLine: "always",
+          prev: "*",
+          next: ["function", functionVariable]
+        },
+        {
+          blankLine: "always",
+          prev: ["function", functionVariable],
+          next: "*"
+        }
+      ]
+    }
   },
   {
     files: ["src/shared/**/*.{ts,tsx}"],

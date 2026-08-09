@@ -7,7 +7,7 @@ const ExampleSchema = z.object({
   provenance: z.enum(["source", "ai", "user"]),
 });
 
-const TestExampleSchema = ExampleSchema.extend({
+const FillInBlankExampleSchema = ExampleSchema.extend({
   ko: z.string().min(1),
   answer: z.string().min(1),
 });
@@ -23,7 +23,7 @@ const MeaningSchema = z.object({
   antonyms: z.array(z.string()),
   provenance: z.enum(["source", "ai", "user"]),
   examples: z.array(ExampleSchema).min(1).max(3),
-  testExamples: z.array(TestExampleSchema).min(2).max(4),
+  fillInBlankExamples: z.array(FillInBlankExampleSchema).min(2).max(4),
 });
 
 export const CardSchema = z.object({
@@ -32,19 +32,21 @@ export const CardSchema = z.object({
 });
 
 export const CardsResponseSchema = z.object({ cards: z.array(CardSchema).min(1).max(20) });
-export const CandidateSchema = CardSchema.extend({ confidence: z.number().min(0).max(1) });
+const CandidateSchema = CardSchema.extend({ confidence: z.number().min(0).max(1) });
 export const CandidatesResponseSchema = z.object({ candidates: z.array(CandidateSchema).min(1).max(30) });
 
-export function hasValidTestContexts(card: z.infer<typeof CardSchema>) {
+export function hasValidFillInBlankContexts(card: z.infer<typeof CardSchema>) {
   const genericPattern = /(used? (?:the )?(?:term|word|expression)|meaning of|which (?:term|word|expression)|fits? (?:the|this|a) (?:new )?context|clarify the central idea)/i;
+
   return card.meanings.every(
     (meaning) =>
-      meaning.testExamples.length >= 2 &&
-      meaning.testExamples.every((example) => {
+      meaning.fillInBlankExamples.length >= 2 &&
+      meaning.fillInBlankExamples.every((example) => {
         const escapedAnswer = example.answer.replace(
           /[.*+?^${}()|[\]\\]/g,
           "\\$&",
         );
+
         return (
           example.ko.trim().length > 0 &&
           new RegExp(escapedAnswer, "i").test(example.en) &&
@@ -54,7 +56,7 @@ export function hasValidTestContexts(card: z.infer<typeof CardSchema>) {
   );
 }
 
-export function stripNulls<T extends Record<string, unknown>>(value: T) {
+function stripNulls<T extends Record<string, unknown>>(value: T) {
   return Object.fromEntries(Object.entries(value).filter(([, item]) => item !== null)) as T;
 }
 
@@ -64,7 +66,7 @@ export function toClientCard<T extends z.infer<typeof CardSchema>>(card: T) {
     meanings: card.meanings.map((meaning) => ({
       ...stripNulls(meaning),
       examples: meaning.examples.map(stripNulls),
-      testExamples: meaning.testExamples.map(stripNulls),
+      fillInBlankExamples: meaning.fillInBlankExamples.map(stripNulls),
     })),
   };
 }

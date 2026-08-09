@@ -64,7 +64,7 @@ Good feature slices:
 
 - `manage-cards`
 - `study-session`
-- `test-session`
+- `fill-in-the-blank-test`
 - `filter-cards`
 - `backup-library`
 

@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "structure:check": "node scripts/check-structure.mjs",
     "test": "vitest run",
     "seed:compat": "seed-design compat"
@@ -22,12 +23,14 @@
     "openai": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "ts-pattern": "^5.9.0",
     "zod": "latest"
   },
   "devDependencies": {
     "@eslint/js": "latest",
     "@seed-design/cli": "latest",
     "@seed-design/vite-plugin": "latest",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/jest-dom": "latest",
     "@testing-library/react": "latest",

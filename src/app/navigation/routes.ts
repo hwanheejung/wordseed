@@ -1,0 +1,37 @@
+import { z } from "zod";
+import type { NavigationEntry, Page } from "./types";
+
+export const PRIMARY_PAGE_PATHS: Partial<Record<Page, string>> = {
+  home: "/",
+  add: "/add",
+  library: "/library",
+};
+
+const navigationEntrySchema = z.discriminatedUnion("page", [
+  z.object({ page: z.literal("home") }),
+  z.object({ page: z.literal("add") }),
+  z.object({ page: z.literal("library") }),
+  z.object({
+    page: z.literal("study"),
+    tag: z.string().optional(),
+    meaningId: z.string().optional(),
+  }),
+  z.object({ page: z.literal("focus-study") }),
+  z.object({ page: z.literal("fill-in-the-blank-test") }),
+  z.object({
+    page: z.literal("card"),
+    cardIds: z.array(z.string()),
+    startIndex: z.number().int().nonnegative(),
+  }),
+]);
+
+export function navigationEntryFromWindow(): NavigationEntry {
+  const historyEntry = navigationEntrySchema.safeParse(
+    window.history.state?.entry,
+  );
+  if (historyEntry.success) return historyEntry.data;
+  if (window.location.pathname === "/library") return { page: "library" };
+  if (window.location.pathname === "/add") return { page: "add" };
+
+  return { page: "home" };
+}

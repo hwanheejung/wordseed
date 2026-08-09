@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
-import { CardsResponseSchema, hasValidTestContexts, toClientCard } from "../_lib/cards.js";
+import { CardsResponseSchema, hasValidFillInBlankContexts, toClientCard } from "../_lib/cards.js";
 import { serializeApiError } from "../_lib/errors.js";
 import { ENRICH_SYSTEM_PROMPT } from "../_lib/prompts.js";
 
@@ -31,13 +31,15 @@ export default async function handler(request: VercelRequest, response: VercelRe
       text: { format: zodTextFormat(CardsResponseSchema, "vocabulary_cards"), verbosity: "low" },
     });
     if (!result.output_parsed) throw new CardGenerationValidationError("구조화된 카드가 반환되지 않았어요.");
-    if (!result.output_parsed.cards.every(hasValidTestContexts)) {
-      throw new CardGenerationValidationError("AI가 생성한 시험 문맥이 검증을 통과하지 못했어요. 각 카드에는 학습 예문과 다른, 정답 구간이 문장 안에 정확히 포함된 구체적인 새 문맥이 2개 이상 필요해요.");
+    if (!result.output_parsed.cards.every(hasValidFillInBlankContexts)) {
+      throw new CardGenerationValidationError("AI가 생성한 빈칸 문맥이 검증을 통과하지 못했어요. 각 카드에는 정답 구간이 문장 안에 정확히 포함된 구체적인 빈칸 문맥이 2개 이상 필요해요.");
     }
+
     return response.status(200).json({ cards: result.output_parsed.cards.map(toClientCard) });
   } catch (error) {
     console.error(error);
     const failure = serializeApiError(error);
+
     return response.status(failure.status).json({ error: failure.message });
   }
 }

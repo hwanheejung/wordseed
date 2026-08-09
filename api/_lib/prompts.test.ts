@@ -8,7 +8,7 @@ describe("AI prompts", () => {
       expect(prompt).toContain("everyday, academic, or professional");
       expect(prompt).toContain("have A do B");
       expect(prompt).toContain("Never copy those placeholders literally into an example");
-      expect(prompt).toContain("testExample.answer");
+      expect(prompt).toContain("fillInBlankExample.answer");
       expect(prompt).toContain("Preserve the user's complete supplied sentence verbatim");
       expect(prompt).toContain("the passage uses");
       expect(prompt).not.toMatch(/TOEFL/i);
