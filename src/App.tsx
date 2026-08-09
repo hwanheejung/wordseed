@@ -1,4 +1,12 @@
-import { Badge, Chip, Flex, Icon, Menu, TextField } from "@seed-design/react";
+import {
+  Badge,
+  BottomSheet,
+  Chip,
+  Flex,
+  Icon,
+  Menu,
+  TextField,
+} from "@seed-design/react";
 import {
   IconArrowLeftLine,
   IconArrowClockwiseCircularLine,
@@ -15,6 +23,7 @@ import {
   deleteCard,
   exportDatabase,
   getAllCards,
+  getReviewHistoryStats,
   importDatabase,
   normalizeTags,
   recordReview,
@@ -25,12 +34,12 @@ import {
   buildStudyQueue,
   buildTestQueue,
   moveReviewedCardToBack,
+  shouldRecheckMeaning,
   startQueueAt,
   updateFocusQueue,
 } from "./domain/scheduler";
 import {
   answerWordPlaceholder,
-  blankTerm,
   isSpecificTestContext,
   scoreAnswer,
   splitAroundAnswer,
@@ -41,6 +50,7 @@ import type {
   DraftMeaning,
   ExtractedCandidate,
   Provenance,
+  ReviewHistoryStats,
   ReviewResult,
   StudyItem,
   VocabularyCard,
@@ -208,14 +218,18 @@ function EmptyState({
 
 function HomeScreen({
   cards,
+  reviewStats,
   onNavigate,
   onStart,
+  onStartMeaning,
   onOpenCard,
   onStartTag,
 }: {
   cards: VocabularyCard[];
+  reviewStats: Record<string, ReviewHistoryStats>;
   onNavigate: (page: Page) => void;
   onStart: (mode: "study" | "focus-study" | "test") => void;
+  onStartMeaning: (meaningId: string) => void;
   onOpenCard: (card: VocabularyCard) => void;
   onStartTag: (tag: string) => void;
 }) {
@@ -258,6 +272,18 @@ function HomeScreen({
   const recent = cards
     .slice()
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 10);
+  const reviewCandidates = cards
+    .flatMap((card) =>
+      card.meanings.map((meaning) => ({
+        meaning,
+        stats: reviewStats[meaning.id],
+      })),
+    )
+    .filter(({ meaning, stats }) => shouldRecheckMeaning(meaning.status, stats))
+    .sort((left, right) =>
+      right.stats.lastReviewedAt.localeCompare(left.stats.lastReviewedAt),
+    )
     .slice(0, 10);
   const tagGroups = Array.from(
     cards.reduce((groups, card) => {
@@ -377,6 +403,34 @@ function HomeScreen({
             ))}
           </div>
         </section>
+
+        {reviewCandidates.length > 0 && (
+          <section className="mt-7">
+            <div className="mb-2.5 flex items-center justify-between [&_h2]:m-0 [&_h2]:text-[length:var(--seed-font-size-t5)]">
+              <h2>다시 볼 단어</h2>
+            </div>
+            <div
+              className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pt-1 pb-3 [scroll-padding-inline:20px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              aria-label="다시 볼 단어"
+            >
+              {reviewCandidates.map(({ meaning, stats }) => (
+                <button
+                  key={meaning.id}
+                  onClick={() => onStartMeaning(meaning.id)}
+                  className="flex min-h-[142px] w-[184px] shrink-0 snap-start cursor-pointer flex-col items-start justify-between rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-inherit shadow-[0_5px_18px_rgba(0,0,0,.045)] active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:block [&_b]:text-[length:var(--seed-font-size-t6)] [&_span]:block [&_div>span]:mt-1.5 [&_div>span]:line-clamp-2 [&_div>span]:leading-[1.4] [&_div>span]:text-[var(--seed-color-fg-neutral-subtle)]"
+                >
+                  <div>
+                    <b>{meaning.expression}</b>
+                    <span>{meaning.definitionKo}</span>
+                  </div>
+                  <Badge tone="warning" variant="weak">
+                    어려움 {stats.difficultCount}/{stats.reviewCount}
+                  </Badge>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
 
         {tagGroups.length > 0 && (
           <section className="mt-7">
@@ -696,6 +750,14 @@ function validateDrafts(drafts: CardDraft[]): DraftValidationIssue | undefined {
         cardIndex,
         message: `${cardLabel}: 뜻 ${emptyMeaningIndex + 1}의 내용이 비어 있어요.`,
       };
+    const emptyExpressionIndex = item.meanings.findIndex(
+      (meaning) => !meaning.expression.trim(),
+    );
+    if (emptyExpressionIndex >= 0)
+      return {
+        cardIndex,
+        message: `${cardLabel}: 뜻 ${emptyExpressionIndex + 1}의 학습 표현이 비어 있어요.`,
+      };
     const missingExampleIndex = item.meanings.findIndex(
       (meaning) => !meaning.examples.some((example) => example.en.trim()),
     );
@@ -782,6 +844,7 @@ function TagSelector({
   onChange: (tags: string[]) => void;
   onCreate: (tag: string) => void;
 }) {
+  const [open, setOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [newTag, setNewTag] = useState("");
   const createTag = () => {
@@ -801,10 +864,62 @@ function TagSelector({
 
   return (
     <section className="mt-5">
-      <div className="flex items-center justify-between gap-3 [&_.field-label]:m-0">
-        <label className="field-label">{label}</label>
+      <label className="field-label mb-2 block">{label}</label>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+        <BottomSheet.Root open={open} onOpenChange={setOpen}>
+          <BottomSheet.Trigger asChild>
+            <button
+              type="button"
+              className="flex min-h-12 min-w-0 items-center justify-between gap-3 rounded-xl border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] px-4 text-left text-[length:var(--seed-font-size-t4)] text-[var(--seed-color-fg-neutral)]"
+              aria-label={`${label} 선택`}
+            >
+              <span className="truncate">
+                {selected.length
+                  ? selected.map((tag) => `#${tag}`).join(", ")
+                  : "태그 선택"}
+              </span>
+              <IconChevronDownSmallLine />
+            </button>
+          </BottomSheet.Trigger>
+          <BottomSheet.Backdrop className="!z-[100]" />
+          <BottomSheet.Positioner className="!z-[100]">
+            <BottomSheet.Content className="min-h-[50dvh] max-h-[72dvh]">
+              <BottomSheet.Handle />
+              <BottomSheet.Header>
+                <BottomSheet.Title>{label}</BottomSheet.Title>
+              </BottomSheet.Header>
+              <BottomSheet.Body className="overflow-y-auto pb-[calc(20px+var(--seed-safe-area-bottom))]">
+                <div
+                  className="grid grid-cols-1 gap-2 sm:grid-cols-2"
+                  aria-label={`${label} 목록`}
+                >
+                  {options.length ? (
+                    options.map((tag) => (
+                      <button
+                        type="button"
+                        key={tag}
+                        aria-pressed={selected.includes(tag)}
+                        onClick={() => toggleTag(tag)}
+                        className="flex min-h-12 items-center justify-between rounded-xl border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] px-4 text-left font-semibold aria-pressed:border-[var(--seed-color-stroke-brand-solid)] aria-pressed:bg-[var(--seed-color-bg-brand-weak)] aria-pressed:text-[var(--seed-color-fg-brand)]"
+                      >
+                        <span>#{tag}</span>
+                        <span aria-hidden="true">
+                          {selected.includes(tag) ? "✓" : ""}
+                        </span>
+                      </button>
+                    ))
+                  ) : (
+                    <p className="text-[var(--seed-color-fg-neutral-subtle)]">
+                      아직 생성된 태그가 없어요.
+                    </p>
+                  )}
+                </div>
+              </BottomSheet.Body>
+            </BottomSheet.Content>
+          </BottomSheet.Positioner>
+        </BottomSheet.Root>
         <ActionButton
-          size="small"
+          size="medium"
           variant="neutralWeak"
           onClick={() => setCreating((value) => !value)}
         >
@@ -834,26 +949,107 @@ function TagSelector({
           </ActionButton>
         </div>
       )}
-      <div
-        className="my-2.5 mb-3 flex flex-wrap gap-2 [&_p]:my-1 [&_p]:w-full [&_p]:text-[length:var(--seed-font-size-t2)] [&_p]:text-[var(--seed-color-fg-neutral-subtle)]"
-        aria-label={`${label} 선택`}
-      >
-        {options.length ? (
-          options.map((tag) => (
-            <Chip.Root
-              key={tag}
-              size="small"
-              variant={selected.includes(tag) ? "solid" : "outlineStrong"}
-              onClick={() => toggleTag(tag)}
-            >
-              <Chip.Label>#{tag}</Chip.Label>
-            </Chip.Root>
-          ))
-        ) : (
-          <p>아직 생성된 태그가 없어요.</p>
-        )}
-      </div>
     </section>
+  );
+}
+
+function TagFilterSheet({
+  options,
+  selected,
+  onChange,
+}: {
+  options: string[];
+  selected: string[];
+  onChange: (tags: string[]) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [draftSelected, setDraftSelected] = useState(selected);
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) setDraftSelected(selected);
+    setOpen(nextOpen);
+  };
+  const toggleTag = (tag: string) =>
+    setDraftSelected((current) =>
+      current.includes(tag)
+        ? current.filter((item) => item !== tag)
+        : [...current, tag],
+    );
+
+  return (
+    <BottomSheet.Root open={open} onOpenChange={handleOpenChange}>
+      <BottomSheet.Trigger asChild>
+        <Chip.Root
+          size="large"
+          variant={selected.length === 0 ? "outlineStrong" : "solid"}
+          aria-label="태그 필터"
+        >
+          <Chip.Label>
+            {selected.length === 0
+              ? "태그"
+              : selected.length === 1
+                ? `#${selected[0]}`
+                : `태그 ${selected.length}`}
+          </Chip.Label>
+          <Chip.SuffixIcon>
+            <IconChevronDownSmallLine />
+          </Chip.SuffixIcon>
+        </Chip.Root>
+      </BottomSheet.Trigger>
+      <BottomSheet.Backdrop className="!z-[100]" />
+      <BottomSheet.Positioner className="!z-[100]">
+        <BottomSheet.Content className="min-h-[50dvh] max-h-[72dvh]">
+          <BottomSheet.Handle />
+          <BottomSheet.Header>
+            <BottomSheet.Title>태그로 필터</BottomSheet.Title>
+          </BottomSheet.Header>
+          <BottomSheet.Body className="overflow-y-auto">
+            <div
+              className="flex flex-wrap content-start gap-2 pb-5"
+              aria-label="태그 선택"
+            >
+              {options.map((tag) => (
+                <Chip.Root
+                  key={tag}
+                  size="medium"
+                  variant={
+                    draftSelected.includes(tag) ? "solid" : "outlineWeak"
+                  }
+                  aria-label={`#${tag}`}
+                  aria-pressed={draftSelected.includes(tag)}
+                  onClick={() => toggleTag(tag)}
+                >
+                  <Chip.Label>#{tag}</Chip.Label>
+                </Chip.Root>
+              ))}
+            </div>
+          </BottomSheet.Body>
+          <BottomSheet.Footer className="!flex !flex-row gap-2 pb-[calc(12px+var(--seed-safe-area-bottom))]">
+            <ActionButton
+              variant="neutralWeak"
+              size="large"
+              className="min-w-0 justify-center"
+              style={{ flexGrow: 3, flexShrink: 1, flexBasis: 0 }}
+              disabled={draftSelected.length === 0}
+              onClick={() => setDraftSelected([])}
+            >
+              초기화
+            </ActionButton>
+            <ActionButton
+              size="large"
+              className="min-w-0 justify-center"
+              style={{ flexGrow: 7, flexShrink: 1, flexBasis: 0 }}
+              onClick={() => {
+                onChange(draftSelected);
+                setOpen(false);
+              }}
+            >
+              적용하기
+              {draftSelected.length > 0 ? ` ${draftSelected.length}` : ""}
+            </ActionButton>
+          </BottomSheet.Footer>
+        </BottomSheet.Content>
+      </BottomSheet.Positioner>
+    </BottomSheet.Root>
   );
 }
 
@@ -917,10 +1113,13 @@ function ReviewScreen({
       meanings: [
         ...draft.meanings,
         {
+          expression: draft.term,
           definitionKo: "",
           provenance: "user",
           examples: [{ en: "", type: "sentence", provenance: "user" }],
           acceptedVariants: [draft.term],
+          synonyms: [],
+          antonyms: [],
           testExamples: [
             {
               en: "",
@@ -1082,7 +1281,19 @@ function ReviewScreen({
             <TextField.Input
               aria-label="단어 또는 표현"
               value={draft.term}
-              onChange={(event) => update({ term: event.target.value })}
+              onChange={(event) => {
+                const term = event.target.value;
+                update({
+                  term,
+                  meanings: draft.meanings.map((meaning) => ({
+                    ...meaning,
+                    expression:
+                      meaning.expression === draft.term
+                        ? term
+                        : meaning.expression,
+                  })),
+                });
+              }}
             />
           </TextField.Root>
           <TagSelector
@@ -1114,6 +1325,20 @@ function ReviewScreen({
                     <ProvenanceTag value={meaning.provenance} />
                   )}
                 </div>
+                <label className="field-label">이 뜻의 학습 표현</label>
+                <TextField.Root>
+                  <TextField.Input
+                    aria-label={`뜻 ${meaningIndex + 1}의 학습 표현`}
+                    value={meaning.expression}
+                    onChange={(event) =>
+                      updateMeaning(meaningIndex, {
+                        expression: event.target.value,
+                      })
+                    }
+                    placeholder={draft.term || "예: account for"}
+                  />
+                </TextField.Root>
+                <label className="field-label">한국어 뜻</label>
                 <TextField.Root>
                   <TextField.Textarea
                     aria-label={`뜻 ${meaningIndex + 1}`}
@@ -1154,6 +1379,38 @@ function ReviewScreen({
                           })
                         }
                         placeholder="/tʃɑːrdʒ/"
+                      />
+                    </TextField.Root>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2.5 [&_.field-label]:mt-3.5">
+                  <div>
+                    <label className="field-label">이 뜻의 동의어</label>
+                    <TextField.Root>
+                      <TextField.Input
+                        aria-label={`뜻 ${meaningIndex + 1}의 동의어`}
+                        value={(meaning.synonyms ?? []).join(", ")}
+                        onChange={(event) =>
+                          updateMeaning(meaningIndex, {
+                            synonyms: event.target.value.split(","),
+                          })
+                        }
+                        placeholder="예: explain, clarify"
+                      />
+                    </TextField.Root>
+                  </div>
+                  <div>
+                    <label className="field-label">이 뜻의 반의어</label>
+                    <TextField.Root>
+                      <TextField.Input
+                        aria-label={`뜻 ${meaningIndex + 1}의 반의어`}
+                        value={(meaning.antonyms ?? []).join(", ")}
+                        onChange={(event) =>
+                          updateMeaning(meaningIndex, {
+                            antonyms: event.target.value.split(","),
+                          })
+                        }
+                        placeholder="예: confuse, obscure"
                       />
                     </TextField.Root>
                   </div>
@@ -1371,11 +1628,14 @@ function VocabularyCardView({
   const visibleMeanings = meaningId
     ? card.meanings.filter((meaning) => meaning.id === meaningId)
     : card.meanings;
+  const displayExpression = meaningId
+    ? visibleMeanings[0]?.expression || card.term
+    : card.term;
   return (
     <article className="max-h-full overflow-y-auto overscroll-contain rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-6 shadow-[0_8px_30px_rgba(0,0,0,.07)]">
       <div className="flex items-start justify-between pb-5 [&_h2]:mt-2.5 [&_h2]:mb-0.5 [&_h2]:text-[38px] [&_h2]:leading-none [&_h2]:tracking-[-.04em] [&_p]:mt-2 [&_p]:mb-0 [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
         <div>
-          <h2>{card.term}</h2>
+          <h2>{displayExpression}</h2>
           {card.tags.length > 0 && (
             <div className="mt-2.5 flex flex-wrap gap-1.5">
               {card.tags.map((tag) => (
@@ -1388,8 +1648,8 @@ function VocabularyCardView({
         </div>
         <button
           className="grid size-12 cursor-pointer place-items-center rounded-full border-0 bg-[var(--seed-color-bg-neutral-inverted)] text-[var(--seed-color-fg-neutral-inverted)]"
-          onClick={() => speak(card.term)}
-          aria-label={`${card.term} 발음 듣기`}
+          onClick={() => speak(displayExpression)}
+          aria-label={`${displayExpression} 발음 듣기`}
         >
           ◖)))
         </button>
@@ -1406,6 +1666,21 @@ function VocabularyCardView({
               </div>
               <h3>{meaning.definitionKo || "뜻 미입력"}</h3>
               {meaning.definitionEn && <p>{meaning.definitionEn}</p>}
+              {((meaning.synonyms?.length ?? 0) > 0 ||
+                (meaning.antonyms?.length ?? 0) > 0) && (
+                <div className="mt-3 grid gap-2 text-[length:var(--seed-font-size-t2)]">
+                  {(meaning.synonyms?.length ?? 0) > 0 && (
+                    <p>
+                      <strong>SYN</strong> · {meaning.synonyms.join(" · ")}
+                    </p>
+                  )}
+                  {(meaning.antonyms?.length ?? 0) > 0 && (
+                    <p>
+                      <strong>ANT</strong> · {meaning.antonyms.join(" · ")}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
             {meaning.examples.map((example, exampleIndex) => (
               <div
@@ -1486,7 +1761,7 @@ function SwipeableCardStack({
   return (
     <div
       className="relative -mx-5 isolate h-full min-h-0 px-5 pb-12"
-      aria-label={`${item.card.term} 카드, 좌우로 밀어 이전 또는 다음 뜻 보기`}
+      aria-label={`${item.meaning.expression} 카드, 좌우로 밀어 이전 또는 다음 뜻 보기`}
     >
       {Array.from({ length: Math.max(0, layerCount - 1) }, (_, index) => (
         <div
@@ -1651,7 +1926,6 @@ function SessionScreen({
       ? validTestExamples[testTurn % validTestExamples.length]
       : undefined;
   const testAnswer = testExample?.answer ?? "";
-  const prompt = testExample ? blankTerm(testExample.en, testAnswer) : "";
   const rotate = (updated: StudyItem) => {
     setAnswer("");
     setRevealStage(0);
@@ -1671,7 +1945,7 @@ function SessionScreen({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const submitStudy = async (result: ReviewResult) => {
-    const updated = await recordReview(item, "study", result);
+    const updated = await recordReview(item, result);
     if (mode === "focus-study") {
       setAnswer("");
       setGraded(undefined);
@@ -1691,10 +1965,7 @@ function SessionScreen({
     setGraded(scoreAnswer(answer, [testAnswer, ...meaning.acceptedVariants]));
   const commitTest = async () => {
     if (!graded) return;
-    const updated = await recordReview(item, "test", graded, {
-      prompt,
-      submittedAnswer: answer,
-    });
+    const updated = await recordReview(item, graded);
     setTestTurns((turns) => ({ ...turns, [meaning.id]: testTurn + 1 }));
     rotate(updated);
   };
@@ -1770,7 +2041,7 @@ function SessionScreen({
                     문맥의 정답은 <strong>{testAnswer}</strong>예요.
                   </p>
                   <span>
-                    학습 표현: {card.term} · {meaning.definitionKo}
+                    학습 표현: {meaning.expression} · {meaning.definitionKo}
                   </span>
                 </div>
               )}
@@ -1843,11 +2114,14 @@ function cardToDraft(card: VocabularyCard): CardDraft {
     term: card.term,
     meanings: card.meanings.map((meaning) => ({
       id: meaning.id,
+      expression: meaning.expression,
       definitionKo: meaning.definitionKo,
       definitionEn: meaning.definitionEn,
       partOfSpeech: meaning.partOfSpeech,
       pronunciation: meaning.pronunciation,
       acceptedVariants: meaning.acceptedVariants,
+      synonyms: meaning.synonyms,
+      antonyms: meaning.antonyms,
       examples: meaning.examples.map((example) => ({
         ...example,
         provenance: "user",
@@ -1883,20 +2157,24 @@ function LibraryScreen({
       ? initialStatus
       : "all",
   );
-  const [tagFilter, setTagFilter] = useState(
-    () => initialParams.get("tag") ?? "all",
+  const [tagFilter, setTagFilter] = useState<string[]>(() =>
+    normalizeTags(initialParams.getAll("tag")),
   );
   const [sort, setSort] = useState<"newest" | "oldest">(() =>
     initialParams.get("sort") === "oldest" ? "oldest" : "newest",
   );
   const importRef = useRef<HTMLInputElement>(null);
+  const availableTags = normalizeTags(cards.flatMap((card) => card.tags)).sort(
+    (a, b) => a.localeCompare(b, "ko"),
+  );
   const filtered = cards
     .filter(
       (card) =>
         (filter === "all" ||
           card.meanings.some((meaning) => meaning.status === filter)) &&
-        (tagFilter === "all" || card.tags.includes(tagFilter)) &&
-        `${card.term} ${card.meanings.map((item) => item.definitionKo).join(" ")} ${card.tags.join(" ")}`
+        (tagFilter.length === 0 ||
+          tagFilter.some((tag) => card.tags.includes(tag))) &&
+        `${card.term} ${card.meanings.map((item) => `${item.expression} ${item.definitionKo}`).join(" ")} ${card.tags.join(" ")}`
           .toLocaleLowerCase()
           .includes(search.toLocaleLowerCase()),
     )
@@ -1910,7 +2188,7 @@ function LibraryScreen({
     const params = new URLSearchParams();
     params.set("sort", sort);
     if (filter !== "all") params.set("status", filter);
-    if (tagFilter !== "all") params.set("tag", tagFilter);
+    tagFilter.forEach((tag) => params.append("tag", tag));
     if (search.trim()) params.set("q", search.trim());
     window.history.replaceState(
       { page: "library" },
@@ -1985,7 +2263,7 @@ function LibraryScreen({
           align="center"
           aria-label="정렬과 필터"
         >
-          {(filter !== "all" || tagFilter !== "all") && (
+          {(filter !== "all" || tagFilter.length > 0) && (
             <Chip.Root
               size="large"
               layout="iconOnly"
@@ -1993,7 +2271,7 @@ function LibraryScreen({
               aria-label="필터 초기화"
               onClick={() => {
                 setFilter("all");
-                setTagFilter("all");
+                setTagFilter([]);
               }}
             >
               <Icon svg={<IconArrowClockwiseCircularLine />} />
@@ -2046,16 +2324,13 @@ function LibraryScreen({
               </Menu.Content>
             </Menu.Positioner>
           </Menu.Root>
-          {(["다의어", "비즈니스"] as const).map((tag) => (
-            <Chip.Root
-              key={tag}
-              size="large"
-              variant={tagFilter === tag ? "solid" : "outlineStrong"}
-              onClick={() => setTagFilter(tagFilter === tag ? "all" : tag)}
-            >
-              <Chip.Label>#{tag}</Chip.Label>
-            </Chip.Root>
-          ))}
+          {availableTags.length > 0 && (
+            <TagFilterSheet
+              options={availableTags}
+              selected={tagFilter}
+              onChange={setTagFilter}
+            />
+          )}
         </Flex>
         <input
           ref={importRef}
@@ -2148,6 +2423,7 @@ function BottomNav({
 
 export default function App() {
   const cards = useLiveQuery(getAllCards, [], []);
+  const reviewStats = useLiveQuery(getReviewHistoryStats, [], {});
   const [page, setPage] = useState<Page>(() =>
     pageFromPathname(window.location.pathname),
   );
@@ -2194,6 +2470,13 @@ export default function App() {
     setSessionItems(
       buildStudyQueue(cards.filter((card) => card.tags.includes(tag))),
     );
+    navigate("study");
+  };
+  const startMeaning = (meaningId: string) => {
+    const queue = buildStudyQueue(cards);
+    const startIndex = queue.findIndex((item) => item.meaning.id === meaningId);
+    if (startIndex < 0) return;
+    setSessionItems(startQueueAt(queue, startIndex));
     navigate("study");
   };
   const openOrderedCards = (
@@ -2246,8 +2529,10 @@ export default function App() {
       {page === "home" && (
         <HomeScreen
           cards={cards}
+          reviewStats={reviewStats}
           onNavigate={navigate}
           onStart={start}
+          onStartMeaning={startMeaning}
           onOpenCard={openCard}
           onStartTag={startTag}
         />

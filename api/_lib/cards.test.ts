@@ -4,11 +4,14 @@ import { CardSchema, hasValidTestContexts } from "./cards.js";
 const validCard = CardSchema.parse({
   term: "induce",
   meanings: [{
+    expression: "induce",
     definitionKo: "유발하다",
     definitionEn: "to cause",
     partOfSpeech: "verb",
     pronunciation: "/ɪnˈduːs/",
     acceptedVariants: ["induce", "induced"],
+    synonyms: ["cause", "prompt"],
+    antonyms: ["prevent"],
     provenance: "ai",
     examples: [{ en: "The policy may induce companies to reduce spending.", ko: null, type: "sentence", provenance: "ai" }],
     testExamples: [
@@ -29,6 +32,7 @@ describe("generated card validation", () => {
       term: "have A do B",
       meanings: [{
         ...validCard.meanings[0],
+        expression: "have A do B",
         definitionKo: "A에게 B를 하게 하다",
         acceptedVariants: ["have A do B"],
         examples: [{ en: "She had a technician repair the printer.", ko: null, type: "sentence", provenance: "source" }],

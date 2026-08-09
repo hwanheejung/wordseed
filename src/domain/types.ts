@@ -17,12 +17,15 @@ export interface Meaning {
   id: string;
   cardId: string;
   position: number;
+  expression: string;
   definitionKo: string;
   definitionEn?: string;
   searchTokens: string[];
   partOfSpeech?: string;
   pronunciation?: string;
   acceptedVariants: string[];
+  synonyms: string[];
+  antonyms: string[];
   examples: Example[];
   testExamples: TestExample[];
   status: ReviewResult;
@@ -45,11 +48,15 @@ export interface ReviewEvent {
   id?: number;
   cardId: string;
   meaningId: string;
-  mode: "study" | "test";
-  prompt?: string;
-  submittedAnswer?: string;
-  result: ReviewResult;
+  fromStatus: ReviewResult;
+  toStatus: ReviewResult;
   timestamp: string;
+}
+
+export interface ReviewHistoryStats {
+  reviewCount: number;
+  difficultCount: number;
+  lastReviewedAt: string;
 }
 
 export interface DraftExample {
@@ -62,11 +69,14 @@ export interface DraftExample {
 
 export interface DraftMeaning {
   id?: string;
+  expression: string;
   definitionKo: string;
   definitionEn?: string;
   partOfSpeech?: string;
   pronunciation?: string;
   acceptedVariants?: string[];
+  synonyms?: string[];
+  antonyms?: string[];
   provenance?: Provenance;
   examples: DraftExample[];
   testExamples?: DraftExample[];

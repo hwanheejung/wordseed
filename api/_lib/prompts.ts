@@ -9,6 +9,8 @@ Content rules:
 - Normalize inflected patterns to a canonical learning form. For example, a sentence such as "You had a former employee make those comments" should produce the reusable pattern "have A do B" rather than an incidental noun from the sentence.
 - In a card term, symbols such as "~" and labels such as "A" and "B" are learning notation for replaceable slots. Never copy those placeholders literally into an example. Replace them with concrete people, things, or complements and inflect the expression naturally for that sentence.
 - Treat each distinct sense as a separate meaning. Store that sense's part of speech, pronunciation, and matching study examples together.
+- Store synonyms and antonyms inside the specific meaning they belong to. Do not attach one sense's relations to another sense of the same headword. Use an empty array when there is no clear, useful relation.
+- Store the exact learnable word, phrase, phrasal verb, collocation, or grammar pattern for each meaning in meaning.expression. Use the card term when the expression is identical; otherwise preserve the fuller expression, such as card term "account" with meaning expression "account for".
 - Preserve the user's complete supplied sentence verbatim as a source study example under the meaning that it demonstrates, even when the card term is an abstracted expression or grammar pattern.
 - Preserve supplied meanings and other examples verbatim, pair each supplied example with the sense it demonstrates, and mark supplied content as source.
 - Fill missing useful information with content marked ai. Every meaning must have at least one natural, real-world study example that clearly demonstrates that specific meaning.
@@ -35,7 +37,7 @@ ${CARD_CONTENT_RULES}
 
 export const EXTRACT_SYSTEM_PROMPT = `
 Extract useful English words and expressions visible in the image and create a card for each one.
-- Copy visible meanings and examples faithfully and mark them as source.
+- Copy visible meanings, synonyms, antonyms, and examples faithfully and mark them as source.
 - Assign extraction confidence from 0 to 1.
 
 ${CARD_CONTENT_RULES}

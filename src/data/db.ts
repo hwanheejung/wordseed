@@ -4,6 +4,7 @@ import type {
   CardRecord,
   Meaning,
   ReviewEvent,
+  ReviewHistoryStats,
   ReviewResult,
   StudyItem,
   TestExample,
@@ -26,7 +27,7 @@ class WordseedDatabase extends Dexie {
       meanings:
         "id, cardId, [cardId+position], status, partOfSpeech, *searchTokens",
       reviewEvents:
-        "++id, cardId, meaningId, mode, timestamp, [meaningId+timestamp]",
+        "++id, cardId, meaningId, fromStatus, toStatus, timestamp, [meaningId+timestamp], [fromStatus+toStatus+timestamp]",
     });
   }
 }
@@ -56,13 +57,43 @@ export function createSearchTokens(...values: Array<string | undefined>) {
   );
 }
 
+function normalizeRelations(values: unknown): string[] {
+  if (!Array.isArray(values)) return [];
+  return Array.from(
+    new Set(
+      values
+        .filter((value): value is string => typeof value === "string")
+        .map((value) => value.trim())
+        .filter(Boolean),
+    ),
+  );
+}
+
+function normalizeMeaningRecord(meaning: Meaning): Meaning {
+  const synonyms = normalizeRelations(meaning.synonyms);
+  const antonyms = normalizeRelations(meaning.antonyms);
+  return {
+    ...meaning,
+    synonyms,
+    antonyms,
+    searchTokens: createSearchTokens(
+      meaning.expression,
+      meaning.definitionKo,
+      meaning.definitionEn,
+      ...synonyms,
+      ...antonyms,
+    ),
+  };
+}
+
 export async function getAllCards(): Promise<VocabularyCard[]> {
   const [cards, meanings] = await Promise.all([
     db.cards.toArray(),
     db.meanings.orderBy("[cardId+position]").toArray(),
   ]);
   const meaningsByCard = new Map<string, Meaning[]>();
-  for (const meaning of meanings) {
+  for (const storedMeaning of meanings) {
+    const meaning = normalizeMeaningRecord(storedMeaning);
     const group = meaningsByCard.get(meaning.cardId) ?? [];
     group.push(meaning);
     meaningsByCard.set(meaning.cardId, group);
@@ -80,7 +111,27 @@ export async function getCard(id: string) {
     .where("cardId")
     .equals(id)
     .sortBy("position");
-  return { ...card, meanings };
+  return { ...card, meanings: meanings.map(normalizeMeaningRecord) };
+}
+
+export async function getReviewHistoryStats() {
+  const events = await db.reviewEvents
+    .orderBy("[meaningId+timestamp]")
+    .toArray();
+  const stats: Record<string, ReviewHistoryStats> = {};
+  for (const event of events) {
+    const current = stats[event.meaningId] ?? {
+      reviewCount: 0,
+      difficultCount: 0,
+      lastReviewedAt: event.timestamp,
+    };
+    current.reviewCount += 1;
+    if (event.toStatus === "unknown" || event.toStatus === "confusing")
+      current.difficultCount += 1;
+    current.lastReviewedAt = event.timestamp;
+    stats[event.meaningId] = current;
+  }
+  return stats;
 }
 
 function draftToRecords(draft: CardDraft, previous?: VocabularyCard) {
@@ -120,21 +171,27 @@ function draftToRecords(draft: CardDraft, previous?: VocabularyCard) {
         id: previousMeaning?.id ?? meaning.id ?? crypto.randomUUID(),
         cardId,
         position,
+        expression: meaning.expression.trim(),
         definitionKo: meaning.definitionKo.trim(),
         definitionEn: meaning.definitionEn?.trim() || undefined,
         searchTokens: createSearchTokens(
+          meaning.expression,
           meaning.definitionKo,
           meaning.definitionEn,
+          ...(meaning.synonyms ?? []),
+          ...(meaning.antonyms ?? []),
         ),
         partOfSpeech: meaning.partOfSpeech?.trim() || undefined,
         pronunciation: meaning.pronunciation?.trim() || undefined,
         acceptedVariants: Array.from(
           new Set(
-            [draft.term, ...(meaning.acceptedVariants ?? [])]
+            [meaning.expression, ...(meaning.acceptedVariants ?? [])]
               .map(normalizeAnswer)
               .filter(Boolean),
           ),
         ),
+        synonyms: normalizeRelations(meaning.synonyms),
+        antonyms: normalizeRelations(meaning.antonyms),
         examples: meaning.examples
           .filter((example) => example.en.trim())
           .map((example) => ({
@@ -184,9 +241,7 @@ export async function deleteCard(cardId: string) {
 
 export async function recordReview(
   item: StudyItem,
-  mode: "study" | "test",
   result: ReviewResult,
-  details?: Pick<ReviewEvent, "prompt" | "submittedAnswer">,
 ) {
   const now = new Date().toISOString();
   const updatedMeaning: Meaning = { ...item.meaning, status: result };
@@ -195,10 +250,9 @@ export async function recordReview(
     await db.reviewEvents.add({
       cardId: item.card.id,
       meaningId: item.meaning.id,
-      mode,
-      result,
+      fromStatus: item.meaning.status,
+      toStatus: result,
       timestamp: now,
-      ...details,
     });
   });
   return { ...item, meaning: updatedMeaning };
@@ -210,7 +264,7 @@ export async function exportDatabase() {
       version: DATABASE_VERSION,
       exportedAt: new Date().toISOString(),
       cards: await db.cards.toArray(),
-      meanings: await db.meanings.toArray(),
+      meanings: (await db.meanings.toArray()).map(normalizeMeaningRecord),
       reviewEvents: await db.reviewEvents.toArray(),
     },
     null,
@@ -229,15 +283,28 @@ export async function importDatabase(raw: string) {
     parsed.version !== DATABASE_VERSION ||
     !Array.isArray(parsed.cards) ||
     !Array.isArray(parsed.meanings) ||
+    !Array.isArray(parsed.reviewEvents) ||
     !parsed.cards.every((card) => card.id && card.term) ||
     !parsed.meanings.every(
-      (meaning) => meaning.id && meaning.cardId && meaning.definitionKo,
+      (meaning) =>
+        meaning.id &&
+        meaning.cardId &&
+        meaning.expression &&
+        meaning.definitionKo,
+    ) ||
+    !parsed.reviewEvents.every(
+      (event) =>
+        event.meaningId &&
+        event.cardId &&
+        ["unknown", "confusing", "correct"].includes(event.fromStatus) &&
+        ["unknown", "confusing", "correct"].includes(event.toStatus) &&
+        event.timestamp,
     )
   ) {
     throw new Error("지원하지 않는 백업 파일이에요.");
   }
   const cards = parsed.cards;
-  const meanings = parsed.meanings;
+  const meanings = parsed.meanings.map(normalizeMeaningRecord);
   await db.transaction(
     "rw",
     db.cards,

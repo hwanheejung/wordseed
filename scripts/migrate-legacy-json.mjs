@@ -183,6 +183,8 @@ for (let batchStart = 0; batchStart < legacy.cards.length; batchStart += BATCH_S
         searchTokens: searchTokens(
           legacyMeaning.definitionKo,
           legacyMeaning.definitionEn,
+          ...(legacyMeaning.synonyms ?? []),
+          ...(legacyMeaning.antonyms ?? []),
         ),
         ...((legacyMeaning.partOfSpeech || legacyCard.partOfSpeech)?.trim()
           ? {
@@ -209,6 +211,12 @@ for (let batchStart = 0; batchStart < legacy.cards.length; batchStart += BATCH_S
                   Boolean(variant) && !INVALID_ACCEPTED_VARIANTS.has(variant),
               ),
           ),
+        ),
+        synonyms: Array.from(
+          new Set((legacyMeaning.synonyms ?? []).map((value) => value.trim()).filter(Boolean)),
+        ),
+        antonyms: Array.from(
+          new Set((legacyMeaning.antonyms ?? []).map((value) => value.trim()).filter(Boolean)),
         ),
         examples: (legacyMeaning.examples ?? [])
           .filter((example) => example.en?.trim())

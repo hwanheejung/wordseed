@@ -5,6 +5,7 @@ import {
   buildStudyQueue,
   buildTestQueue,
   moveReviewedCardToBack,
+  shouldRecheckMeaning,
   startQueueAt,
   updateFocusQueue,
 } from "./scheduler";
@@ -26,9 +27,12 @@ function makeCard(
       id: `${id}-meaning-${position + 1}`,
       cardId: id,
       position,
+      expression: id,
       definitionKo: `${id} 뜻 ${position + 1}`,
       searchTokens: [id],
       acceptedVariants: [id],
+      synonyms: [],
+      antonyms: [],
       examples: [],
       testExamples: [
         {
@@ -50,6 +54,22 @@ const cards = [
 ];
 
 describe("meaning-level review scheduling", () => {
+  it("rechecks known meanings with at least three mostly difficult reviews", () => {
+    const stats = {
+      reviewCount: 3,
+      difficultCount: 2,
+      lastReviewedAt: timestamp,
+    };
+    expect(shouldRecheckMeaning("correct", stats)).toBe(true);
+    expect(shouldRecheckMeaning("unknown", stats)).toBe(false);
+    expect(
+      shouldRecheckMeaning("correct", { ...stats, reviewCount: 2 }),
+    ).toBe(false);
+    expect(
+      shouldRecheckMeaning("correct", { ...stats, difficultCount: 1 }),
+    ).toBe(false);
+  });
+
   it("keeps every meaning with a valid test context available", () => {
     expect(buildTestQueue(cards, () => 0.5)).toHaveLength(5);
   });

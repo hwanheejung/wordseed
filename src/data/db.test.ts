@@ -3,6 +3,7 @@ import {
   createSearchTokens,
   db,
   getAllCards,
+  getReviewHistoryStats,
   normalizeTags,
   recordReview,
   saveDraft,
@@ -42,6 +43,7 @@ describe("current database model", () => {
       tags: ["finance"],
       meanings: [
         {
+          expression: "account",
           definitionKo: "계좌",
           partOfSpeech: "noun",
           acceptedVariants: ["account", "bank account"],
@@ -76,16 +78,24 @@ describe("current database model", () => {
     const [card] = await getAllCards();
     expect(card.meanings[0].status).toBe("unknown");
 
-    await recordReview(
+    const firstReview = await recordReview(
       { card, meaning: card.meanings[0] },
-      "study",
-      "correct",
+      "unknown",
     );
+    const secondReview = await recordReview(firstReview, "confusing");
+    await recordReview(secondReview, "correct");
     expect((await db.meanings.get(card.meanings[0].id))?.status).toBe(
       "correct",
     );
-    expect((await db.reviewEvents.toArray())[0].meaningId).toBe(
-      card.meanings[0].id,
-    );
+    const events = await db.reviewEvents.toArray();
+    expect(events.map(({ fromStatus, toStatus }) => [fromStatus, toStatus])).toEqual([
+      ["unknown", "unknown"],
+      ["unknown", "confusing"],
+      ["confusing", "correct"],
+    ]);
+    expect((await getReviewHistoryStats())[card.meanings[0].id]).toMatchObject({
+      reviewCount: 3,
+      difficultCount: 2,
+    });
   });
 });

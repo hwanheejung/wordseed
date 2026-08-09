@@ -13,11 +13,14 @@ const TestExampleSchema = ExampleSchema.extend({
 });
 
 const MeaningSchema = z.object({
+  expression: z.string().min(1),
   definitionKo: z.string().min(1),
   definitionEn: z.string().nullable(),
   partOfSpeech: z.string().nullable(),
   pronunciation: z.string().nullable(),
   acceptedVariants: z.array(z.string()),
+  synonyms: z.array(z.string()),
+  antonyms: z.array(z.string()),
   provenance: z.enum(["source", "ai", "user"]),
   examples: z.array(ExampleSchema).min(1).max(3),
   testExamples: z.array(TestExampleSchema).min(2).max(4),

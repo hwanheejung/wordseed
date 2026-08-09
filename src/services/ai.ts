@@ -55,6 +55,7 @@ export function manualDraft(text: string): CardDraft {
     : [];
   const sourceExample = context.join(" ").trim();
   const meanings = (suppliedMeanings.length ? suppliedMeanings : [""]).map((definitionKo, index) => ({
+    expression: term,
     definitionKo,
     provenance: definitionKo ? "source" as const : "user" as const,
     examples: [{
@@ -65,6 +66,8 @@ export function manualDraft(text: string): CardDraft {
       provenance: index === 0 && sourceExample ? "source" as const : "user" as const,
     }],
     acceptedVariants: [term],
+    synonyms: [],
+    antonyms: [],
     testExamples: [
       { en: "", ko: "", answer: "", type: "sentence" as const, provenance: "user" as const },
       { en: "", ko: "", answer: "", type: "dialogue" as const, provenance: "user" as const },
@@ -80,10 +83,13 @@ export const demoPhotoCandidates: ExtractedCandidate[] = [
   {
     ...manualDraft("mitigate\nThe new policy could mitigate the harmful effects of air pollution."),
     meanings: [{
+      expression: "mitigate",
       definitionKo: "완화하다, 경감하다",
       provenance: "source",
       examples: [{ en: "The new policy could mitigate the harmful effects of air pollution.", type: "sentence", provenance: "source" }],
       acceptedVariants: ["mitigate", "mitigates", "mitigated", "mitigating"],
+      synonyms: ["alleviate", "reduce"],
+      antonyms: ["aggravate", "worsen"],
       testExamples: [],
     }],
     selected: true,
@@ -92,10 +98,13 @@ export const demoPhotoCandidates: ExtractedCandidate[] = [
   {
     ...manualDraft("subsequent"),
     meanings: [{
+      expression: "subsequent",
       definitionKo: "그다음의, 이후의",
       provenance: "source",
       examples: [{ en: "Subsequent experiments confirmed the initial finding.", type: "sentence", provenance: "ai" }],
       acceptedVariants: ["subsequent"],
+      synonyms: ["following", "later"],
+      antonyms: ["previous", "preceding"],
       testExamples: [],
     }],
     selected: true,
@@ -104,10 +113,13 @@ export const demoPhotoCandidates: ExtractedCandidate[] = [
   {
     ...manualDraft("ambiguous"),
     meanings: [{
+      expression: "ambiguous",
       definitionKo: "모호한, 여러 의미로 해석되는",
       provenance: "ai",
       examples: [{ en: "The instructions were ambiguous, so the students interpreted them differently.", type: "sentence", provenance: "ai" }],
       acceptedVariants: ["ambiguous"],
+      synonyms: ["unclear", "equivocal"],
+      antonyms: ["clear", "unambiguous"],
       testExamples: [],
     }],
     selected: false,
