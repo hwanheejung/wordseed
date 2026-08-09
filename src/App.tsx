@@ -1,6 +1,12 @@
-import { Badge, Chip, TextField } from "@seed-design/react";
+import { Badge, Chip, Flex, Icon, Menu, Select, TextField } from "@seed-design/react";
+import {
+  IconArrowLeftLine,
+  IconCheckmarkLine,
+  IconChevronDownSmallLine,
+  IconDot3HorizontalLine,
+} from "@karrotmarket/react-monochrome-icon";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import { Checkbox } from "seed-design/ui/checkbox";
 import {
@@ -49,6 +55,18 @@ type Page =
   | "test"
   | "library"
   | "card";
+
+const PRIMARY_PAGE_PATHS: Partial<Record<Page, string>> = {
+  home: "/",
+  add: "/add",
+  library: "/library",
+};
+
+function pageFromPathname(pathname: string): Page {
+  if (pathname === "/library") return "library";
+  if (pathname === "/add") return "add";
+  return "home";
+}
 
 const resultMeta: Record<
   ReviewResult,
@@ -137,13 +155,15 @@ function AppHeader({
     <header className="app-header">
       <div className="header-row">
         {onBack ? (
-          <button
-            className="icon-button"
+          <ActionButton
+            variant="neutralWeak"
+            size="medium"
+            layout="iconOnly"
             onClick={onBack}
             aria-label="뒤로 가기"
           >
-            ←
-          </button>
+            <Icon svg={<IconArrowLeftLine />} />
+          </ActionButton>
         ) : (
           <div className="brand-mark">W</div>
         )}
@@ -181,12 +201,37 @@ function HomeScreen({
   onNavigate,
   onStart,
   onOpenCard,
+  onStartTag,
 }: {
   cards: VocabularyCard[];
   onNavigate: (page: Page) => void;
   onStart: (mode: "study" | "focus-study" | "test") => void;
   onOpenCard: (card: VocabularyCard) => void;
+  onStartTag: (tag: string) => void;
 }) {
+  if (!cards.length) {
+    return (
+      <>
+        <AppHeader title="Wordseed" subtitle="오늘도 문맥으로 기억해요" />
+        <main className="screen home-screen first-run-home">
+          <EmptyState
+            title="아직 추가된 단어가 없어요"
+            description="추가해볼까요?"
+            action={
+              <ActionButton
+                size="small"
+                variant="neutralWeak"
+                onClick={() => onNavigate("add")}
+              >
+                단어 추가하기
+              </ActionButton>
+            }
+          />
+        </main>
+      </>
+    );
+  }
+
   const statusCounts = {
     unknown: cards
       .flatMap((card) => card.meanings)
@@ -202,8 +247,24 @@ function HomeScreen({
   const testableCount = buildTestQueue(cards, () => 0.5).length;
   const recent = cards
     .slice()
-    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-    .slice(0, 3);
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 10);
+  const tagGroups = Array.from(
+    cards.reduce((groups, card) => {
+      card.tags.forEach((tag) => {
+        const group = groups.get(tag) ?? [];
+        group.push(card);
+        groups.set(tag, group);
+      });
+      return groups;
+    }, new Map<string, VocabularyCard[]>()),
+  )
+    .sort(
+      ([leftTag, leftCards], [rightTag, rightCards]) =>
+        rightCards.length - leftCards.length ||
+        leftTag.localeCompare(rightTag, "ko"),
+    )
+    .slice(0, 10);
 
   return (
     <>
@@ -270,12 +331,12 @@ function HomeScreen({
             <h2>최근 단어</h2>
             <button onClick={() => onNavigate("library")}>전체 보기</button>
           </div>
-          <div className="compact-list">
+          <div className="content-rail" aria-label="최근 단어">
             {recent.map((card) => (
               <button
                 key={card.id}
                 onClick={() => onOpenCard(card)}
-                className="compact-row"
+                className="word-tile"
               >
                 <div>
                   <b>{card.term}</b>
@@ -291,6 +352,26 @@ function HomeScreen({
             ))}
           </div>
         </section>
+
+        {tagGroups.length > 0 && (
+          <section className="section-block">
+            <div className="section-heading">
+              <h2>태그별 학습</h2>
+            </div>
+            <div className="content-rail tag-rail" aria-label="태그별 학습">
+              {tagGroups.map(([tag, taggedCards]) => (
+                <button
+                  key={tag}
+                  className="tag-study-tile"
+                  onClick={() => onStartTag(tag)}
+                >
+                  <b>{tag}</b>
+                  <span>{taggedCards.length}개 단어</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </>
   );
@@ -898,7 +979,7 @@ function ReviewScreen({
           </section>
         )}
         {drafts.length > 1 && (
-          <div className="draft-tabs">
+          <Flex className="horizontal-control-rail" align="center">
             {drafts.map((item, index) => (
               <Chip.Root
                 key={`${item.term}-${index}`}
@@ -909,7 +990,7 @@ function ReviewScreen({
                 <Chip.Label>{item.term || index + 1}</Chip.Label>
               </Chip.Root>
             ))}
-          </div>
+          </Flex>
         )}
         <section className="edit-card">
           {draft.meanings.some(
@@ -1726,22 +1807,51 @@ function LibraryScreen({
   onOpen: (orderedCards: VocabularyCard[], index: number) => void;
   notify: (message: string) => void;
 }) {
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | ReviewResult>("all");
-  const [tagFilter, setTagFilter] = useState("all");
+  const initialParams = new URLSearchParams(window.location.search);
+  const initialStatus = initialParams.get("status");
+  const [search, setSearch] = useState(() => initialParams.get("q") ?? "");
+  const [filter, setFilter] = useState<"all" | ReviewResult>(() =>
+    initialStatus === "unknown" ||
+    initialStatus === "confusing" ||
+    initialStatus === "correct"
+      ? initialStatus
+      : "all",
+  );
+  const [tagFilter, setTagFilter] = useState(
+    () => initialParams.get("tag") ?? "all",
+  );
+  const [sort, setSort] = useState<"newest" | "oldest">(() =>
+    initialParams.get("sort") === "oldest" ? "oldest" : "newest",
+  );
   const importRef = useRef<HTMLInputElement>(null);
-  const tags = Array.from(new Set(cards.flatMap((card) => card.tags))).sort(
-    (a, b) => a.localeCompare(b, "ko"),
-  );
-  const filtered = cards.filter(
-    (card) =>
-      (filter === "all" ||
-        card.meanings.some((meaning) => meaning.status === filter)) &&
-      (tagFilter === "all" || card.tags.includes(tagFilter)) &&
-      `${card.term} ${card.meanings.map((item) => item.definitionKo).join(" ")} ${card.tags.join(" ")}`
-        .toLocaleLowerCase()
-        .includes(search.toLocaleLowerCase()),
-  );
+  const filtered = cards
+    .filter(
+      (card) =>
+        (filter === "all" ||
+          card.meanings.some((meaning) => meaning.status === filter)) &&
+        (tagFilter === "all" || card.tags.includes(tagFilter)) &&
+        `${card.term} ${card.meanings.map((item) => item.definitionKo).join(" ")} ${card.tags.join(" ")}`
+          .toLocaleLowerCase()
+          .includes(search.toLocaleLowerCase()),
+    )
+    .sort((left, right) =>
+      sort === "newest"
+        ? right.createdAt.localeCompare(left.createdAt)
+        : left.createdAt.localeCompare(right.createdAt),
+    );
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set("sort", sort);
+    if (filter !== "all") params.set("status", filter);
+    if (tagFilter !== "all") params.set("tag", tagFilter);
+    if (search.trim()) params.set("q", search.trim());
+    window.history.replaceState(
+      { page: "library" },
+      "",
+      `/library?${params.toString()}`,
+    );
+  }, [filter, search, sort, tagFilter]);
 
   const download = async () => {
     const blob = new Blob([await exportDatabase()], {
@@ -1770,6 +1880,30 @@ function LibraryScreen({
         title="내 단어"
         subtitle={`전체 ${cards.length}개`}
         onBack={onBack}
+        action={
+          <Menu.Root size="medium" placement="bottom-end" gutter={6}>
+            <Menu.Trigger asChild>
+              <ActionButton
+                variant="ghost"
+                size="medium"
+                layout="iconOnly"
+                aria-label="단어장 더보기"
+              >
+                <Icon svg={<IconDot3HorizontalLine />} />
+              </ActionButton>
+            </Menu.Trigger>
+            <Menu.Positioner>
+              <Menu.Content>
+                <Menu.Item onClick={() => void download()}>
+                  <Menu.ItemLabel>JSON 내보내기</Menu.ItemLabel>
+                </Menu.Item>
+                <Menu.Item onClick={() => importRef.current?.click()}>
+                  <Menu.ItemLabel>가져오기</Menu.ItemLabel>
+                </Menu.Item>
+              </Menu.Content>
+            </Menu.Positioner>
+          </Menu.Root>
+        }
       />
       <main className="screen library-screen">
         <TextField.Root>
@@ -1780,69 +1914,104 @@ function LibraryScreen({
             placeholder="단어 또는 뜻 검색"
           />
         </TextField.Root>
-        <div className="filter-chips">
-          {(["all", "unknown", "confusing", "correct"] as const).map(
-            (value) => (
-              <Chip.Root
-                key={value}
-                size="small"
-                variant={filter === value ? "solid" : "outlineStrong"}
-                onClick={() => setFilter(value)}
-              >
-                <Chip.Label>
-                  {value === "all" ? "전체" : resultMeta[value].label}
-                </Chip.Label>
-              </Chip.Root>
-            ),
-          )}
-        </div>
-        {tags.length > 0 && (
-          <section className="tag-filter">
-            <b>태그</b>
-            <div className="filter-chips">
-              <Chip.Root
-                size="small"
-                variant={tagFilter === "all" ? "solid" : "outlineStrong"}
-                onClick={() => setTagFilter("all")}
-              >
-                <Chip.Label>전체 태그</Chip.Label>
-              </Chip.Root>
-              {tags.map((tag) => (
-                <Chip.Root
-                  key={tag}
-                  size="small"
-                  variant={tagFilter === tag ? "solid" : "outlineStrong"}
-                  onClick={() => setTagFilter(tag)}
-                >
-                  <Chip.Label>#{tag}</Chip.Label>
-                </Chip.Root>
-              ))}
-            </div>
-          </section>
-        )}
-        <div className="library-actions">
-          <ActionButton
-            variant="neutralWeak"
-            size="small"
-            onClick={() => void download()}
+        <Flex
+          className="horizontal-control-rail horizontal-control-rail--screen-bleed"
+          align="center"
+          aria-label="정렬과 필터"
+        >
+          <Select.Root
+            size="large"
+            placement="bottom-start"
+            gutter={6}
+            value={[sort]}
+            onValueChange={(value) =>
+              setSort(value[0] === "oldest" ? "oldest" : "newest")
+            }
           >
-            JSON 내보내기
-          </ActionButton>
-          <ActionButton
-            variant="neutralWeak"
-            size="small"
-            onClick={() => importRef.current?.click()}
+            <Select.Trigger className="pill-select-trigger" aria-label="단어 정렬">
+              <Select.Value>
+                {sort === "newest" ? "최신순" : "오래된순"}
+              </Select.Value>
+              <Select.SuffixIcon svg={<IconChevronDownSmallLine />} />
+            </Select.Trigger>
+            <Select.Positioner>
+              <Select.Content>
+                <Select.ScrollArea>
+                  {(["newest", "oldest"] as const).map((value) => (
+                    <Select.Item
+                      key={value}
+                      value={value}
+                      label={value === "newest" ? "최신순" : "오래된순"}
+                    >
+                      <Select.ItemBody>
+                        <Select.ItemLabel />
+                      </Select.ItemBody>
+                      <Select.ItemIndicator selected={<IconCheckmarkLine />} />
+                    </Select.Item>
+                  ))}
+                </Select.ScrollArea>
+              </Select.Content>
+            </Select.Positioner>
+          </Select.Root>
+          <Select.Root
+            size="large"
+            placement="bottom-start"
+            gutter={6}
+            value={filter === "all" ? [] : [filter]}
+            onValueChange={(value) => {
+              const next = value[0];
+              setFilter(
+                next === "unknown" || next === "confusing" || next === "correct"
+                  ? next
+                  : "all",
+              );
+            }}
           >
-            가져오기
-          </ActionButton>
-          <input
-            ref={importRef}
-            type="file"
-            accept="application/json"
-            hidden
-            onChange={(event) => void restore(event.target.files?.[0])}
-          />
-        </div>
+            <Select.Trigger className="pill-select-trigger" aria-label="학습 상태">
+              {filter === "all" ? (
+                <Select.Placeholder>학습 상태</Select.Placeholder>
+              ) : (
+                <Select.Value>{resultMeta[filter].label}</Select.Value>
+              )}
+              <Select.SuffixIcon svg={<IconChevronDownSmallLine />} />
+            </Select.Trigger>
+            <Select.Positioner>
+              <Select.Content>
+                <Select.ScrollArea>
+                  {(["unknown", "confusing", "correct"] as const).map((value) => (
+                    <Select.Item
+                      key={value}
+                      value={value}
+                      label={resultMeta[value].label}
+                    >
+                      <Select.ItemBody>
+                        <Select.ItemLabel />
+                      </Select.ItemBody>
+                      <Select.ItemIndicator selected={<IconCheckmarkLine />} />
+                    </Select.Item>
+                  ))}
+                </Select.ScrollArea>
+              </Select.Content>
+            </Select.Positioner>
+          </Select.Root>
+          {(["다의어", "비즈니스"] as const).map((tag) => (
+            <Chip.Root
+              key={tag}
+              size="large"
+              variant={tagFilter === tag ? "solid" : "outlineStrong"}
+              onClick={() => setTagFilter(tagFilter === tag ? "all" : tag)}
+            >
+              <Chip.Label>#{tag}</Chip.Label>
+            </Chip.Root>
+          ))}
+        </Flex>
+        <input
+          ref={importRef}
+          type="file"
+          accept="application/json"
+          hidden
+          onChange={(event) => void restore(event.target.files?.[0])}
+        />
         <div className="word-list">
           {filtered.map((card, index) => (
             <article key={card.id} className="word-row">
@@ -1922,7 +2091,9 @@ function BottomNav({
 
 export default function App() {
   const cards = useLiveQuery(getAllCards, [], []);
-  const [page, setPage] = useState<Page>("home");
+  const [page, setPage] = useState<Page>(() =>
+    pageFromPathname(window.location.pathname),
+  );
   const [drafts, setDrafts] = useState<CardDraft[]>([]);
   const [candidates, setCandidates] = useState<ExtractedCandidate[]>([]);
   const [reviewStartIndex, setReviewStartIndex] = useState(0);
@@ -1938,8 +2109,18 @@ export default function App() {
     toastTimer.current = window.setTimeout(() => setToast(undefined), 8000);
   };
 
+  useEffect(() => {
+    const handlePopState = () =>
+      setPage(pageFromPathname(window.location.pathname));
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   const navigate = (next: Page) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+    const path = PRIMARY_PAGE_PATHS[next];
+    if (path && window.location.pathname !== path)
+      window.history.pushState({ page: next }, "", path);
     setPage(next);
   };
   const start = (mode: "study" | "focus-study" | "test") => {
@@ -1951,6 +2132,12 @@ export default function App() {
           : buildStudyQueue(cards);
     setSessionItems(queue);
     navigate(mode);
+  };
+  const startTag = (tag: string) => {
+    setSessionItems(
+      buildStudyQueue(cards.filter((card) => card.tags.includes(tag))),
+    );
+    navigate("study");
   };
   const openOrderedCards = (
     orderedCards: VocabularyCard[],
@@ -2003,6 +2190,7 @@ export default function App() {
           onNavigate={navigate}
           onStart={start}
           onOpenCard={openCard}
+          onStartTag={startTag}
         />
       )}
       {page === "add" && (

@@ -10,7 +10,6 @@ import type {
   VocabularyCard,
 } from "../domain/types";
 import { normalizeAnswer } from "../domain/scoring";
-import { seedCards } from "./seed";
 
 const DATABASE_VERSION = 1;
 const DATABASE_NAME = "wordseed-v2";
@@ -82,39 +81,6 @@ export async function getCard(id: string) {
     .equals(id)
     .sortBy("position");
   return { ...card, meanings };
-}
-
-export async function ensureSeedData() {
-  const existingCards = await db.cards.toArray();
-  const shouldRefreshSeedOnlyDatabase =
-    existingCards.length > 0 &&
-    existingCards.every((card) => card.id.startsWith("seed-")) &&
-    (await db.reviewEvents.count()) === 0 &&
-    (existingCards.length !== seedCards.length ||
-      seedCards.some(
-        (seed) =>
-          !existingCards.some((existing) => existing.id === seed.id),
-      ));
-  if (existingCards.length > 0 && !shouldRefreshSeedOnlyDatabase) return;
-  await db.transaction("rw", db.cards, db.meanings, async () => {
-    if (shouldRefreshSeedOnlyDatabase) {
-      await db.cards.clear();
-      await db.meanings.clear();
-    }
-    await db.cards.bulkPut(
-      seedCards.map(
-        ({ id, term, normalizedTerm, tags, createdAt, updatedAt }) => ({
-          id,
-          term,
-          normalizedTerm,
-          tags,
-          createdAt,
-          updatedAt,
-        }),
-      ),
-    );
-    await db.meanings.bulkPut(seedCards.flatMap((card) => card.meanings));
-  });
 }
 
 function draftToRecords(draft: CardDraft, previous?: VocabularyCard) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { seedCards } from "../data/seed";
+import type { ReviewResult, VocabularyCard } from "./types";
 import {
   buildFocusQueue,
   buildStudyQueue,
@@ -9,55 +9,82 @@ import {
   updateFocusQueue,
 } from "./scheduler";
 
+const timestamp = "2026-01-01T00:00:00.000Z";
+
+function makeCard(
+  id: string,
+  statuses: ReviewResult[],
+): VocabularyCard {
+  return {
+    id,
+    term: id,
+    normalizedTerm: id,
+    tags: [],
+    createdAt: timestamp,
+    updatedAt: timestamp,
+    meanings: statuses.map((status, position) => ({
+      id: `${id}-meaning-${position + 1}`,
+      cardId: id,
+      position,
+      definitionKo: `${id} 뜻 ${position + 1}`,
+      searchTokens: [id],
+      acceptedVariants: [id],
+      examples: [],
+      testExamples: [
+        {
+          en: `The team used ${id} to solve the specific problem before noon.`,
+          answer: id,
+          type: "sentence",
+        },
+      ],
+      status,
+    })),
+  };
+}
+
+const cards = [
+  makeCard("account", ["unknown", "confusing", "correct"]),
+  makeCard("induce", ["unknown"]),
+  makeCard("pervasive", ["correct"]),
+];
+
 describe("meaning-level review scheduling", () => {
   it("keeps every meaning with a valid test context available", () => {
-    expect(buildTestQueue(seedCards, () => 0.5)).toHaveLength(8);
+    expect(buildTestQueue(cards, () => 0.5)).toHaveLength(5);
   });
 
   it("excludes meanings that only have generic fallback prompts", () => {
-    const card = seedCards[0];
-    const invalid = {
-      ...card,
-      meanings: [
-        {
-          ...card.meanings[0],
-          testExamples: [
-            {
-              en: "The professor used the term thrall to clarify the central idea.",
-              answer: "thrall",
-              type: "sentence" as const,
-            },
-          ],
-        },
-      ],
-    };
-    expect(buildTestQueue([invalid], () => 0.5)).toHaveLength(0);
+    const card = makeCard("thrall", ["unknown"]);
+    card.meanings[0].testExamples = [
+      {
+        en: "The professor used the term thrall to clarify the central idea.",
+        answer: "thrall",
+        type: "sentence",
+      },
+    ];
+    expect(buildTestQueue([card], () => 0.5)).toHaveLength(0);
   });
 
-  it("sorts meanings by unknown, confusing, then known", () => {
-    const cards = seedCards.slice(1, 4).map((card, index) => ({
-      ...card,
-      meanings: [
-        {
-          ...card.meanings[0],
-          status: (["correct", "confusing", "unknown"] as const)[index],
-        },
-      ],
-    }));
+  it("sorts cards by their most difficult meaning", () => {
+    const orderedCards = [
+      makeCard("known", ["correct"]),
+      makeCard("confusing", ["confusing"]),
+      makeCard("unknown", ["unknown"]),
+    ];
     expect(
-      buildStudyQueue(cards).map(({ meaning }) => meaning.status),
+      buildStudyQueue(orderedCards).map(({ meaning }) => meaning.status),
     ).toEqual(["unknown", "confusing", "correct"]);
     expect(
-      buildFocusQueue(cards).map(({ meaning }) => meaning.status),
+      buildFocusQueue(orderedCards).map(({ meaning }) => meaning.status),
     ).toEqual(["confusing", "unknown"]);
   });
 
   it("keeps meanings from the same card adjacent and in position order", () => {
-    const queue = buildStudyQueue([seedCards[0], seedCards[1]]);
+    const queue = buildStudyQueue([cards[0], cards[1]]);
     expect(queue.slice(0, 3).map(({ card }) => card.id)).toEqual([
-      "seed-account",
-      "seed-account",
-      "seed-account",
+      "account",
+      "account",
+      "account",
     ]);
     expect(queue.slice(0, 3).map(({ meaning }) => meaning.position)).toEqual([
       0, 1, 2,
@@ -65,7 +92,7 @@ describe("meaning-level review scheduling", () => {
   });
 
   it("preserves order cyclically and moves a reviewed meaning to the back", () => {
-    const items = buildStudyQueue(seedCards);
+    const items = buildStudyQueue(cards);
     const started = startQueueAt(items, 1);
     expect(started[0].meaning.id).toBe(items[1].meaning.id);
     expect(started.at(-1)?.meaning.id).toBe(items[0].meaning.id);
@@ -80,7 +107,7 @@ describe("meaning-level review scheduling", () => {
   });
 
   it("keeps difficult meanings focused until they become correct", () => {
-    const focusItems = buildFocusQueue(seedCards);
+    const focusItems = buildFocusQueue(cards);
     const current = focusItems[0];
     expect(
       updateFocusQueue(focusItems, {

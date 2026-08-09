@@ -19,3 +19,5 @@
 ## Product UX
 
 - Prefer clear visual affordances over explanatory UX copy. Do not add instructions when the interaction is already apparent from the interface itself.
+- Before creating or styling a UI pattern directly, check whether SEED Design already provides a component, layout primitive, template, or documented composition for it.
+- Prefer composing installed SEED Design components and primitives over custom UI implementations. Add custom styling only for requirements that SEED Design does not cover, and keep that styling minimal.
