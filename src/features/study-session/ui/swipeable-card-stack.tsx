@@ -6,18 +6,24 @@ import { speak } from "@/shared/utils/speech";
 
 export function SwipeableCardStack({
   item,
-  items,
+  previousItem,
+  nextItem,
+  itemCount,
+  navigationRevision,
   showAllMeanings = false,
   onNavigate,
 }: {
   item: StudyQueueItem;
-  items: StudyQueueItem[];
+  previousItem?: StudyQueueItem;
+  nextItem?: StudyQueueItem;
+  itemCount: number;
+  navigationRevision: number;
   showAllMeanings?: boolean;
   onNavigate: (direction: "next" | "previous") => void;
 }) {
   const navigationPending = useRef(false);
   const [viewportRef, emblaApi] = useEmblaCarousel({
-    active: items.length > 1,
+    active: Boolean(previousItem || nextItem),
     align: "center",
     containScroll: false,
     dragFree: false,
@@ -27,14 +33,8 @@ export function SwipeableCardStack({
     watchDrag: (_api, event) =>
       !(event.target as HTMLElement).closest("button"),
   });
-  const sameCardCount = items.findIndex(
-    (candidate) => candidate.card.id !== item.card.id,
-  );
-  const layerCount = Math.min(
-    3,
-    sameCardCount === -1 ? items.length : sameCardCount,
-  );
-  const slides = [items.at(-1) ?? item, item, items[1] ?? item];
+  const layerCount = Math.min(3, itemCount);
+  const slides = [previousItem ?? item, item, nextItem ?? item];
 
   // Synchronize Embla selection events with the card-session navigation callback.
   useEffect(() => {
@@ -43,6 +43,14 @@ export function SwipeableCardStack({
     const handleSelect = () => {
       const selectedIndex = emblaApi.selectedScrollSnap();
       if (selectedIndex === 1 || navigationPending.current) return;
+
+      const destination = selectedIndex === 2 ? nextItem : previousItem;
+      if (!destination) {
+        emblaApi.scrollTo(1);
+
+        return;
+      }
+
       navigationPending.current = true;
       onNavigate(selectedIndex === 2 ? "next" : "previous");
     };
@@ -52,7 +60,7 @@ export function SwipeableCardStack({
     return () => {
       emblaApi.off("select", handleSelect);
     };
-  }, [emblaApi, onNavigate]);
+  }, [emblaApi, nextItem, onNavigate, previousItem]);
 
   // Synchronize Embla's selected slide when the active meaning changes.
   useEffect(() => {
@@ -60,7 +68,7 @@ export function SwipeableCardStack({
     emblaApi.reInit({ startIndex: 1 });
     emblaApi.scrollTo(1, true);
     navigationPending.current = false;
-  }, [emblaApi, item.meaning.id]);
+  }, [emblaApi, navigationRevision]);
 
   return (
     <div

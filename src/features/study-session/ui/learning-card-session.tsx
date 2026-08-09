@@ -6,7 +6,14 @@ import { AppHeader } from "@/shared/ui/app-header";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { submitStudyReview } from "../actions/submit-study-review";
 import type { StudyQueueItem } from "../types/study-queue-item";
-import { moveReviewedCardToBack, updateFocusQueue } from "../utils/scheduler";
+import {
+  createStudySession,
+  getCurrentStudyItem,
+  getNextStudyItem,
+  getPreviousStudyItem,
+  navigateStudySession,
+  reviewStudySession,
+} from "../utils/study-session-navigation";
 import { SwipeableCardStack } from "./swipeable-card-stack";
 
 export function LearningCardSession({
@@ -28,8 +35,8 @@ export function LearningCardSession({
   onEdit?: (card: VocabularyCard) => void;
   subtitle?: (item: StudyQueueItem, itemCount: number) => string;
 }) {
-  const [sessionItems, setSessionItems] = useState(items);
-  const item = sessionItems[0];
+  const [session, setSession] = useState(() => createStudySession(items));
+  const item = getCurrentStudyItem(session);
 
   if (!item)
     return (
@@ -46,20 +53,14 @@ export function LearningCardSession({
     );
 
   const navigateWithoutRating = (direction: "next" | "previous") => {
-    setSessionItems((current) =>
-      direction === "next"
-        ? [...current.slice(1), current[0]]
-        : [current.at(-1)!, ...current.slice(0, -1)],
-    );
+    setSession((current) => navigateStudySession(current, direction));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const submitReview = async (result: ReviewResult) => {
     const updated = await submitStudyReview(item, result);
-    setSessionItems((current) =>
-      removeCorrectFromQueue
-        ? updateFocusQueue(current, updated)
-        : moveReviewedCardToBack(current, updated),
+    setSession((current) =>
+      reviewStudySession(current, updated, removeCorrectFromQueue),
     );
 
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -70,7 +71,8 @@ export function LearningCardSession({
       <AppHeader
         title={title}
         subtitle={
-          subtitle?.(item, sessionItems.length) ?? `${sessionItems.length}개 뜻`
+          subtitle?.(item, session.queue.length) ??
+          `${session.queue.length}개 뜻`
         }
         onBack={onBack}
         action={
@@ -89,7 +91,10 @@ export function LearningCardSession({
       <main className="min-h-[calc(100vh-84px)] overflow-y-hidden! bg-[var(--seed-color-bg-layer-basement)] p-5 pb-[130px]">
         <SwipeableCardStack
           item={item}
-          items={sessionItems}
+          previousItem={getPreviousStudyItem(session)}
+          nextItem={getNextStudyItem(session)}
+          itemCount={Math.max(session.queue.length, session.history.length)}
+          navigationRevision={session.revision}
           onNavigate={navigateWithoutRating}
         />
       </main>

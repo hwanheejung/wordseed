@@ -6,11 +6,14 @@ function preferredEnglishVoice(voices: SpeechSynthesisVoice[]) {
   return englishVoices.sort((left, right) => {
     const score = (voice: SpeechSynthesisVoice) => {
       const name = voice.name.toLowerCase();
+      const language = voice.lang.toLowerCase();
 
       return (
-        (voice.lang.toLowerCase() === "en-us" ? 100 : 0) +
-        (/samantha|alex|google us english|aria|jenny|guy/.test(name) ? 20 : 0) +
-        (voice.localService ? 2 : 0)
+        (language === "en-us" ? 100 : 0) +
+        (/premium|enhanced|neural|natural/.test(name) ? 50 : 0) +
+        (/samantha|ava|zoe|aaron|google us english|aria|jenny|guy/.test(name)
+          ? 30
+          : 0)
       );
     };
 
@@ -41,7 +44,8 @@ export function speak(term: string) {
     const utterance = new SpeechSynthesisUtterance(term);
     utterance.voice = voice;
     utterance.lang = voice.lang;
-    utterance.rate = 0.82;
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
     synthesis.speak(utterance);
   };
 
