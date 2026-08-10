@@ -38,6 +38,15 @@ export function CandidateSelection({
       ),
     );
 
+  const handleSaveImmediately = async () => {
+    setSaving(true);
+    try {
+      await onSaveImmediately(selectedDrafts());
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <>
       <AppHeader
@@ -93,31 +102,24 @@ export function CandidateSelection({
             </article>
           ))}
         </div>
-        <div className="sticky-cta grid gap-2">
+        <div className="sticky-cta !bottom-[calc(68px+var(--seed-safe-area-bottom))] grid grid-cols-[3fr_7fr] gap-2">
           <ActionButton
             size="large"
+            variant="neutralWeak"
             disabled={!selected.length}
             loading={saving}
-            onClick={async () => {
-              setSaving(true);
-              try {
-                await onSaveImmediately(selectedDrafts());
-              } finally {
-                setSaving(false);
-              }
-            }}
-            className="w-full justify-center"
+            onClick={handleSaveImmediately}
+            className="min-w-0 justify-center whitespace-normal"
           >
             선택한 {selected.length}개 바로 저장
           </ActionButton>
           <ActionButton
             size="large"
-            variant="neutralWeak"
             disabled={!selected.length || saving}
             onClick={() => onContinue(selectedDrafts())}
-            className="w-full justify-center"
+            className="min-w-0 justify-center"
           >
-            검토 후 저장
+            검토하기
           </ActionButton>
         </div>
       </main>
