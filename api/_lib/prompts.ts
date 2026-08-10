@@ -1,44 +1,63 @@
-const CARD_CONTENT_RULES = `
-Fill the provided response schema. Do not add fields or commentary.
+const CARD_RULES = `
+Return only data that matches the provided response schema.
 
-Content rules:
-- Support words and expressions from everyday, academic, or professional contexts without privileging one domain.
-- The user may submit a batch of entries separated by newlines. For each non-empty entry that begins with an English headword or expression followed by supplied Korean meanings, create exactly one card. Do not merge separate lines into one card.
-- Example batch input: "account 계좌, 설명하다, 차지하다\nsum 합계, 총계, 요약하다" must produce exactly two cards: one for "account" and one for "sum". Treat the Korean items after each headword as supplied senses for that card, preserve them as source content, and infer the part of speech separately for each sense when needed.
-- The user input may be a headword, an expression, or a complete sentence. When it is a sentence, identify the most reusable non-obvious expression, collocation, phrasal verb, or grammar pattern demonstrated by that sentence; do not use the entire sentence as the card term.
-- Normalize inflected patterns to a canonical learning form. For example, a sentence such as "You had a former employee make those comments" should produce the reusable pattern "have A do B" rather than an incidental noun from the sentence.
-- In a card term, symbols such as "~" and labels such as "A" and "B" are learning notation for replaceable slots. Never copy those placeholders literally into an example. Replace them with concrete people, things, or complements and inflect the expression naturally for that sentence.
-- Treat each distinct sense as a separate meaning. Store that sense's part of speech, pronunciation, and matching study examples together.
-- Store synonyms and antonyms inside the specific meaning they belong to. Do not attach one sense's relations to another sense of the same headword. Use an empty array when there is no clear, useful relation.
-- Store the exact learnable word, phrase, phrasal verb, collocation, or grammar pattern for each meaning in meaning.expression. Use the card term when the expression is identical; otherwise preserve the fuller expression, such as card term "account" with meaning expression "account for".
-- Preserve the user's complete supplied sentence verbatim as a source study example under the meaning that it demonstrates, even when the card term is an abstracted expression or grammar pattern.
-- Preserve supplied meanings and other examples verbatim, pair each supplied example with the sense it demonstrates, and mark supplied content as source.
-- Fill missing useful information with content marked ai. Every meaning must have at least one natural, real-world study example that clearly demonstrates that specific meaning.
-- Put the sense used in the supplied context first.
-- Write natural, concise Korean definitions and translations.
+Card rules:
+- Support useful English words and expressions from everyday, academic, and professional contexts.
+- Keep each distinct sense as a separate meaning with its own expression, definition, part of speech, pronunciation, relations, and examples.
+- Use meaning.expression for the exact learnable word, phrase, collocation, phrasal verb, or grammar pattern. Use an empty array when a meaning has no clear synonyms or antonyms.
+- Mark supplied or visible content as source. Mark inferred or newly written content as ai.
+- Give every meaning at least one concise, natural study example and a natural Korean definition and translation.
+- Treat notation such as "~", "A", and "B" as replaceable slots. In examples, replace the slots with concrete words and inflect the expression naturally.
+`.trim();
 
-Fill-in-the-blank context rules:
-- Create 2–4 fillInBlankExamples for every meaning. Each test context must test only that specific meaning. Prefer a different context from the study examples, but reusing a strong study example is allowed when a distinct, natural context is not available.
-- Every fillInBlankExample must include a natural Korean translation in ko. The translation is required context for solving the blank.
-- Store acceptedVariants inside each meaning. Include the canonical term or expression and only grammatical variants that are valid answers for that meaning.
-- Every fillInBlankExample.answer must be the exact, non-empty, contiguous substring of fillInBlankExample.en that should be replaced by the blank.
-- For an abstract card term such as "have A do B", write a natural concrete realization such as "had a technician repair" in the sentence and store that exact realization in answer. Never put "A", "B", or "~" in the sentence or answer.
-- Make the answer inferable from concrete semantic or grammatical clues after that answer span is blanked.
-- Never use metalinguistic filler such as "the passage uses", "in an academic context", "used the term/word/expression", "which word fits", "fits this context", or a sentence that merely defines or mentions the term.
-- Write situations a fluent speaker could realistically say, write, hear, or read. Do not create a context that would work equally well for almost any vocabulary item.
-- Include at least one natural two-speaker dialogue when possible. Format it on separate lines exactly as "A: ..." and "B: ...".
+const TEXT_INPUT_RULES = `
+Text input rules:
+- For newline-separated entries, create exactly one card per non-empty line. Do not merge lines.
+- Preserve supplied meanings and examples verbatim and assign them to the sense they demonstrate.
+- If the input is a complete sentence, preserve it verbatim as a source study example and make the card term the most reusable non-obvious expression or grammar pattern it demonstrates.
+- Normalize inflected grammar patterns to a canonical learning form, such as "have A do B" from "had a former employee make".
+- Put the sense demonstrated by the supplied context first.
+`.trim();
+
+const FILL_IN_THE_BLANK_RULES = `
+Fill-in-the-blank rules:
+- Create exactly 2 fillInBlankExamples for every meaning. Each example must test only that meaning in a realistic situation.
+- Include a natural Korean translation in ko.
+- Store the canonical expression and only valid grammatical answer variants in acceptedVariants.
+- Finalize en first. Then copy the exact, non-empty, contiguous answer span from en into answer.
+- For an abstract pattern such as "have A do B", use a concrete realization such as "had a technician repair" in both en and answer. Never put "A", "B", or "~" in them.
+- After answer is blanked, the remaining context must contain enough semantic or grammatical clues to infer it.
+- Never discuss or name the target word itself. Avoid metalinguistic frames such as "the passage uses", "meaning of", "which word", or "fits this context".
+
+Before returning, check every meaning:
+- It has exactly 2 fillInBlankExamples.
+- Every answer was copied verbatim from its final en.
+- Every blank leaves specific clues for the intended meaning.
+- Every ko naturally translates its en.
+- No example discusses the target word or expression itself.
+
+Correct any failed check before returning.
 `.trim();
 
 export const ENRICH_SYSTEM_PROMPT = `
-Create vocabulary cards for English words and expressions from everyday, academic, or professional contexts.
+Create vocabulary cards from the user's English words, expressions, or sentences.
 
-${CARD_CONTENT_RULES}
+${TEXT_INPUT_RULES}
+
+${CARD_RULES}
+
+${FILL_IN_THE_BLANK_RULES}
 `.trim();
 
 export const EXTRACT_SYSTEM_PROMPT = `
-Extract useful English words and expressions visible in the image and create a card for each one.
-- Copy visible meanings, synonyms, antonyms, and examples faithfully and mark them as source.
+Extract vocabulary cards from the image.
+
+Image input rules:
+- Create one card for each clearly visible, learnable English headword or expression. Do not turn definitions or example sentences into additional cards.
+- Copy visible meanings, relations, and examples faithfully. Never mark inferred content as source.
 - Assign extraction confidence from 0 to 1.
 
-${CARD_CONTENT_RULES}
+${CARD_RULES}
+
+${FILL_IN_THE_BLANK_RULES}
 `.trim();
