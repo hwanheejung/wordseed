@@ -4,6 +4,7 @@ import { ActionButton } from "seed-design/ui/action-button";
 import { useAppSnackbar } from "@/shared/hooks/use-app-snackbar";
 import { AppHeader } from "@/shared/ui/app-header";
 import { enrichText, extractImage } from "../api/cards-api";
+import { prepareImageForExtraction } from "../helpers/prepare-image-for-extraction";
 import type { CardDraft, ExtractedCandidate } from "../types/card-draft";
 
 interface CaptureCardsProps {
@@ -26,17 +27,26 @@ export function CaptureCards({
   onCandidates,
 }: CaptureCardsProps) {
   const [busy, setBusy] = useState(false);
+  const [optimizingImage, setOptimizingImage] = useState(false);
   const cameraRef = useRef<HTMLInputElement>(null);
   const photoLibraryRef = useRef<HTMLInputElement>(null);
   const notify = useAppSnackbar();
 
-  const readImage = (file?: File) => {
+  const handleImageSelection = async (file?: File) => {
     if (!file) return;
-    if (file.size > 8 * 1024 * 1024)
-      return notify("8MB 이하의 이미지를 선택해 주세요.", "critical");
-    const reader = new FileReader();
-    reader.onload = () => onImageChange(String(reader.result));
-    reader.readAsDataURL(file);
+    setOptimizingImage(true);
+    try {
+      onImageChange(await prepareImageForExtraction(file));
+    } catch (error) {
+      notify(
+        error instanceof Error
+          ? error.message
+          : "사진을 변환하지 못했어요. 다른 사진을 선택해 주세요.",
+        "critical",
+      );
+    } finally {
+      setOptimizingImage(false);
+    }
   };
 
   const createCards = async () => {
@@ -122,25 +132,37 @@ export function CaptureCards({
             type="file"
             accept="image/*"
             capture="environment"
+            disabled={busy || optimizingImage}
             hidden
-            onChange={(event) => readImage(event.target.files?.[0])}
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              void handleImageSelection(file);
+            }}
           />
           <input
             ref={photoLibraryRef}
             type="file"
             accept="image/*"
+            disabled={busy || optimizingImage}
             hidden
-            onChange={(event) => readImage(event.target.files?.[0])}
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              void handleImageSelection(file);
+            }}
           />
           <div className="mt-3.5 flex justify-center gap-2">
             <ActionButton
               variant="neutralWeak"
+              disabled={busy || optimizingImage}
               onClick={() => cameraRef.current?.click()}
             >
               {image ? "다시 촬영" : "사진 촬영"}
             </ActionButton>
             <ActionButton
               variant="neutralWeak"
+              disabled={busy || optimizingImage}
               onClick={() => photoLibraryRef.current?.click()}
             >
               사진첩에서 선택
@@ -148,18 +170,27 @@ export function CaptureCards({
             {image && (
               <ActionButton
                 variant="ghost"
+                disabled={busy || optimizingImage}
                 onClick={() => onImageChange(undefined)}
               >
                 삭제
               </ActionButton>
             )}
           </div>
+          {optimizingImage && (
+            <p
+              className="mt-3 mb-0 text-[length:var(--seed-font-size-t2)] text-[var(--seed-color-fg-neutral-subtle)]"
+              aria-live="polite"
+            >
+              사진 최적화 중...
+            </p>
+          )}
         </section>
         <div className="sticky-cta !bottom-[calc(68px+var(--seed-safe-area-bottom))]">
           <ActionButton
             size="large"
             loading={busy}
-            disabled={busy || (!text.trim() && !image)}
+            disabled={busy || optimizingImage || (!text.trim() && !image)}
             onClick={createCards}
             className="w-full justify-center"
           >

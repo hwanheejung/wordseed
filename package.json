@@ -20,6 +20,7 @@
     "dexie": "latest",
     "dexie-react-hooks": "latest",
     "embla-carousel-react": "8.6.0",
+    "heic-to": "^1.5.2",
     "openai": "latest",
     "react": "latest",
     "react-dom": "latest",
