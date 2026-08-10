@@ -1,4 +1,5 @@
 export { saveDrafts } from "./actions/save-drafts";
+export { renameLibraryTag } from "./actions/rename-tag";
 export { cardToDraft } from "./helpers/card-draft-mappers";
 export type {
   CardDraft,

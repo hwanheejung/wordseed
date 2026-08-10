@@ -84,9 +84,7 @@ export function HomePage() {
         />
         <ReviewCandidatesSection
           candidates={reviewCandidates}
-          onSelect={(meaningId) =>
-            navigate({ page: "study", meaningId })
-          }
+          onSelect={(meaningId) => navigate({ page: "study", meaningId })}
         />
         <TagStudySection
           groups={tagGroups}
@@ -291,11 +289,11 @@ function ReviewCandidatesSection({
   return (
     <section className="mt-7">
       <div className="mb-2.5 flex items-center justify-between [&_h2]:m-0 [&_h2]:text-[length:var(--seed-font-size-t5)]">
-        <h2>다시 볼 단어</h2>
+        <h2>계속 까먹는 단어</h2>
       </div>
       <div
         className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pt-1 pb-3 [scroll-padding-inline:20px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        aria-label="다시 볼 단어"
+        aria-label="계속 까먹는 단어"
       >
         {candidates.map(({ meaning, stats }) => (
           <button

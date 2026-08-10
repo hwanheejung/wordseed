@@ -5,6 +5,7 @@ export {
   persistReviewResult,
   readCardRepositorySnapshot,
   removeCard,
+  renameTag,
   replaceCardRepositorySnapshot,
   saveCard,
 } from "./api/local-card-repository";

@@ -253,6 +253,35 @@ export async function removeCard(cardId: string) {
   );
 }
 
+export async function renameTag(currentTag: string, nextTag: string) {
+  const normalizedCurrentTag = normalizeTags([currentTag])[0];
+  const normalizedNextTag = normalizeTags([nextTag])[0];
+  if (
+    !normalizedCurrentTag ||
+    !normalizedNextTag ||
+    normalizedCurrentTag === normalizedNextTag
+  )
+    return;
+
+  const cards = await db.cards
+    .where("tags")
+    .equals(normalizedCurrentTag)
+    .toArray();
+  const timestamp = new Date().toISOString();
+
+  await db.cards.bulkPut(
+    cards.map((card) => ({
+      ...card,
+      tags: normalizeTags(
+        card.tags.map((tag) =>
+          tag === normalizedCurrentTag ? normalizedNextTag : tag,
+        ),
+      ),
+      updatedAt: timestamp,
+    })),
+  );
+}
+
 export async function persistReviewResult(
   cardId: string,
   meaning: Meaning,
