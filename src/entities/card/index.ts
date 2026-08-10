@@ -20,5 +20,10 @@ export type {
   VocabularyCard,
 } from "./types/card";
 export { VocabularyCard as VocabularyCardView } from "./ui/vocabulary-card";
+export { TagStudyProgressCard } from "./ui/tag-study-progress-card";
 export { getCardStatus, reviewResultMeta } from "./utils/card-status";
 export { isSpecificFillInBlankContext } from "./utils/fill-in-blank-context";
+export {
+  buildTagStudyGroups,
+  type TagStudyGroup,
+} from "./utils/tag-study-groups";

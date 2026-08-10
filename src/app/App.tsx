@@ -5,6 +5,7 @@ import { FocusStudyPage } from "../routes/FocusStudyPage";
 import { HomePage } from "../routes/HomePage";
 import { LibraryPage } from "../routes/LibraryPage";
 import { StudyPage } from "../routes/StudyPage";
+import { AllTagsPage } from "../routes/AllTagsPage";
 import { FillInTheBlankTestPage } from "../routes/FillInTheBlankTestPage";
 import { BottomNavigation } from "@/widgets/bottom-navigation";
 import { SnackbarAvoidOverlap } from "seed-design/ui/snackbar";
@@ -38,6 +39,9 @@ export default function App() {
         ))
         .with({ page: "library" }, () => (
           <LibraryPage />
+        ))
+        .with({ page: "all-tags" }, () => (
+          <AllTagsPage />
         ))
         .exhaustive()}
       {(entry.page === "home" ||

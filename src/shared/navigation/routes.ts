@@ -5,12 +5,14 @@ export const PRIMARY_PAGE_PATHS: Partial<Record<Page, string>> = {
   home: "/",
   add: "/add",
   library: "/library",
+  "all-tags": "/tags",
 };
 
 const navigationEntrySchema = z.discriminatedUnion("page", [
   z.object({ page: z.literal("home") }),
   z.object({ page: z.literal("add") }),
   z.object({ page: z.literal("library") }),
+  z.object({ page: z.literal("all-tags") }),
   z.object({
     page: z.literal("study"),
     tag: z.string().optional(),
@@ -32,6 +34,7 @@ export function navigationEntryFromWindow(): NavigationEntry {
   if (historyEntry.success) return historyEntry.data;
   if (window.location.pathname === "/library") return { page: "library" };
   if (window.location.pathname === "/add") return { page: "add" };
+  if (window.location.pathname === "/tags") return { page: "all-tags" };
 
   return { page: "home" };
 }
