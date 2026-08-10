@@ -4,6 +4,7 @@ import { ActionButton } from "seed-design/ui/action-button";
 import { normalizeTags } from "@/entities/card";
 import type { VocabularyCard } from "@/entities/card";
 import { useAppSnackbar } from "@/shared/hooks/use-app-snackbar";
+import { AppFooter } from "@/shared/ui/app-footer";
 import { AppHeader } from "@/shared/ui/app-header";
 import { deleteVocabularyCard } from "../actions/delete-card";
 import { saveDrafts } from "../actions/save-drafts";
@@ -218,7 +219,7 @@ export function CardReview({
           ) : undefined
         }
       />
-      <main className="min-h-[calc(100vh-84px)] p-5 pb-[116px]">
+      <main className="p-5">
         {drafts.length > 1 && (
           <section className="mb-3.5 rounded-[18px] border border-[var(--seed-color-stroke-brand-weak)] bg-[var(--seed-color-bg-brand-weak)] p-4 [&>section]:mt-0">
             <TagSelector
@@ -603,34 +604,34 @@ export function CardReview({
             </ActionButton>
           </section>
         )}
-        <div className="fixed bottom-0 left-1/2 z-12 grid w-[min(520px,100%)] -translate-x-1/2 grid-cols-[auto_minmax(82px,.35fr)_1fr] items-center gap-2.5 border-t border-[var(--seed-color-stroke-neutral-subtle)] bg-[color-mix(in_srgb,var(--seed-color-bg-layer-default)_94%,transparent)] px-5 pt-3 pb-[calc(12px+var(--seed-safe-area-bottom))] backdrop-blur-[18px]">
-          <span
-            className="min-w-[42px] text-center text-[length:var(--seed-font-size-t2)] font-bold text-[var(--seed-color-fg-neutral-subtle)]"
-            aria-live="polite"
-          >
-            {active + 1} / {drafts.length}
-          </span>
-          <ActionButton
-            variant="neutralWeak"
-            disabled={active === 0}
-            onClick={() => onActiveChange(active - 1)}
-          >
-            이전
-          </ActionButton>
-          {active < drafts.length - 1 ? (
-            <ActionButton
-              variant="neutralSolid"
-              onClick={() => onActiveChange(active + 1)}
-            >
-              다음 카드
-            </ActionButton>
-          ) : (
-            <ActionButton loading={busy} onClick={saveAll}>
-              모두 저장
-            </ActionButton>
-          )}
-        </div>
       </main>
+      <AppFooter className="grid grid-cols-[auto_minmax(82px,.35fr)_1fr] items-center gap-2.5">
+        <span
+          className="min-w-[42px] text-center text-[length:var(--seed-font-size-t2)] font-bold text-[var(--seed-color-fg-neutral-subtle)]"
+          aria-live="polite"
+        >
+          {active + 1} / {drafts.length}
+        </span>
+        <ActionButton
+          variant="neutralWeak"
+          disabled={active === 0}
+          onClick={() => onActiveChange(active - 1)}
+        >
+          이전
+        </ActionButton>
+        {active < drafts.length - 1 ? (
+          <ActionButton
+            variant="neutralSolid"
+            onClick={() => onActiveChange(active + 1)}
+          >
+            다음 카드
+          </ActionButton>
+        ) : (
+          <ActionButton loading={busy} onClick={saveAll}>
+            모두 저장
+          </ActionButton>
+        )}
+      </AppFooter>
     </>
   );
 }

@@ -2,6 +2,7 @@ import { TextField } from "@seed-design/react";
 import { useRef, useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import { useAppSnackbar } from "@/shared/hooks/use-app-snackbar";
+import { AppFooter } from "@/shared/ui/app-footer";
 import { AppHeader } from "@/shared/ui/app-header";
 import { enrichText, extractImage } from "../api/cards-api";
 import { prepareImageForExtraction } from "../helpers/prepare-image-for-extraction";
@@ -89,7 +90,7 @@ export function CaptureCards({
         subtitle="자료를 그대로 가져오고, 빈칸만 AI가 채워요"
         onBack={onBack}
       />
-      <main className="min-h-[calc(100vh-84px)] p-5 pb-[172px]">
+      <main className="p-5">
         <section className="[&_textarea]:min-h-[132px]">
           <label className="field-label" htmlFor="vocabulary-input">
             단어 또는 표현
@@ -186,18 +187,18 @@ export function CaptureCards({
             </p>
           )}
         </section>
-        <div className="sticky-cta !bottom-[calc(68px+var(--seed-safe-area-bottom))]">
-          <ActionButton
-            size="large"
-            loading={busy}
-            disabled={busy || optimizingImage || (!text.trim() && !image)}
-            onClick={createCards}
-            className="w-full justify-center"
-          >
-            카드 초안 만들기
-          </ActionButton>
-        </div>
       </main>
+      <AppFooter>
+        <ActionButton
+          size="large"
+          loading={busy}
+          disabled={busy || optimizingImage || (!text.trim() && !image)}
+          onClick={createCards}
+          className="w-full justify-center"
+        >
+          카드 초안 만들기
+        </ActionButton>
+      </AppFooter>
     </>
   );
 }

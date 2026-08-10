@@ -2,6 +2,7 @@ import { Badge } from "@seed-design/react";
 import { useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import { Checkbox } from "seed-design/ui/checkbox";
+import { AppFooter } from "@/shared/ui/app-footer";
 import { AppHeader } from "@/shared/ui/app-header";
 import type { CardDraft, ExtractedCandidate } from "../types/card-draft";
 
@@ -54,7 +55,7 @@ export function CandidateSelection({
         subtitle={`${items.length}개를 찾았어요. 저장할 단어를 골라 주세요.`}
         onBack={onBack}
       />
-      <main className="min-h-[calc(100vh-84px)] p-5 pb-44">
+      <main className="p-5">
         <div className="mb-2 flex items-center justify-between [&_button]:min-h-11 [&_button]:cursor-pointer [&_button]:border-0 [&_button]:bg-transparent [&_button]:font-bold [&_button]:text-[var(--seed-color-fg-brand)]">
           <b>{selected.length}개 선택</b>
           <button
@@ -102,27 +103,27 @@ export function CandidateSelection({
             </article>
           ))}
         </div>
-        <div className="sticky-cta !bottom-[calc(68px+var(--seed-safe-area-bottom))] grid grid-cols-[3fr_7fr] gap-2">
-          <ActionButton
-            size="large"
-            variant="neutralWeak"
-            disabled={!selected.length}
-            loading={saving}
-            onClick={handleSaveImmediately}
-            className="min-w-0 justify-center whitespace-normal"
-          >
-            선택한 {selected.length}개 바로 저장
-          </ActionButton>
-          <ActionButton
-            size="large"
-            disabled={!selected.length || saving}
-            onClick={() => onContinue(selectedDrafts())}
-            className="min-w-0 justify-center"
-          >
-            검토하기
-          </ActionButton>
-        </div>
       </main>
+      <AppFooter className="grid grid-cols-[3fr_7fr] gap-2">
+        <ActionButton
+          size="large"
+          variant="neutralWeak"
+          disabled={!selected.length}
+          loading={saving}
+          onClick={handleSaveImmediately}
+          className="min-w-0 justify-center whitespace-normal"
+        >
+          선택한 {selected.length}개 바로 저장
+        </ActionButton>
+        <ActionButton
+          size="large"
+          disabled={!selected.length || saving}
+          onClick={() => onContinue(selectedDrafts())}
+          className="min-w-0 justify-center"
+        >
+          검토하기
+        </ActionButton>
+      </AppFooter>
     </>
   );
 }

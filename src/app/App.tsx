@@ -44,9 +44,7 @@ export default function App() {
         entry.page === "add" ||
         entry.page === "library") && (
         <SnackbarAvoidOverlap>
-          <BottomNavigation
-            activePage={entry.page}
-          />
+          <BottomNavigation activePage={entry.page} />
         </SnackbarAvoidOverlap>
       )}
     </div>
