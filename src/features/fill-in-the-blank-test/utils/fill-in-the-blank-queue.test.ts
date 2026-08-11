@@ -61,4 +61,11 @@ describe("fill-in-the-blank queue", () => {
     ];
     expect(buildFillInTheBlankQueue([card], () => 0.5)).toHaveLength(0);
   });
+
+  it("excludes meanings without fill-in-the-blank contexts", () => {
+    const card = makeCard("optional", ["unknown"]);
+    card.meanings[0].fillInBlankExamples = [];
+
+    expect(buildFillInTheBlankQueue([card], () => 0.5)).toHaveLength(0);
+  });
 });

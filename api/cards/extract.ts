@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
-import { CandidatesResponseSchema, hasValidFillInBlankContexts, toClientCard } from "../_lib/cards.js";
+import { CandidatesResponseSchema, toClientCard } from "../_lib/cards.js";
 import { serializeApiError } from "../_lib/errors.js";
 import { EXTRACT_SYSTEM_PROMPT } from "../_lib/prompts.js";
 
@@ -35,7 +35,6 @@ export default async function handler(request: VercelRequest, response: VercelRe
       text: { format: zodTextFormat(CandidatesResponseSchema, "vocabulary_candidates"), verbosity: "low" },
     });
     if (!result.output_parsed) throw new Error("구조화된 후보가 반환되지 않았어요.");
-    if (!result.output_parsed.candidates.every(hasValidFillInBlankContexts)) throw new Error("일부 단어의 구체적인 빈칸 문맥이 생성되지 않았어요.");
 
     return response.status(200).json({
       candidates: result.output_parsed.candidates.map((candidate) => ({ ...toClientCard(candidate), confidence: candidate.confidence, selected: candidate.confidence >= 0.85 })),

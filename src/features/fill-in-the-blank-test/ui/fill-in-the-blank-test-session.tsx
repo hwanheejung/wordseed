@@ -38,7 +38,7 @@ export function FillInTheBlankTestSession({
         <main className="min-h-[calc(100vh-84px)] p-5">
           <EmptyState
             title="빈칸 문제가 없어요"
-            description="저장된 카드에 구체적인 빈칸 문맥이 없어요. 단어장에서 카드를 열고 수정해 문맥을 두 개 이상 추가해 주세요."
+            description="저장된 카드 중 빈칸 퀴즈에 사용할 수 있는 문맥이 없어요."
             action={<ActionButton onClick={onBack}>돌아가기</ActionButton>}
           />
         </main>
@@ -134,7 +134,7 @@ export function FillInTheBlankTestSession({
         ) : (
           <EmptyState
             title="빈칸 문제를 준비하지 못했어요"
-            description="카드 수정에서 구체적인 빈칸 문맥을 두 개 이상 추가해 주세요."
+            description="이 카드에는 빈칸 퀴즈에 사용할 수 있는 문맥이 없어요."
           />
         )}
       </main>

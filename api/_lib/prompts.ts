@@ -21,7 +21,8 @@ Text input rules:
 
 const FILL_IN_THE_BLANK_RULES = `
 Fill-in-the-blank rules:
-- Create exactly 2 fillInBlankExamples for every meaning. Each example must test only that meaning in a realistic situation.
+- Create up to 2 fillInBlankExamples for each meaning. Each included example must test only that meaning in a realistic situation.
+- If you cannot create a natural, meaning-specific example, return an empty fillInBlankExamples array instead of generic or fabricated content.
 - Include a natural Korean translation in ko.
 - Store the canonical expression and only valid grammatical answer variants in acceptedVariants.
 - Finalize en first. Then copy the exact, non-empty, contiguous answer span from en into answer.
@@ -30,11 +31,10 @@ Fill-in-the-blank rules:
 - Never discuss or name the target word itself. Avoid metalinguistic frames such as "the passage uses", "meaning of", "which word", or "fits this context".
 
 Before returning, check every meaning:
-- It has exactly 2 fillInBlankExamples.
-- Every answer was copied verbatim from its final en.
-- Every blank leaves specific clues for the intended meaning.
-- Every ko naturally translates its en.
-- No example discusses the target word or expression itself.
+- Every included answer was copied verbatim from its final en.
+- Every included blank leaves specific clues for the intended meaning.
+- Every included ko naturally translates its en.
+- No included example discusses the target word or expression itself.
 
 Correct any failed check before returning.
 `.trim();

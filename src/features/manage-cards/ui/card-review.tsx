@@ -117,22 +117,7 @@ export function CardReview({
           acceptedVariants: [draft.term],
           synonyms: [],
           antonyms: [],
-          fillInBlankExamples: [
-            {
-              en: "",
-              ko: "",
-              answer: "",
-              type: "sentence",
-              provenance: "user",
-            },
-            {
-              en: "",
-              ko: "",
-              answer: "",
-              type: "dialogue",
-              provenance: "user",
-            },
-          ],
+          fillInBlankExamples: [],
         },
       ],
     });
@@ -474,8 +459,8 @@ export function CardReview({
           <section className="mt-[18px] border-t border-[var(--seed-color-stroke-neutral-subtle)] pt-[18px]">
             <div className="flex items-start justify-between gap-3 [&_.field-label]:m-0 [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[length:var(--seed-font-size-t2)] [&_p]:leading-[1.45] [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
               <div>
-                <label className="field-label">뜻별 빈칸 문맥</label>
-                <p>각 뜻을 독립적으로 테스트할 새 문맥을 준비해요.</p>
+                <label className="field-label">뜻별 빈칸 문맥 (선택)</label>
+                <p>빈칸 퀴즈에 사용할 문맥만 추가해요.</p>
               </div>
             </div>
             {draft.meanings.map((meaning, meaningIndex) => (
@@ -558,7 +543,7 @@ export function CardReview({
                             placeholder="예: had a technician repair"
                           />
                         </TextField.Root>
-                        {(meaning.fillInBlankExamples ?? []).length > 2 && (
+                        {(meaning.fillInBlankExamples ?? []).length > 0 && (
                           <ActionButton
                             size="small"
                             variant="ghost"
