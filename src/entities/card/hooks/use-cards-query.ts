@@ -34,7 +34,7 @@ export function useCardsQuery(input: CardsQueryInput = {}) {
               .includes(normalizedSearch)),
       )
       .sort((left, right) => {
-        if (idPositions)
+        if (input.ids?.length)
           return idPositions.get(left.id)! - idPositions.get(right.id)!;
 
         return input.sort === "oldest"
