@@ -6,6 +6,7 @@ Card rules:
 - Keep each distinct sense as a separate meaning with its own expression, definition, part of speech, pronunciation, relations, and examples.
 - Use meaning.expression for the exact learnable word, phrase, collocation, phrasal verb, or grammar pattern. Use an empty array when a meaning has no clear synonyms or antonyms.
 - Mark supplied or visible content as source. Mark inferred or newly written content as ai.
+- Keep AI-written Korean meanings as short dictionary glosses, usually one to three words. Start with the concise gloss, such as "적응" or "자연 선택". Only when the gloss alone would be ambiguous or inaccurate, append a brief explanation in parentheses, as in "적응(생물의 기능이나 형태 등이 거주 환경에 적합하게 변화하는 것)". Never replace the concise gloss with an explanatory sentence.
 - Give every meaning at least one concise, natural study example and a natural Korean definition and translation.
 - Treat notation such as "~", "A", and "B" as replaceable slots. In examples, replace the slots with concrete words and inflect the expression naturally.
 `.trim();
