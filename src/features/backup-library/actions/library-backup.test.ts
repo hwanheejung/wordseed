@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   getAllCards,
+  persistMemoryAid,
   replaceCardRepositorySnapshot,
   saveCard,
 } from "@/entities/card";
@@ -19,7 +20,7 @@ beforeEach(async () => {
 
 describe("library backup", () => {
   it("restores an exported library snapshot", async () => {
-    await saveCard({
+    const result = await saveCard({
       term: "account",
       tags: ["finance"],
       meanings: [
@@ -44,6 +45,10 @@ describe("library backup", () => {
         },
       ],
     });
+    await persistMemoryAid(
+      result.saved!.meanings[0],
+      "계좌를 열어 돈을 맡기는 장면을 떠올린다.",
+    );
     const backup = await createLibraryBackup();
     await replaceCardRepositorySnapshot({
       cards: [],
@@ -57,7 +62,12 @@ describe("library backup", () => {
       {
         term: "account",
         tags: ["finance"],
-        meanings: [{ definitionKo: "계좌" }],
+        meanings: [
+          {
+            definitionKo: "계좌",
+            memoryAid: "계좌를 열어 돈을 맡기는 장면을 떠올린다.",
+          },
+        ],
       },
     ]);
   });

@@ -5,17 +5,21 @@ import { ActionButton } from "seed-design/ui/action-button";
 import type { ConcealableCardField } from "../types/card";
 import type { CardDetailFragment } from "../types/card-fragments";
 
+interface VocabularyCardProps {
+  fragment: CardDetailFragment;
+  meaningId?: string;
+  onPronounce?: (expression: string) => void;
+  concealedFields?: ConcealableCardField[];
+  footer?: ReactNode;
+}
+
 export function VocabularyCard({
   fragment,
   meaningId,
   onPronounce,
   concealedFields = [],
-}: {
-  fragment: CardDetailFragment;
-  meaningId?: string;
-  onPronounce?: (expression: string) => void;
-  concealedFields?: ConcealableCardField[];
-}) {
+  footer,
+}: VocabularyCardProps) {
   const visibleMeanings = meaningId
     ? fragment.meanings.filter((meaning) => meaning.id === meaningId)
     : fragment.meanings;
@@ -158,6 +162,7 @@ export function VocabularyCard({
           </section>
         ))}
       </div>
+      {footer}
     </article>
   );
 }

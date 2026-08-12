@@ -1,9 +1,10 @@
-import type { VocabularyCard } from "@/entities/card";
+import type { Meaning, VocabularyCard } from "@/entities/card";
 import type { StudyQueueItem } from "../types/study-queue-item";
 import {
   navigateStudySession,
   removeCardFromStudySession,
   replaceCardInStudySession,
+  saveMemoryAidInStudySession,
   reviewStudySession,
   type StudySessionState,
 } from "../utils/study-session-navigation";
@@ -16,6 +17,7 @@ export type StudySessionAction =
       removeCorrectFromQueue: boolean;
     }
   | { type: "cardReplaced"; card: VocabularyCard }
+  | { type: "memoryAidSaved"; meaning: Meaning }
   | { type: "cardRemoved"; cardId: string };
 
 export function studySessionReducer(
@@ -33,6 +35,8 @@ export function studySessionReducer(
       );
     case "cardReplaced":
       return replaceCardInStudySession(state, action.card);
+    case "memoryAidSaved":
+      return saveMemoryAidInStudySession(state, action.meaning);
     case "cardRemoved":
       return removeCardFromStudySession(state, action.cardId);
   }

@@ -84,6 +84,7 @@ function normalizeMeaningRecord(meaning: Meaning | LegacyMeaning): Meaning {
   return {
     ...current,
     fillInBlankExamples: current.fillInBlankExamples ?? testExamples ?? [],
+    memoryAid: meaning.memoryAid?.trim() || undefined,
     synonyms,
     antonyms,
     searchTokens: createSearchTokens(
@@ -212,6 +213,7 @@ function writeInputToRecords(input: CardWriteInput, previous?: VocabularyCard) {
           type: example.type,
         })),
         fillInBlankExamples,
+        memoryAid: previousMeaning?.memoryAid,
         status: previousMeaning?.status ?? "unknown",
       };
     });
@@ -299,6 +301,22 @@ export async function persistReviewResult(
       timestamp: now,
     });
   });
+
+  return updatedMeaning;
+}
+
+export async function persistMemoryAid(
+  meaning: Meaning,
+  memoryAid: string,
+): Promise<Meaning> {
+  const normalizedMemoryAid = memoryAid.trim();
+  if (!normalizedMemoryAid) throw new Error("기억 장치가 비어 있어요.");
+
+  const updatedMeaning: Meaning = {
+    ...meaning,
+    memoryAid: normalizedMemoryAid,
+  };
+  await db.meanings.put(updatedMeaning);
 
   return updatedMeaning;
 }

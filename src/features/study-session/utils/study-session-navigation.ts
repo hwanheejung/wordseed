@@ -1,4 +1,4 @@
-import type { VocabularyCard } from "@/entities/card";
+import type { Meaning, VocabularyCard } from "@/entities/card";
 import type { StudyQueueItem } from "../types/study-queue-item";
 import { moveReviewedCardToBack, updateFocusQueue } from "./scheduler";
 
@@ -176,6 +176,31 @@ export function replaceCardInStudySession(
         ? undefined
         : Math.min(state.historyIndex, Math.max(0, history.length - 1)),
     revision: state.revision + 1,
+  };
+}
+
+export function saveMemoryAidInStudySession(
+  state: StudySessionState,
+  meaning: Meaning,
+): StudySessionState {
+  const updateItem = (item: StudyQueueItem): StudyQueueItem => {
+    if (item.card.id !== meaning.cardId) return item;
+
+    return {
+      card: {
+        ...item.card,
+        meanings: item.card.meanings.map((candidate) =>
+          candidate.id === meaning.id ? meaning : candidate,
+        ),
+      },
+      meaning: item.meaning.id === meaning.id ? meaning : item.meaning,
+    };
+  };
+
+  return {
+    ...state,
+    queue: state.queue.map(updateItem),
+    history: state.history.map(updateItem),
   };
 }
 

@@ -21,7 +21,7 @@ Optional environment setting:
 OPENAI_MODEL=gpt-5.6-terra
 ```
 
-Deploy the repository to Vercel so `/api/cards/extract` and `/api/cards/enrich` run as serverless functions. During plain Vite development, text input falls back to an editable manual card; photo extraction reports that AI configuration is required.
+Deploy the repository to Vercel so `/api/cards/extract`, `/api/cards/enrich`, and `/api/cards/memory-aid` run as serverless functions. During plain Vite development, text input falls back to an editable manual card; photo extraction and memory-aid generation report that AI configuration is required.
 
 ## Data and review schedule
 

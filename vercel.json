@@ -6,6 +6,9 @@
     },
     "api/cards/extract.ts": {
       "maxDuration": 180
+    },
+    "api/cards/memory-aid.ts": {
+      "maxDuration": 90
     }
   }
 }

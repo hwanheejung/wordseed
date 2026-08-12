@@ -95,6 +95,9 @@ function FocusStudyPageSession({ cards, items }: FocusStudyPageSessionProps) {
             removeCorrectFromQueue: true,
           })
         }
+        onMemoryAidSaved={(meaning) =>
+          dispatch({ type: "memoryAidSaved", meaning })
+        }
       />
       <CardVisibilitySheet
         key={preferences.concealedFields.join("|")}

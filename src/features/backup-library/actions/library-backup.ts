@@ -42,6 +42,7 @@ const meaningSchema = z
     examples: z.array(exampleSchema),
     fillInBlankExamples: z.array(fillInBlankExampleSchema).optional(),
     testExamples: z.array(fillInBlankExampleSchema).optional(),
+    memoryAid: z.string().min(1).optional(),
     status: reviewResultSchema,
   })
   .transform(({ testExamples, ...meaning }) => ({

@@ -1,7 +1,24 @@
-import type { ConcealableCardField, ReviewResult } from "@/entities/card";
+import type {
+  ConcealableCardField,
+  Meaning,
+  ReviewResult,
+} from "@/entities/card";
 import { reviewResultMeta } from "@/entities/card";
 import type { StudyQueueItem } from "../types/study-queue-item";
+import { MemoryAidSection } from "./memory-aid-section";
 import { SwipeableCardStack } from "./swipeable-card-stack";
+
+interface LearningCardSessionProps {
+  item: StudyQueueItem;
+  previousItem?: StudyQueueItem;
+  nextItem?: StudyQueueItem;
+  navigationRevision: number;
+  concealedFields?: ConcealableCardField[];
+  removeCorrectFromQueue?: boolean;
+  onNavigate: (direction: "next" | "previous") => void;
+  onReview: (result: ReviewResult) => void | Promise<void>;
+  onMemoryAidSaved: (meaning: Meaning) => void;
+}
 
 export function LearningCardSession({
   item,
@@ -12,16 +29,8 @@ export function LearningCardSession({
   removeCorrectFromQueue = false,
   onNavigate,
   onReview,
-}: {
-  item: StudyQueueItem;
-  previousItem?: StudyQueueItem;
-  nextItem?: StudyQueueItem;
-  navigationRevision: number;
-  concealedFields?: ConcealableCardField[];
-  removeCorrectFromQueue?: boolean;
-  onNavigate: (direction: "next" | "previous") => void;
-  onReview: (result: ReviewResult) => void | Promise<void>;
-}) {
+  onMemoryAidSaved,
+}: LearningCardSessionProps) {
   return (
     <>
       <main className="min-h-[calc(100vh-84px)] overflow-y-hidden! bg-[var(--seed-color-bg-layer-basement)] p-5 pb-[130px]">
@@ -31,6 +40,13 @@ export function LearningCardSession({
           nextItem={nextItem}
           navigationRevision={navigationRevision}
           concealedFields={concealedFields}
+          activeCardFooter={
+            <MemoryAidSection
+              key={item.meaning.id}
+              item={item}
+              onSaved={onMemoryAidSaved}
+            />
+          }
           onNavigate={onNavigate}
         />
       </main>

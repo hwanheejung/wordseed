@@ -136,6 +136,9 @@ function StudyPageSession({ title, cards, items }: StudyPageSessionProps) {
             removeCorrectFromQueue: false,
           });
         }}
+        onMemoryAidSaved={(meaning) =>
+          dispatch({ type: "memoryAidSaved", meaning })
+        }
       />
       <CardVisibilitySheet
         key={preferences.concealedFields.join("|")}

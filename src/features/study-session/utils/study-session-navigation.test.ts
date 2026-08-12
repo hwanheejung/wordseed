@@ -6,9 +6,24 @@ import {
   getCurrentStudyItem,
   navigateStudySession,
   reviewStudySession,
+  saveMemoryAidInStudySession,
 } from "./study-session-navigation";
 
 function makeItem(id: string, status: ReviewResult = "unknown") {
+  const meaning = {
+    id: `${id}-meaning`,
+    cardId: id,
+    position: 0,
+    expression: id,
+    definitionKo: id,
+    searchTokens: [id],
+    acceptedVariants: [id],
+    synonyms: [],
+    antonyms: [],
+    examples: [],
+    fillInBlankExamples: [],
+    status,
+  };
   const card: VocabularyCard = {
     id,
     term: id,
@@ -16,24 +31,11 @@ function makeItem(id: string, status: ReviewResult = "unknown") {
     tags: [],
     createdAt: "2026-01-01T00:00:00.000Z",
     updatedAt: "2026-01-01T00:00:00.000Z",
-    meanings: [],
+    meanings: [meaning],
   };
   const item: StudyQueueItem = {
     card,
-    meaning: {
-      id: `${id}-meaning`,
-      cardId: id,
-      position: 0,
-      expression: id,
-      definitionKo: id,
-      searchTokens: [id],
-      acceptedVariants: [id],
-      synonyms: [],
-      antonyms: [],
-      examples: [],
-      fillInBlankExamples: [],
-      status,
-    },
+    meaning,
   };
 
   return item;
@@ -81,5 +83,25 @@ describe("study session navigation", () => {
 
     expect(getCurrentStudyItem(state).card.id).toBe("second");
     expect(state.historyIndex).toBeUndefined();
+  });
+
+  it("updates a saved memory aid everywhere the meaning appears", () => {
+    const first = makeItem("first");
+    const state = {
+      ...createStudySession([first]),
+      history: [first],
+    };
+    const next = saveMemoryAidInStudySession(state, {
+      ...first.meaning,
+      memoryAid: "앞과 뒤가 뒤집힌 셔츠를 떠올린다.",
+    });
+
+    expect(next.queue[0].meaning.memoryAid).toBe(
+      "앞과 뒤가 뒤집힌 셔츠를 떠올린다.",
+    );
+    expect(next.history[0].card.meanings[0].memoryAid).toBe(
+      "앞과 뒤가 뒤집힌 셔츠를 떠올린다.",
+    );
+    expect(next.revision).toBe(state.revision);
   });
 });

@@ -6,3 +6,4 @@ coverage
 work/npm-cache
 *.tsbuildinfo
 .vercel
+apps/

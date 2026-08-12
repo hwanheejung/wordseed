@@ -101,6 +101,9 @@ function CardPageSession({ cards, items }: CardPageSessionProps) {
             removeCorrectFromQueue: false,
           })
         }
+        onMemoryAidSaved={(meaning) =>
+          dispatch({ type: "memoryAidSaved", meaning })
+        }
       />
       <CardVisibilitySheet
         key={preferences.concealedFields.join("|")}

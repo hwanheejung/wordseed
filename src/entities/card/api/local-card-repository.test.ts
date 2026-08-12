@@ -5,6 +5,7 @@ import {
   getAllCards,
   getReviewHistoryStats,
   normalizeTags,
+  persistMemoryAid,
   persistReviewResult,
   saveCard,
 } from "./local-card-repository";
@@ -100,5 +101,45 @@ describe("current database model", () => {
       reviewCount: 3,
       difficultCount: 2,
     });
+  });
+
+  it("stores a memory aid on its meaning and preserves it when editing the card", async () => {
+    const result = await saveCard({
+      term: "coinage",
+      meanings: [
+        {
+          expression: "coinage",
+          definitionKo: "신조어를 만들어 냄",
+          examples: [
+            {
+              en: "The expression is a recent coinage.",
+              type: "sentence",
+            },
+          ],
+        },
+      ],
+    });
+    const saved = result.saved!;
+    await persistMemoryAid(
+      saved.meanings[0],
+      "  동전을 찍듯 새로운 단어를 찍어낸다.  ",
+    );
+
+    await saveCard({
+      id: saved.id,
+      term: saved.term,
+      meanings: [
+        {
+          id: saved.meanings[0].id,
+          expression: "coinage",
+          definitionKo: "새로운 말을 만들어 냄",
+          examples: saved.meanings[0].examples,
+        },
+      ],
+    });
+
+    expect((await getAllCards())[0].meanings[0].memoryAid).toBe(
+      "동전을 찍듯 새로운 단어를 찍어낸다.",
+    );
   });
 });

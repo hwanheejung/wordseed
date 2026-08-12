@@ -1,5 +1,5 @@
 import useEmblaCarousel from "embla-carousel-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { VocabularyCardView } from "@/entities/card";
 import type { ConcealableCardField } from "@/entities/card";
 import type { StudyQueueItem } from "../types/study-queue-item";
@@ -13,6 +13,7 @@ export function SwipeableCardStack({
   navigationRevision,
   concealedFields = [],
   showAllMeanings = false,
+  activeCardFooter,
   onNavigate,
 }: {
   item: StudyQueueItem;
@@ -21,6 +22,7 @@ export function SwipeableCardStack({
   navigationRevision: number;
   concealedFields?: ConcealableCardField[];
   showAllMeanings?: boolean;
+  activeCardFooter?: ReactNode;
   onNavigate: (direction: "next" | "previous") => void;
 }) {
   const navigationPending = useRef(false);
@@ -129,6 +131,7 @@ export function SwipeableCardStack({
                 meaningId={showAllMeanings ? undefined : slide.meaning.id}
                 onPronounce={speak}
                 concealedFields={concealedFields}
+                footer={index === 1 ? activeCardFooter : undefined}
               />
             </div>
           ))}

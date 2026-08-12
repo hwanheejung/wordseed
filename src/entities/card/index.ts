@@ -2,6 +2,7 @@ export {
   getAllCards,
   getReviewHistoryStats,
   normalizeTags,
+  persistMemoryAid,
   persistReviewResult,
   readCardRepositorySnapshot,
   removeCard,

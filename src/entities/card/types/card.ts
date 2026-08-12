@@ -37,6 +37,7 @@ export interface Meaning {
   antonyms: string[];
   examples: Example[];
   fillInBlankExamples: FillInBlankExample[];
+  memoryAid?: string;
   status: ReviewResult;
 }
 
