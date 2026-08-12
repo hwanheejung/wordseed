@@ -1,5 +1,5 @@
 import { Chip, Flex, TextField } from "@seed-design/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import { normalizeTags } from "@/entities/card";
 import type { VocabularyCard } from "@/entities/card";
@@ -67,6 +67,7 @@ export function CardReview({
   const [busy, setBusy] = useState(false);
   const [batchTags, setBatchTags] = useState<string[]>([]);
   const [createdTags, setCreatedTags] = useState<string[]>([]);
+  const mainRef = useRef<HTMLElement>(null);
   const notify = useAppSnackbar();
   const draft = drafts[active];
   const availableTags = normalizeTags([
@@ -168,7 +169,7 @@ export function CardReview({
     const validationIssue = validateDrafts(drafts);
     if (validationIssue) {
       onActiveChange(validationIssue.cardIndex);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      mainRef.current?.scrollTo({ top: 0, behavior: "smooth" });
       notify(validationIssue.message, "critical");
 
       return;
@@ -204,7 +205,7 @@ export function CardReview({
           ) : undefined
         }
       />
-      <main className="p-5">
+      <main ref={mainRef} className="p-5">
         {drafts.length > 1 && (
           <section className="mb-3.5 rounded-[18px] border border-[var(--seed-color-stroke-brand-weak)] bg-[var(--seed-color-bg-brand-weak)] p-4 [&>section]:mt-0">
             <TagSelector
@@ -226,7 +227,7 @@ export function CardReview({
         )}
         {drafts.length > 1 && (
           <Flex
-            className="!gap-2 overflow-x-auto !pt-0.5 !pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0"
+            className="!gap-2 !overflow-x-auto !pt-0.5 !pb-3 [touch-action:pan-x_pan-y] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0"
             align="center"
           >
             {drafts.map((item, index) => (

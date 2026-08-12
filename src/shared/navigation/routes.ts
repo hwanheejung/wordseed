@@ -19,7 +19,10 @@ const navigationEntrySchema = z.discriminatedUnion("page", [
     meaningId: z.string().optional(),
   }),
   z.object({ page: z.literal("focus-study") }),
-  z.object({ page: z.literal("fill-in-the-blank-test") }),
+  z.object({
+    page: z.literal("fill-in-the-blank-test"),
+    tag: z.string().optional(),
+  }),
   z.object({
     page: z.literal("card"),
     cardIds: z.array(z.string()),

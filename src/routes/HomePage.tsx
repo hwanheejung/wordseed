@@ -215,13 +215,15 @@ function StudyActionsSection({
           <span>›</span>
         </button>
       </div>
-      <ActionButton
-        size="large"
-        onClick={onAdd}
-        className="mt-4 w-full justify-center"
-      >
-        ＋ 새 단어 추가
-      </ActionButton>
+      <div className="mt-5">
+        <ActionButton
+          size="large"
+          onClick={onAdd}
+          className="w-full justify-center"
+        >
+          ＋ 새 단어 추가
+        </ActionButton>
+      </div>
     </section>
   );
 }

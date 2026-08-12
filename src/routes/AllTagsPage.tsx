@@ -70,6 +70,9 @@ export function AllTagsPage() {
                   key={group.tag}
                   group={group}
                   onSelect={(tag) => navigate({ page: "study", tag })}
+                  onTest={(tag) =>
+                    navigate({ page: "fill-in-the-blank-test", tag })
+                  }
                   onRename={(tag) =>
                     setRenameDialog({ originalTag: tag, name: tag })
                   }
@@ -143,10 +146,11 @@ export function AllTagsPage() {
 interface TagCardProps {
   group: TagStudyGroup;
   onSelect: (tag: string) => void;
+  onTest: (tag: string) => void;
   onRename: (tag: string) => void;
 }
 
-function TagCard({ group, onSelect, onRename }: TagCardProps) {
+function TagCard({ group, onSelect, onTest, onRename }: TagCardProps) {
   return (
     <List.Item>
       <List.Content asChild>
@@ -162,26 +166,35 @@ function TagCard({ group, onSelect, onRename }: TagCardProps) {
         </button>
       </List.Content>
       <List.Suffix>
-        <Menu.Root size="medium" placement="bottom-end" gutter={6}>
-          <Menu.Trigger asChild>
-            <ActionButton
-              variant="ghost"
-              size="small"
-              layout="iconOnly"
-              aria-label={`${group.tag} 태그 메뉴`}
-            >
-              <Icon svg={<IconDot3HorizontalLine />} />
-            </ActionButton>
-          </Menu.Trigger>
-          <Menu.Positioner>
-            <Menu.Content>
-              <Menu.Item onClick={() => onRename(group.tag)}>
-                <Icon svg={<IconPencilLine />} />
-                <Menu.ItemLabel>수정하기</Menu.ItemLabel>
-              </Menu.Item>
-            </Menu.Content>
-          </Menu.Positioner>
-        </Menu.Root>
+        <div className="flex items-center gap-1.5">
+          <ActionButton
+            size="small"
+            variant="neutralWeak"
+            onClick={() => onTest(group.tag)}
+          >
+            테스트
+          </ActionButton>
+          <Menu.Root size="medium" placement="bottom-end" gutter={6}>
+            <Menu.Trigger asChild>
+              <ActionButton
+                variant="ghost"
+                size="small"
+                layout="iconOnly"
+                aria-label={`${group.tag} 태그 메뉴`}
+              >
+                <Icon svg={<IconDot3HorizontalLine />} />
+              </ActionButton>
+            </Menu.Trigger>
+            <Menu.Positioner>
+              <Menu.Content>
+                <Menu.Item onClick={() => onRename(group.tag)}>
+                  <Icon svg={<IconPencilLine />} />
+                  <Menu.ItemLabel>수정하기</Menu.ItemLabel>
+                </Menu.Item>
+              </Menu.Content>
+            </Menu.Positioner>
+          </Menu.Root>
+        </div>
       </List.Suffix>
     </List.Item>
   );

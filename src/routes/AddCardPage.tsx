@@ -1,8 +1,9 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
+import { SnackbarAvoidOverlap } from "seed-design/ui/snackbar";
 import { match } from "ts-pattern";
 import { z } from "zod";
 import { navigate } from "@/shared/navigation";
-import { normalizeTags, useCardsQuery } from "@/entities/card";
+import { useCardsQuery } from "@/entities/card";
 import {
   CardReview,
   type CardDraft,
@@ -12,9 +13,11 @@ import {
   saveDrafts,
   validateDrafts,
 } from "@/features/manage-cards";
+import { BottomNavigation } from "@/widgets/bottom-navigation";
 import { useAppSnackbar } from "../shared/hooks/use-app-snackbar";
 
 const ADD_CARD_SESSION_KEY = "wordseed:add-card-session:v1";
+const SESSION_PERSIST_DELAY_MS = 300;
 
 interface CaptureInput {
   text: string;
@@ -48,13 +51,15 @@ type AddCardAction =
   | { type: "reviewCancelled" };
 
 export function AddCardPage() {
-  const { cards } = useCardsQuery();
+  const { availableTags } = useCardsQuery();
   const notify = useAppSnackbar();
   const [state, dispatch] = useReducer(
     addCardReducer,
     undefined,
     readAddCardSession,
   );
+  const latestStateRef = useRef(state);
+  const persistOnUnmountRef = useRef(true);
 
   const handleInputChange = (input: CaptureInput) =>
     dispatch({ type: "captureChanged", input });
@@ -91,6 +96,7 @@ export function AddCardPage() {
     }
     await saveDrafts(drafts, confirmOverwrite);
     notify(`${drafts.length}개의 카드를 저장했어요.`, "positive");
+    persistOnUnmountRef.current = false;
     clearAddCardSession();
     navigate({ page: "home" });
   };
@@ -105,26 +111,51 @@ export function AddCardPage() {
     dispatch({ type: "reviewCancelled" });
 
   const handleComplete = () => {
+    persistOnUnmountRef.current = false;
     clearAddCardSession();
     navigate({ page: "home" });
   };
 
-  // Synchronize the in-progress Add Card flow with sessionStorage.
+  // Synchronize the in-progress Add Card flow with sessionStorage without blocking typing.
   useEffect(() => {
-    writeAddCardSession(state);
+    latestStateRef.current = state;
+    const timeout = window.setTimeout(
+      () => writeAddCardSession(state),
+      SESSION_PERSIST_DELAY_MS,
+    );
+
+    return () => window.clearTimeout(timeout);
   }, [state]);
+
+  // Flush the latest session once when leaving an unfinished Add Card flow.
+  useEffect(
+    () => () => {
+      if (persistOnUnmountRef.current)
+        writeAddCardSession(latestStateRef.current);
+    },
+    [],
+  );
 
   return match(state)
     .with({ step: "input" }, ({ input }) => (
-      <CaptureCards
-        text={input.text}
-        image={input.image}
-        onTextChange={(text) => handleInputChange({ ...input, text })}
-        onImageChange={(image) => handleInputChange({ ...input, image })}
-        onBack={() => navigate({ page: "home" })}
-        onDrafts={handleDrafts}
-        onCandidates={handleCandidates}
-      />
+      <>
+        <CaptureCards
+          text={input.text}
+          image={input.image}
+          onTextChange={(text) => handleInputChange({ ...input, text })}
+          onImageChange={(image) => handleInputChange({ ...input, image })}
+          onBack={() => navigate({ page: "home" })}
+          onDrafts={handleDrafts}
+          onCandidates={handleCandidates}
+        />
+        <div
+          className="h-[calc(68px+var(--seed-safe-area-bottom))] shrink-0"
+          aria-hidden="true"
+        />
+        <SnackbarAvoidOverlap>
+          <BottomNavigation activePage="add" />
+        </SnackbarAvoidOverlap>
+      </>
     ))
     .with({ step: "selecting" }, ({ candidates }) => (
       <CandidateSelection
@@ -138,7 +169,7 @@ export function AddCardPage() {
     .with({ step: "reviewing" }, ({ drafts, active }) => (
       <CardReview
         drafts={drafts}
-        availableTags={normalizeTags(cards.flatMap((card) => card.tags))}
+        availableTags={availableTags}
         active={active}
         onDraftsChange={handleDraftChange}
         onActiveChange={handleActiveChange}
@@ -217,22 +248,25 @@ function readAddCardSession(): AddCardState {
 }
 
 function writeAddCardSession(state: AddCardState) {
+  const stateWithoutImage = createPersistedAddCardState(state);
+
   try {
-    window.sessionStorage.setItem(ADD_CARD_SESSION_KEY, JSON.stringify(state));
+    window.sessionStorage.setItem(
+      ADD_CARD_SESSION_KEY,
+      JSON.stringify(stateWithoutImage),
+    );
   } catch {
-    const stateWithoutImage = {
-      ...state,
-      input: { text: state.input.text },
-    } satisfies AddCardState;
-    try {
-      window.sessionStorage.setItem(
-        ADD_CARD_SESSION_KEY,
-        JSON.stringify(stateWithoutImage),
-      );
-    } catch {
-      window.sessionStorage.removeItem(ADD_CARD_SESSION_KEY);
-    }
+    window.sessionStorage.removeItem(ADD_CARD_SESSION_KEY);
   }
+}
+
+export function createPersistedAddCardState(
+  state: AddCardState,
+): AddCardState {
+  return {
+    ...state,
+    input: { text: state.input.text },
+  };
 }
 
 function clearAddCardSession() {

@@ -1,7 +1,7 @@
 import { useReducer, useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import { navigate } from "@/shared/navigation";
-import { normalizeTags, type VocabularyCard, useCardsQuery } from "@/entities/card";
+import { type VocabularyCard, useCardsQuery } from "@/entities/card";
 import { CardVisibilitySheet, useCardVisibilityPreferences } from "@/features/configure-card-visibility";
 import { CardActionsMenu, CardEditor } from "@/features/manage-cards";
 import { createStudySession, getCurrentStudyItem, getNextStudyItem, getPreviousStudyItem, LearningCardSession, startQueueAt, studySessionReducer, submitStudyReview, type StudyQueueItem } from "@/features/study-session";
@@ -15,7 +15,7 @@ interface CardPageProps {
 }
 
 export function CardPage({ cardIds, startIndex }: CardPageProps) {
-  const { cards, isLoading } = useCardsQuery({ ids: cardIds });
+  const { availableTags, cards, isLoading } = useCardsQuery({ ids: cardIds });
 
   if (isLoading)
     return (
@@ -29,15 +29,20 @@ export function CardPage({ cardIds, startIndex }: CardPageProps) {
     card.meanings.map((meaning) => ({ card, meaning })),
   );
 
-  return <CardPageSession cards={cards} items={items} />;
+  return (
+    <CardPageSession
+      availableTags={availableTags}
+      items={items}
+    />
+  );
 }
 
 interface CardPageSessionProps {
-  cards: VocabularyCard[];
+  availableTags: string[];
   items: StudyQueueItem[];
 }
 
-function CardPageSession({ cards, items }: CardPageSessionProps) {
+function CardPageSession({ availableTags, items }: CardPageSessionProps) {
   const [session, dispatch] = useReducer(studySessionReducer, items, createStudySession);
   const item = getCurrentStudyItem(session);
   const { preferences, savePreferences } = useCardVisibilityPreferences();
@@ -48,7 +53,7 @@ function CardPageSession({ cards, items }: CardPageSessionProps) {
     return (
       <CardEditor
         card={editingCard}
-        availableTags={normalizeTags(cards.flatMap((card) => card.tags))}
+        availableTags={availableTags}
         onClose={() => setEditingCard(undefined)}
         onSaved={(card) => dispatch({ type: "cardReplaced", card })}
         onDeleted={(cardId) => {

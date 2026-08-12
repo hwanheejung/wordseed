@@ -7,21 +7,32 @@ import { PageLoadingState } from "../shared/ui/page-loading-state";
 import { navigate } from "@/shared/navigation";
 import { AppHeader } from "@/shared/ui/app-header";
 
-export function FillInTheBlankTestPage() {
-  const { cards, isLoading } = useCardsQuery();
+interface FillInTheBlankTestPageProps {
+  tag?: string;
+}
+
+export function FillInTheBlankTestPage({ tag }: FillInTheBlankTestPageProps) {
+  const { cards, isLoading } = useCardsQuery(tag ? { tags: [tag] } : undefined);
+
+  const handleBack = () =>
+    navigate({ page: tag ? "all-tags" : "home" });
 
   if (isLoading)
     return (
       <>
-        <AppHeader title="빈칸 채우기" onBack={() => navigate({ page: "home" })} />
+        <AppHeader
+          title={tag ? `#${tag} 빈칸 채우기` : "빈칸 채우기"}
+          onBack={handleBack}
+        />
         <PageLoadingState />
       </>
     );
 
   return (
     <FillInTheBlankTestSession
+      title={tag ? `#${tag} 빈칸 채우기` : "빈칸 채우기"}
       items={buildFillInTheBlankQueue(cards)}
-      onBack={() => navigate({ page: "home" })}
+      onBack={handleBack}
     />
   );
 }

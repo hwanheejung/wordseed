@@ -14,11 +14,13 @@ import { scoreAnswer } from "../utils/scoring";
 import { InlineFillInTheBlankPrompt } from "./inline-fill-in-the-blank-prompt";
 
 interface FillInTheBlankTestSessionProps {
+  title?: string;
   items: FillInBlankQuestion[];
   onBack: () => void;
 }
 
 export function FillInTheBlankTestSession({
+  title = "빈칸 채우기",
   items,
   onBack,
 }: FillInTheBlankTestSessionProps) {
@@ -34,7 +36,7 @@ export function FillInTheBlankTestSession({
   if (!item)
     return (
       <>
-        <AppHeader title="빈칸 채우기" onBack={onBack} />
+        <AppHeader title={title} onBack={onBack} />
         <main className="min-h-[calc(100vh-84px)] p-5">
           <EmptyState
             title="빈칸 문제가 없어요"
@@ -81,7 +83,7 @@ export function FillInTheBlankTestSession({
   return (
     <>
       <AppHeader
-        title="빈칸 채우기"
+        title={title}
         subtitle={`${sessionItems.length}개 뜻`}
         onBack={onBack}
       />

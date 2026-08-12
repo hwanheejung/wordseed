@@ -3,7 +3,10 @@ import type {
   CardDraft,
   ExtractedCandidate,
 } from "@/features/manage-cards";
-import { addCardReducer } from "./AddCardPage";
+import {
+  addCardReducer,
+  createPersistedAddCardState,
+} from "./AddCardPage";
 
 const draft: CardDraft = {
   term: "account",
@@ -66,5 +69,21 @@ describe("Add Card state", () => {
         { type: "candidateSelectionCancelled" },
       ),
     ).toEqual({ step: "input", input: { text: "source note" } });
+  });
+
+  it("omits captured images from the persisted review session", () => {
+    expect(
+      createPersistedAddCardState({
+        step: "reviewing",
+        input: { text: "source note", image: "data:image/jpeg;base64,large" },
+        drafts: [draft],
+        active: 0,
+      }),
+    ).toEqual({
+      step: "reviewing",
+      input: { text: "source note" },
+      drafts: [draft],
+      active: 0,
+    });
   });
 });

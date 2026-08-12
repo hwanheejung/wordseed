@@ -16,7 +16,7 @@ export default function App() {
 
   return (
     <div
-      className={`relative mx-auto flex h-dvh w-full max-w-[520px] flex-col overflow-hidden bg-[var(--seed-color-bg-layer-default)] shadow-[0_0_40px_rgba(0,0,0,.06)] [&>main]:min-h-0! [&>main]:flex-1 [&>main]:overflow-x-hidden [&>main]:overflow-y-auto [&>main]:overscroll-contain min-[700px]:h-[calc(100dvh-48px)] min-[700px]:rounded-[30px] ${entry.page === "home" || entry.page === "add" || entry.page === "library" ? "pb-[calc(76px+var(--seed-safe-area-bottom))]" : ""}`}
+      className={`relative mx-auto flex h-dvh w-full max-w-[520px] flex-col overflow-hidden bg-[var(--seed-color-bg-layer-default)] shadow-[0_0_40px_rgba(0,0,0,.06)] [&>main]:min-h-0! [&>main]:flex-1 [&>main]:overflow-x-hidden [&>main]:overflow-y-auto [&>main]:overscroll-contain min-[700px]:h-[calc(100dvh-48px)] min-[700px]:rounded-[30px] ${entry.page === "home" || entry.page === "library" ? "pb-[calc(76px+var(--seed-safe-area-bottom))]" : ""}`}
     >
       {match(entry)
         .with({ page: "home" }, () => (
@@ -31,8 +31,8 @@ export default function App() {
         .with({ page: "focus-study" }, () => (
           <FocusStudyPage />
         ))
-        .with({ page: "fill-in-the-blank-test" }, () => (
-          <FillInTheBlankTestPage />
+        .with({ page: "fill-in-the-blank-test" }, ({ tag }) => (
+          <FillInTheBlankTestPage tag={tag} />
         ))
         .with({ page: "card" }, ({ cardIds, startIndex }) => (
           <CardPage cardIds={cardIds} startIndex={startIndex} />
@@ -44,9 +44,7 @@ export default function App() {
           <AllTagsPage />
         ))
         .exhaustive()}
-      {(entry.page === "home" ||
-        entry.page === "add" ||
-        entry.page === "library") && (
+      {(entry.page === "home" || entry.page === "library") && (
         <SnackbarAvoidOverlap>
           <BottomNavigation activePage={entry.page} />
         </SnackbarAvoidOverlap>

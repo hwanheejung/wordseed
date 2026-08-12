@@ -73,7 +73,7 @@ export function LibraryPage() {
           />
         </TextField.Root>
         <Flex
-          className="-mx-5 !gap-3 overflow-x-auto !py-3 !pb-3.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0"
+          className="-mx-5 !gap-3 !overflow-x-auto !px-5 !py-3 !pb-3.5 [touch-action:pan-x_pan-y] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0"
           align="center"
           aria-label="정렬과 필터"
         >
@@ -101,10 +101,18 @@ export function LibraryPage() {
             </Menu.Trigger>
             <Menu.Positioner>
               <Menu.Content>
-                <Menu.Item onClick={() => dispatch({ type: "sortChanged", sort: "newest" })}>
+                <Menu.Item
+                  onClick={() =>
+                    dispatch({ type: "sortChanged", sort: "newest" })
+                  }
+                >
                   <Menu.ItemLabel>최신순</Menu.ItemLabel>
                 </Menu.Item>
-                <Menu.Item onClick={() => dispatch({ type: "sortChanged", sort: "oldest" })}>
+                <Menu.Item
+                  onClick={() =>
+                    dispatch({ type: "sortChanged", sort: "oldest" })
+                  }
+                >
                   <Menu.ItemLabel>오래된순</Menu.ItemLabel>
                 </Menu.Item>
               </Menu.Content>
@@ -118,7 +126,9 @@ export function LibraryPage() {
                 aria-label="학습 상태"
               >
                 <Chip.Label>
-                  {filters.status === "all" ? "학습 상태" : reviewResultMeta[filters.status].label}
+                  {filters.status === "all"
+                    ? "학습 상태"
+                    : reviewResultMeta[filters.status].label}
                 </Chip.Label>
                 <Chip.SuffixIcon>
                   <IconChevronDownSmallLine />
@@ -127,11 +137,20 @@ export function LibraryPage() {
             </Menu.Trigger>
             <Menu.Positioner>
               <Menu.Content>
-                {(["unknown", "confusing", "correct"] as const).map((value) => (
-                  <Menu.Item key={value} onClick={() => dispatch({ type: "statusChanged", status: value })}>
-                    <Menu.ItemLabel>{reviewResultMeta[value].label}</Menu.ItemLabel>
-                  </Menu.Item>
-                ))}
+                {(["unknown", "confusing", "correct"] as const).map(
+                  (value) => (
+                    <Menu.Item
+                      key={value}
+                      onClick={() =>
+                        dispatch({ type: "statusChanged", status: value })
+                      }
+                    >
+                      <Menu.ItemLabel>
+                        {reviewResultMeta[value].label}
+                      </Menu.ItemLabel>
+                    </Menu.Item>
+                  ),
+                )}
               </Menu.Content>
             </Menu.Positioner>
           </Menu.Root>

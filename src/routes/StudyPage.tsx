@@ -2,7 +2,6 @@ import { useReducer, useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import { navigate } from "@/shared/navigation";
 import {
-  normalizeTags,
   type VocabularyCard,
   useCardsQuery,
 } from "@/entities/card";
@@ -33,7 +32,9 @@ interface StudyPageProps {
 }
 
 export function StudyPage({ tag, meaningId }: StudyPageProps) {
-  const { cards, isLoading } = useCardsQuery({ tags: tag ? [tag] : [] });
+  const { availableTags, cards, isLoading } = useCardsQuery({
+    tags: tag ? [tag] : [],
+  });
   const title = tag ? `#${tag} 학습` : "학습 모드";
 
   if (isLoading)
@@ -46,8 +47,8 @@ export function StudyPage({ tag, meaningId }: StudyPageProps) {
 
   return (
     <StudyPageSession
+      availableTags={availableTags}
       title={title}
-      cards={cards}
       items={startQueueAtMeaning(
         buildStudyQueue(cards),
         meaningId,
@@ -57,12 +58,12 @@ export function StudyPage({ tag, meaningId }: StudyPageProps) {
 }
 
 interface StudyPageSessionProps {
+  availableTags: string[];
   title: string;
-  cards: VocabularyCard[];
   items: StudyQueueItem[];
 }
 
-function StudyPageSession({ title, cards, items }: StudyPageSessionProps) {
+function StudyPageSession({ availableTags, title, items }: StudyPageSessionProps) {
   const [session, dispatch] = useReducer(
     studySessionReducer,
     items,
@@ -77,7 +78,7 @@ function StudyPageSession({ title, cards, items }: StudyPageSessionProps) {
     return (
       <CardEditor
         card={editingCard}
-        availableTags={normalizeTags(cards.flatMap((card) => card.tags))}
+        availableTags={availableTags}
         onClose={() => setEditingCard(undefined)}
         onSaved={(card) => dispatch({ type: "cardReplaced", card })}
         onDeleted={(cardId) => {
