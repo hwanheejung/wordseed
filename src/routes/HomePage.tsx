@@ -1,4 +1,6 @@
-import { Badge } from "@seed-design/react";
+import { IconMoonLine } from "@karrotmarket/react-monochrome-icon";
+import { Badge, Icon } from "@seed-design/react";
+import { useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import {
   buildTagStudyGroups,
@@ -15,6 +17,11 @@ import {
 import { buildFillInTheBlankQueue } from "@/features/fill-in-the-blank-test";
 import { shouldRecheckMeaning } from "@/features/study-session";
 import { navigate } from "@/shared/navigation";
+import {
+  applyColorMode,
+  readColorMode,
+  type ColorMode,
+} from "@/shared/utils/color-mode";
 import { AppHeader } from "../shared/ui/app-header";
 import { EmptyState } from "../shared/ui/empty-state";
 
@@ -63,7 +70,11 @@ export function HomePage() {
 
   return (
     <>
-      <AppHeader title="Wordseed" subtitle="오늘도 한 단어씩 익혀 봐요" />
+      <AppHeader
+        title="Wordseed"
+        subtitle="오늘도 한 단어씩 익혀 봐요"
+        action={<ColorModeButton />}
+      />
       <main className="min-h-[calc(100vh-84px)] p-5">
         <LearningSummarySection
           cardCount={cards.length}
@@ -103,7 +114,11 @@ interface EmptyHomePageProps {
 function EmptyHomePage({ onAdd }: EmptyHomePageProps) {
   return (
     <>
-      <AppHeader title="Wordseed" subtitle="오늘도 한 단어씩 익혀 봐요" />
+      <AppHeader
+        title="Wordseed"
+        subtitle="오늘도 한 단어씩 익혀 봐요"
+        action={<ColorModeButton />}
+      />
       <main className="min-h-[calc(100vh-84px)] p-5">
         <EmptyState
           title="아직 단어가 없어요"
@@ -116,6 +131,29 @@ function EmptyHomePage({ onAdd }: EmptyHomePageProps) {
         />
       </main>
     </>
+  );
+}
+
+function ColorModeButton() {
+  const [mode, setMode] = useState<ColorMode>(readColorMode);
+
+  const handleToggle = () => {
+    const nextMode = mode === "light" ? "dark" : "light";
+    applyColorMode(nextMode);
+    setMode(nextMode);
+  };
+
+  return (
+    <ActionButton
+      variant="ghost"
+      size="medium"
+      layout="iconOnly"
+      aria-label={mode === "light" ? "다크 모드로 전환" : "라이트 모드로 전환"}
+      aria-pressed={mode === "dark"}
+      onClick={handleToggle}
+    >
+      <Icon svg={<IconMoonLine />} />
+    </ActionButton>
   );
 }
 

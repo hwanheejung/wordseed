@@ -53,7 +53,7 @@ export function VocabularyCard({
           <ActionButton
             className="!absolute !top-6 !right-6 transition-transform duration-100 ease-out active:scale-[.92] motion-reduce:transition-none"
             size="large"
-            variant="neutralSolid"
+            variant="ghost"
             layout="iconOnly"
             onClick={() => onPronounce(displayExpression)}
             aria-label={`${displayExpression} 발음 듣기`}
@@ -150,7 +150,7 @@ export function VocabularyCard({
                         <ActionButton
                           className="transition-transform duration-100 ease-out active:scale-[.9] motion-reduce:transition-none"
                           size="small"
-                          variant="neutralWeak"
+                          variant="ghost"
                           layout="iconOnly"
                           onClick={() => onPronounce(example.en)}
                           aria-label={`예문 ${exampleIndex + 1} 발음 듣기`}

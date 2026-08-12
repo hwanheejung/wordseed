@@ -41,11 +41,7 @@ export function MemoryAidSection({ item, onSaved }: MemoryAidSectionProps) {
           외우는 팁
         </small>
         <div className="mt-3 text-[length:var(--seed-font-size-t4)] leading-[1.65] text-[var(--seed-color-fg-neutral)] [&_blockquote]:mx-0 [&_blockquote]:border-l-3 [&_blockquote]:border-[var(--seed-color-stroke-brand)] [&_blockquote]:pl-3 [&_h1]:mt-4 [&_h1]:mb-2 [&_h1]:text-[length:var(--seed-font-size-t6)] [&_h2]:mt-4 [&_h2]:mb-2 [&_h2]:text-[length:var(--seed-font-size-t6)] [&_h3]:mt-4 [&_h3]:mb-2 [&_h3]:text-[length:var(--seed-font-size-t5)] [&_li]:my-1 [&_ol]:my-3 [&_ol]:pl-5 [&_p]:my-3 [&_ul]:my-3 [&_ul]:pl-5 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-          <Markdown
-            skipHtml
-            disallowedElements={["a", "img"]}
-            unwrapDisallowed
-          >
+          <Markdown skipHtml disallowedElements={["a", "img"]} unwrapDisallowed>
             {item.meaning.memoryAid}
           </Markdown>
         </div>
@@ -53,7 +49,7 @@ export function MemoryAidSection({ item, onSaved }: MemoryAidSectionProps) {
     );
 
   return (
-    <section className="rounded-[22px] bg-[var(--seed-color-bg-layer-fill)] p-3">
+    <section className="">
       <ActionButton
         className="w-full transition-transform duration-100 ease-out active:scale-[.98] motion-reduce:transition-none"
         variant="neutralWeak"
@@ -69,9 +65,7 @@ export function MemoryAidSection({ item, onSaved }: MemoryAidSectionProps) {
           role="alert"
         >
           외우는 팁을 만들지 못했어요.
-          <br />
-          {" "}
-          {state.message}
+          <br /> {state.message}
         </p>
       )}
     </section>

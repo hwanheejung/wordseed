@@ -169,35 +169,29 @@ function TagCard({ group, onSelect, onTest, onRename }: TagCardProps) {
         </button>
       </List.Content>
       <List.Suffix>
-        <div className="flex items-center gap-1.5">
-          <ActionButton
-            size="small"
-            variant="neutralWeak"
-            onClick={() => onTest(group.tag)}
-          >
-            빈칸 테스트
-          </ActionButton>
-          <Menu.Root size="medium" placement="bottom-end" gutter={6}>
-            <Menu.Trigger asChild>
-              <ActionButton
-                variant="ghost"
-                size="small"
-                layout="iconOnly"
-                aria-label={`${group.tag} 태그 메뉴`}
-              >
-                <Icon svg={<IconDot3HorizontalLine />} />
-              </ActionButton>
-            </Menu.Trigger>
-            <Menu.Positioner>
-              <Menu.Content>
-                <Menu.Item onClick={() => onRename(group.tag)}>
-                  <Icon svg={<IconPencilLine />} />
-                  <Menu.ItemLabel>이름 바꾸기</Menu.ItemLabel>
-                </Menu.Item>
-              </Menu.Content>
-            </Menu.Positioner>
-          </Menu.Root>
-        </div>
+        <Menu.Root size="medium" placement="bottom-end" gutter={6}>
+          <Menu.Trigger asChild>
+            <ActionButton
+              variant="ghost"
+              size="small"
+              layout="iconOnly"
+              aria-label={`${group.tag} 태그 메뉴`}
+            >
+              <Icon svg={<IconDot3HorizontalLine />} />
+            </ActionButton>
+          </Menu.Trigger>
+          <Menu.Positioner>
+            <Menu.Content>
+              <Menu.Item onClick={() => onRename(group.tag)}>
+                <Icon svg={<IconPencilLine />} />
+                <Menu.ItemLabel>이름 바꾸기</Menu.ItemLabel>
+              </Menu.Item>
+              <Menu.Item onClick={() => onTest(group.tag)}>
+                <Menu.ItemLabel>빈칸 테스트</Menu.ItemLabel>
+              </Menu.Item>
+            </Menu.Content>
+          </Menu.Positioner>
+        </Menu.Root>
       </List.Suffix>
     </List.Item>
   );

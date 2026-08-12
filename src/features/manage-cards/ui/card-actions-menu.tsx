@@ -46,7 +46,7 @@ export function CardActionsMenu({
       <Menu.Root size="medium" placement="bottom-end" gutter={6}>
         <Menu.Trigger asChild>
           <ActionButton
-            variant="neutralWeak"
+            variant="ghost"
             size="medium"
             layout="iconOnly"
             aria-label={`${card.term} 카드 메뉴`}

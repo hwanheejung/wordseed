@@ -19,7 +19,7 @@ export function AppHeader({
       <div className="flex min-h-12 items-center gap-3">
         {onBack ? (
           <ActionButton
-            variant="neutralWeak"
+            variant="ghost"
             size="medium"
             layout="iconOnly"
             onClick={onBack}
