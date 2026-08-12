@@ -70,7 +70,7 @@ describe("MemoryAidSection", () => {
     expect(screen.getByRole("heading", { name: "장면" })).toBeInTheDocument();
     expect(screen.getByText("앞과 뒤").tagName).toBe("STRONG");
     expect(
-      screen.queryByRole("button", { name: "Help me remember" }),
+      screen.queryByRole("button", { name: "외우는 팁 만들기" }),
     ).not.toBeInTheDocument();
   });
 
@@ -83,21 +83,23 @@ describe("MemoryAidSection", () => {
     vi.mocked(generateMemoryAid).mockResolvedValue(generated);
     render(<MemoryAidSection item={item} onSaved={onSaved} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Help me remember" }));
+    fireEvent.click(screen.getByRole("button", { name: "외우는 팁 만들기" }));
 
     await waitFor(() => expect(onSaved).toHaveBeenCalledWith(generated));
   });
 
   it("offers a retry when generation fails", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
-    vi.mocked(generateMemoryAid).mockRejectedValue(new Error("Unavailable"));
+    vi.mocked(generateMemoryAid).mockRejectedValue(
+      new Error("HTTP 503: OPENAI_API_KEY가 설정되지 않았어요."),
+    );
     render(<MemoryAidSection item={item} onSaved={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Help me remember" }));
+    fireEvent.click(screen.getByRole("button", { name: "외우는 팁 만들기" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(
-      "기억 장치를 만들지 못했어요",
+      "외우는 팁을 만들지 못했어요. HTTP 503: OPENAI_API_KEY가 설정되지 않았어요.",
     );
-    expect(screen.getByRole("button", { name: "다시 시도" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "다시 만들기" })).toBeEnabled();
   });
 });

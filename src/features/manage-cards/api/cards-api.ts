@@ -1,6 +1,11 @@
 import type { CardDraft, ExtractedCandidate } from "../types/card-draft";
 
-async function postJson<T>(path: string, body: unknown, timeoutMs: number): Promise<T> {
+async function postJson<T>(
+  path: string,
+  body: unknown,
+  timeoutMs: number,
+  failureMessage: string,
+): Promise<T> {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
 
@@ -16,18 +21,25 @@ async function postJson<T>(path: string, body: unknown, timeoutMs: number): Prom
     try {
       payload = JSON.parse(rawBody) as { error?: string } & T;
     } catch {
-      const rawMessage = rawBody.trim().slice(0, 2_000) || "Empty non-JSON response";
-      throw new Error(`HTTP ${response.status} ${response.statusText}: ${rawMessage}`);
+      const details = rawBody.trim().slice(0, 2_000) || "Empty non-JSON response";
+      throw new Error(
+        `${failureMessage}\n[${path}] HTTP ${response.status} ${response.statusText}: ${details}`,
+      );
     }
     if (!response.ok) {
-      const rawMessage = payload.error || rawBody.trim() || "Unknown API error";
-      throw new Error(`HTTP ${response.status} ${response.statusText}: ${rawMessage}`);
+      const details = payload.error || rawBody.trim() || "Unknown API error";
+      throw new Error(
+        `${failureMessage}\n[${path}] HTTP ${response.status} ${response.statusText}: ${details}`,
+      );
     }
 
     return payload;
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
-      throw new Error(`AbortError: ${path} exceeded the ${timeoutMs}ms client timeout`, { cause: error });
+      throw new Error(
+        `처리 시간이 초과됐어요.\n[${path}] Client timeout after ${timeoutMs}ms`,
+        { cause: error },
+      );
     }
     throw error;
   } finally {
@@ -40,15 +52,23 @@ export async function enrichText(text: string) {
     "/api/cards/enrich",
     { text },
     210_000,
+    "카드를 만들지 못했어요. 잠시 후 다시 시도해 주세요.",
   );
-  if (!Array.isArray(result.cards)) throw new Error("AI 카드 응답 형식이 올바르지 않아요.");
+  if (!Array.isArray(result.cards))
+    throw new Error("카드를 만들지 못했어요. 다시 시도해 주세요.");
 
   return result.cards;
 }
 
 export async function extractImage(imageDataUrl: string) {
-  const result = await postJson<{ candidates: ExtractedCandidate[] }>("/api/cards/extract", { imageDataUrl }, 210_000);
-  if (!Array.isArray(result.candidates)) throw new Error("AI 추출 응답 형식이 올바르지 않아요.");
+  const result = await postJson<{ candidates: ExtractedCandidate[] }>(
+    "/api/cards/extract",
+    { imageDataUrl },
+    210_000,
+    "사진을 확인하지 못했어요. 잠시 후 다시 시도해 주세요.",
+  );
+  if (!Array.isArray(result.candidates))
+    throw new Error("사진에서 단어를 찾지 못했어요. 다시 시도해 주세요.");
 
   return result.candidates;
 }

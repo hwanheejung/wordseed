@@ -23,7 +23,7 @@ export function TagStudyProgressCard({
           background: `conic-gradient(var(--seed-color-fg-positive) ${group.correctPercentage}%, var(--seed-color-bg-layer-fill) 0)`,
         }}
         role="img"
-        aria-label={`알고있어요 ${group.correctPercentage}%`}
+        aria-label={`알고 있어요 ${group.correctPercentage}%`}
       >
         <span className="grid size-[62px] place-items-center rounded-full bg-[var(--seed-color-bg-layer-default)] text-[length:var(--seed-font-size-t5)] font-bold">
           {group.correctPercentage}%

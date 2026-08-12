@@ -28,17 +28,11 @@ export function VocabularyCard({
     : fragment.term;
 
   return (
-    <article className="max-h-full overflow-y-auto overscroll-contain rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-6 shadow-[0_8px_30px_rgba(0,0,0,.07)]">
-      <div className="flex items-start justify-between pb-5 [&_h2]:mt-2.5 [&_h2]:mb-0.5 [&_h2]:text-[38px] [&_h2]:leading-none [&_h2]:tracking-[-.04em] [&_p]:mt-2 [&_p]:mb-0 [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
-        <div>
-          <ConcealedField
-            concealed={concealedFields.includes("expression")}
-            label="단어·표현"
-          >
-            <h2>{displayExpression}</h2>
-          </ConcealedField>
+    <article className="max-h-full overflow-y-auto overscroll-contain rounded-[32px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] shadow-[0_18px_55px_rgba(0,0,0,.10),0_2px_8px_rgba(0,0,0,.04)]">
+      <header className="relative overflow-hidden px-6 pt-6 pb-7 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-32 before:bg-[radial-gradient(circle_at_18%_0%,color-mix(in_srgb,var(--seed-color-bg-brand-weak)_80%,transparent),transparent_72%)] before:content-['']">
+        <div className="relative pr-14">
           {fragment.tags.length > 0 && (
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
+            <div className="mb-4 flex flex-wrap gap-1.5">
               {fragment.tags.map((tag) => (
                 <Badge key={tag} tone="neutral" variant="weak">
                   #{tag}
@@ -46,23 +40,37 @@ export function VocabularyCard({
               ))}
             </div>
           )}
+          <ConcealedField
+            concealed={concealedFields.includes("expression")}
+            label="단어·표현"
+          >
+            <h2 className="m-0 text-[clamp(2.5rem,10vw,3.25rem)] leading-[.98] font-extrabold tracking-[-.045em] text-[var(--seed-color-fg-neutral)] [font-optical-sizing:auto]">
+              {displayExpression}
+            </h2>
+          </ConcealedField>
         </div>
         {onPronounce && (
-          <button
-            className="grid size-12 cursor-pointer place-items-center rounded-full border-0 bg-[var(--seed-color-bg-neutral-inverted)] text-[var(--seed-color-fg-neutral-inverted)]"
+          <ActionButton
+            className="!absolute !top-6 !right-6 transition-transform duration-100 ease-out active:scale-[.92] motion-reduce:transition-none"
+            size="large"
+            variant="neutralSolid"
+            layout="iconOnly"
             onClick={() => onPronounce(displayExpression)}
             aria-label={`${displayExpression} 발음 듣기`}
           >
             <Icon svg={<IconSpeakerWave2Line />} />
-          </button>
+          </ActionButton>
         )}
-      </div>
-      <div className="sense-list">
-        {visibleMeanings.map((meaning) => (
-          <section className="sense-block" key={meaning.id}>
-            <div className="border-t border-[var(--seed-color-stroke-neutral-subtle)] py-5 [&_h3]:mt-2 [&_h3]:mb-1 [&_h3]:text-[length:var(--seed-font-size-t6)] [&_h3]:leading-[1.45] [&>p]:m-0 [&>p]:text-[var(--seed-color-fg-neutral-subtle)] [&_small]:font-extrabold [&_small]:tracking-[.04em] [&_small]:text-[var(--seed-color-fg-brand)]">
-              <div className="flex items-center justify-end gap-3 [&_span]:text-[length:var(--seed-font-size-t2)] [&_span]:text-[var(--seed-color-fg-neutral-subtle)]">
-                <span className="flex flex-wrap justify-end gap-1">
+      </header>
+      <div className="px-6 pb-6">
+        {visibleMeanings.map((meaning, meaningIndex) => (
+          <section
+            className={meaningIndex > 0 ? "border-t border-[var(--seed-color-stroke-neutral-subtle)] pt-6" : undefined}
+            key={meaning.id}
+          >
+            <div className="pb-5">
+              <div className="mb-3 flex min-h-6 flex-wrap items-center gap-2 text-[length:var(--seed-font-size-t2)] font-semibold text-[var(--seed-color-fg-neutral-subtle)]">
+                <span className="rounded-full bg-[var(--seed-color-bg-layer-fill)] px-2.5 py-1">
                   <ConcealedField
                     concealed={concealedFields.includes("partOfSpeech")}
                     label="품사"
@@ -70,44 +78,46 @@ export function VocabularyCard({
                   >
                     {meaning.partOfSpeech || "word"}
                   </ConcealedField>
-                  {meaning.pronunciation && (
-                    <>
-                      <span aria-hidden="true">·</span>
-                      <ConcealedField
-                        concealed={concealedFields.includes("pronunciation")}
-                        label="발음"
-                        inline
-                      >
-                        {meaning.pronunciation}
-                      </ConcealedField>
-                    </>
-                  )}
                 </span>
+                {meaning.pronunciation && (
+                  <ConcealedField
+                    concealed={concealedFields.includes("pronunciation")}
+                    label="발음"
+                    inline
+                  >
+                    {meaning.pronunciation}
+                  </ConcealedField>
+                )}
               </div>
               <ConcealedField
                 concealed={concealedFields.includes("definitionKo")}
                 label="한국어 뜻"
               >
-                <h3>{meaning.definitionKo || "뜻 미입력"}</h3>
+                <h3 className="m-0 text-[clamp(1.4rem,5.4vw,1.8rem)] leading-[1.3] font-bold tracking-[-.025em] text-[var(--seed-color-fg-neutral)]">
+                  {meaning.definitionKo || "뜻 미입력"}
+                </h3>
               </ConcealedField>
               {meaning.definitionEn && (
                 <ConcealedField
                   concealed={concealedFields.includes("definitionEn")}
                   label="영어 뜻"
                 >
-                  <p>{meaning.definitionEn}</p>
+                  <p className="mt-2 mb-0 text-[length:var(--seed-font-size-t4)] leading-[1.55] text-[var(--seed-color-fg-neutral-subtle)]">
+                    {meaning.definitionEn}
+                  </p>
                 </ConcealedField>
               )}
               {((meaning.synonyms?.length ?? 0) > 0 ||
                 (meaning.antonyms?.length ?? 0) > 0) && (
-                <div className="mt-3 grid gap-2 text-[length:var(--seed-font-size-t2)]">
+                <div className="mt-4 flex flex-wrap gap-2 text-[length:var(--seed-font-size-t2)]">
                   {(meaning.synonyms?.length ?? 0) > 0 && (
                     <ConcealedField
                       concealed={concealedFields.includes("synonyms")}
                       label="동의어"
                     >
-                      <p>
-                        <strong>SYN</strong> · {meaning.synonyms.join(" · ")}
+                      <p className="m-0 rounded-xl bg-[var(--seed-color-bg-positive-weak)] px-3 py-2 leading-[1.45] text-[var(--seed-color-fg-positive-contrast)]">
+                        <strong className="mr-1.5">SYN</strong>
+                        {meaning.synonyms.join(" · ")}
                       </p>
                     </ConcealedField>
                   )}
@@ -116,53 +126,65 @@ export function VocabularyCard({
                       concealed={concealedFields.includes("antonyms")}
                       label="반의어"
                     >
-                      <p>
-                        <strong>ANT</strong> · {meaning.antonyms.join(" · ")}
+                      <p className="m-0 rounded-xl bg-[var(--seed-color-bg-critical-weak)] px-3 py-2 leading-[1.45] text-[var(--seed-color-fg-critical-contrast)]">
+                        <strong className="mr-1.5">ANT</strong>
+                        {meaning.antonyms.join(" · ")}
                       </p>
                     </ConcealedField>
                   )}
                 </div>
               )}
             </div>
-            {meaning.examples.map((example, exampleIndex) => (
-              <div
-                className="border-t border-[var(--seed-color-stroke-neutral-subtle)] py-5 [&_small]:font-extrabold [&_small]:tracking-[.04em] [&_small]:text-[var(--seed-color-fg-brand)] [&>p]:mt-3 [&>p]:mb-2 [&>p]:text-[length:var(--seed-font-size-t5)] [&>p]:leading-[1.55] [&>span]:leading-[1.5] [&>span]:text-[var(--seed-color-fg-neutral-subtle)]"
-                key={exampleIndex}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <small>예문</small>
-                  {onPronounce && (
-                    <ActionButton
-                      size="small"
-                      variant="neutralWeak"
-                      layout="iconOnly"
-                      onClick={() => onPronounce(example.en)}
-                      aria-label={`예문 ${exampleIndex + 1} 발음 듣기`}
-                    >
-                      <Icon svg={<IconSpeakerWave2Line />} />
-                    </ActionButton>
-                  )}
-                </div>
-                <ConcealedField
-                  concealed={concealedFields.includes("exampleEn")}
-                  label={`영어 예문 ${exampleIndex + 1}`}
-                >
-                  <p>{example.en}</p>
-                </ConcealedField>
-                {example.ko && (
-                  <ConcealedField
-                    concealed={concealedFields.includes("exampleKo")}
-                    label={`예문 해석 ${exampleIndex + 1}`}
+            {meaning.examples.length > 0 && (
+              <div className="mb-6 rounded-[22px] bg-[var(--seed-color-bg-layer-fill)] px-4.5 py-1">
+                {meaning.examples.map((example, exampleIndex) => (
+                  <div
+                    className="py-4.5 not-first:border-t not-first:border-[var(--seed-color-stroke-neutral-subtle)]"
+                    key={exampleIndex}
                   >
-                    <span>{example.ko}</span>
-                  </ConcealedField>
-                )}
+                    <div className="flex items-center justify-between gap-3">
+                      <small className="font-extrabold tracking-[.04em] text-[var(--seed-color-fg-brand)]">
+                        예문 {exampleIndex + 1}
+                      </small>
+                      {onPronounce && (
+                        <ActionButton
+                          className="transition-transform duration-100 ease-out active:scale-[.9] motion-reduce:transition-none"
+                          size="small"
+                          variant="neutralWeak"
+                          layout="iconOnly"
+                          onClick={() => onPronounce(example.en)}
+                          aria-label={`예문 ${exampleIndex + 1} 발음 듣기`}
+                        >
+                          <Icon svg={<IconSpeakerWave2Line />} />
+                        </ActionButton>
+                      )}
+                    </div>
+                    <ConcealedField
+                      concealed={concealedFields.includes("exampleEn")}
+                      label={`영어 예문 ${exampleIndex + 1}`}
+                    >
+                      <p className="mt-3 mb-2 text-[length:var(--seed-font-size-t5)] leading-[1.55] font-semibold tracking-[-.01em]">
+                        {example.en}
+                      </p>
+                    </ConcealedField>
+                    {example.ko && (
+                      <ConcealedField
+                        concealed={concealedFields.includes("exampleKo")}
+                        label={`예문 해석 ${exampleIndex + 1}`}
+                      >
+                        <span className="text-[length:var(--seed-font-size-t3)] leading-[1.55] text-[var(--seed-color-fg-neutral-subtle)]">
+                          {example.ko}
+                        </span>
+                      </ConcealedField>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </section>
         ))}
+        {footer}
       </div>
-      {footer}
     </article>
   );
 }

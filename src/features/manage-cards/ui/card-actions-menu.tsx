@@ -58,18 +58,18 @@ export function CardActionsMenu({
           <Menu.Content>
             <Menu.Item onClick={onVisibility}>
               <Icon svg={<IconEyeLine />} />
-              <Menu.ItemLabel>가리기 설정</Menu.ItemLabel>
+              <Menu.ItemLabel>가릴 항목</Menu.ItemLabel>
             </Menu.Item>
             <Menu.Item onClick={onEdit}>
               <Icon svg={<IconPencilLine />} />
-              <Menu.ItemLabel>수정하기</Menu.ItemLabel>
+              <Menu.ItemLabel>카드 수정</Menu.ItemLabel>
             </Menu.Item>
             <Menu.Item
               className="!text-[var(--seed-color-fg-critical)]"
               onClick={() => setDeleteOpen(true)}
             >
               <Icon svg={<IconTrashcanLine />} />
-              <Menu.ItemLabel>삭제하기</Menu.ItemLabel>
+              <Menu.ItemLabel>카드 삭제</Menu.ItemLabel>
             </Menu.Item>
           </Menu.Content>
         </Menu.Positioner>
@@ -94,7 +94,7 @@ export function CardActionsMenu({
                 className="!bg-[var(--seed-color-bg-critical-solid)]"
                 onClick={() => void handleDelete()}
               >
-                삭제하기
+                카드 삭제
               </ActionButton>
             </ContentDialog.Footer>
           </ContentDialog.Content>

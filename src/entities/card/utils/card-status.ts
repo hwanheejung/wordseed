@@ -6,7 +6,7 @@ export const reviewResultMeta: Record<
 > = {
   unknown: { label: "몰랐어요", tone: "critical" },
   confusing: { label: "헷갈려요", tone: "warning" },
-  correct: { label: "알고있어요", tone: "positive" },
+  correct: { label: "알고 있어요", tone: "positive" },
 };
 
 export function getCardStatus(card: VocabularyCard): ReviewResult {

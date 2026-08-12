@@ -79,7 +79,7 @@ export function TagSelector({
                   disabled={!newTag.trim()}
                   onClick={createTag}
                 >
-                  생성
+                  태그 만들기
                 </ActionButton>
               </div>
               <div
@@ -103,7 +103,7 @@ export function TagSelector({
                   ))
                 ) : (
                   <p className="text-[var(--seed-color-fg-neutral-subtle)]">
-                    아직 생성된 태그가 없어요.
+                    만든 태그가 아직 없어요.
                   </p>
                 )}
               </div>

@@ -16,7 +16,7 @@ export default defineConfig({
         name: "Wordseed — Vocabulary in Context",
         short_name: "Wordseed",
         description: "일상부터 학업까지, 문맥으로 모으고 반복해서 기억하는 영어 단어장",
-        theme_color: "#ff6f0f",
+        theme_color: "#426b52",
         background_color: "#f7f8fa",
         display: "standalone",
         orientation: "portrait",

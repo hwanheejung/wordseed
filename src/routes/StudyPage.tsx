@@ -35,7 +35,7 @@ export function StudyPage({ tag, meaningId }: StudyPageProps) {
   const { availableTags, cards, isLoading } = useCardsQuery({
     tags: tag ? [tag] : [],
   });
-  const title = tag ? `#${tag} 학습` : "학습 모드";
+  const title = tag ? `#${tag} 학습` : "전체 단어 학습";
 
   if (isLoading)
     return (
@@ -95,10 +95,10 @@ function StudyPageSession({ availableTags, title, items }: StudyPageSessionProps
         <main className="min-h-[calc(100vh-84px)] p-5">
           <EmptyState
             title="학습할 단어가 없어요"
-            description="단어를 추가하거나 다른 학습 목록을 선택해 주세요."
+            description="단어를 추가하거나 다른 목록을 선택해 주세요."
             action={
               <ActionButton onClick={() => navigate({ page: "home" })}>
-                돌아가기
+                홈으로
               </ActionButton>
             }
           />

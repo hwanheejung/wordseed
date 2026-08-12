@@ -7,7 +7,10 @@ import { EXTRACT_SYSTEM_PROMPT } from "../_lib/prompts.js";
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (request.method !== "POST") return response.status(405).json({ error: "POST 요청만 지원해요." });
-  if (!process.env.OPENAI_API_KEY) return response.status(503).json({ error: "OPENAI_API_KEY가 설정되지 않았어요." });
+  if (!process.env.OPENAI_API_KEY)
+    return response
+      .status(503)
+      .json({ error: "OPENAI_API_KEY가 설정되지 않았어요." });
   const body = typeof request.body === "string" ? JSON.parse(request.body) : request.body;
   const imageDataUrl = typeof body?.imageDataUrl === "string" ? body.imageDataUrl : "";
   if (!/^data:image\/(jpeg|jpg|png|webp);base64,/.test(imageDataUrl) || imageDataUrl.length > 11_000_000) {
@@ -34,7 +37,8 @@ export default async function handler(request: VercelRequest, response: VercelRe
       ],
       text: { format: zodTextFormat(CandidatesResponseSchema, "vocabulary_candidates"), verbosity: "low" },
     });
-    if (!result.output_parsed) throw new Error("구조화된 후보가 반환되지 않았어요.");
+    if (!result.output_parsed)
+      throw new Error("사진에서 단어를 찾지 못했어요. 다시 시도해 주세요.");
 
     return response.status(200).json({
       candidates: result.output_parsed.candidates.map((candidate) => ({ ...toClientCard(candidate), confidence: candidate.confidence, selected: candidate.confidence >= 0.85 })),

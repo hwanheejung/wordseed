@@ -49,9 +49,9 @@ export function CardVisibilitySheet({
         <BottomSheet.Content className="max-h-[calc(100dvh-24px)] min-h-[50dvh]">
           <BottomSheet.Handle />
           <BottomSheet.Header>
-            <BottomSheet.Title>카드 가리기 설정</BottomSheet.Title>
+            <BottomSheet.Title>처음에 가릴 항목</BottomSheet.Title>
             <BottomSheet.Description>
-              처음에는 먹물로 가려두고, 누르는 동안 확인해요.
+              선택한 항목을 가린 채로 시작해요. 누르고 있는 동안 답을 볼 수 있어요.
             </BottomSheet.Description>
           </BottomSheet.Header>
           <BottomSheet.Body className="min-h-0 overflow-y-auto overscroll-contain">
@@ -72,7 +72,7 @@ export function CardVisibilitySheet({
           <BottomSheet.Footer className="shrink-0 pb-[calc(12px+var(--seed-safe-area-bottom))]">
             <div className="grid w-full grid-cols-[3fr_7fr] gap-2">
               <ActionButton variant="neutralWeak" onClick={() => setDraft([])}>
-                초기화
+                모두 보이기
               </ActionButton>
               <ActionButton
                 onClick={() => {
@@ -80,7 +80,7 @@ export function CardVisibilitySheet({
                   onOpenChange(false);
                 }}
               >
-                적용하기
+                저장
               </ActionButton>
             </div>
           </BottomSheet.Footer>

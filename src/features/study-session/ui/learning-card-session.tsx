@@ -50,30 +50,34 @@ export function LearningCardSession({
           onNavigate={onNavigate}
         />
       </main>
-      <div className="fixed bottom-0 left-1/2 z-12 grid w-[min(520px,100%)] -translate-x-1/2 grid-cols-3 gap-2 border-t border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] px-3.5 pt-3 pb-[calc(12px+var(--seed-safe-area-bottom))] [&_button]:min-h-[68px] [&_button]:cursor-pointer [&_button]:rounded-[18px] [&_button]:border-0 [&_b]:block [&_b]:text-[length:var(--seed-font-size-t4)] [&_span]:mt-1 [&_span]:block [&_span]:text-[length:var(--seed-font-size-t2)]">
-        {(["unknown", "confusing", "correct"] as ReviewResult[]).map(
-          (result) => (
-            <button
-              key={result}
-              aria-pressed={item.meaning.status === result}
-              className={`${
-                result === "unknown"
-                  ? "bg-[var(--seed-color-bg-critical-weak)] text-[var(--seed-color-fg-critical-contrast)]"
-                  : result === "confusing"
-                    ? "bg-[var(--seed-color-bg-warning-weak)] text-[var(--seed-color-fg-warning-contrast)]"
-                    : "bg-[var(--seed-color-bg-positive-weak)] text-[var(--seed-color-fg-positive-contrast)]"
-              } ${item.meaning.status === result ? "ring-2 ring-inset ring-current" : "opacity-70"}`}
-              onClick={() => void onReview(result)}
-            >
-              <b>{reviewResultMeta[result].label}</b>
-              <span>
-                {removeCorrectFromQueue && result === "correct"
-                  ? "목록에서 제외"
-                  : ""}
-              </span>
-            </button>
-          ),
-        )}
+      <div className="fixed bottom-0 left-1/2 z-12 w-[min(520px,100%)] -translate-x-1/2 bg-[color-mix(in_srgb,var(--seed-color-bg-layer-default)_86%,transparent)] px-3.5 pt-2.5 pb-[calc(10px+var(--seed-safe-area-bottom))] shadow-[0_-18px_45px_rgba(0,0,0,.08)] backdrop-blur-[24px]">
+        <div className="grid grid-cols-3 gap-1.5 rounded-[24px] border border-[color-mix(in_srgb,var(--seed-color-stroke-neutral-subtle)_72%,transparent)] bg-[color-mix(in_srgb,var(--seed-color-bg-layer-fill)_78%,transparent)] p-1.5">
+          {(["unknown", "confusing", "correct"] as ReviewResult[]).map(
+            (result) => (
+              <button
+                key={result}
+                aria-pressed={item.meaning.status === result}
+                className={`${
+                  result === "unknown"
+                    ? "bg-[var(--seed-color-bg-critical-weak)] text-[var(--seed-color-fg-critical-contrast)]"
+                    : result === "confusing"
+                      ? "bg-[var(--seed-color-bg-warning-weak)] text-[var(--seed-color-fg-warning-contrast)]"
+                      : "bg-[var(--seed-color-bg-positive-weak)] text-[var(--seed-color-fg-positive-contrast)]"
+                } min-h-14 cursor-pointer rounded-[18px] border-0 px-2 transition-[transform,opacity,box-shadow] duration-100 ease-out active:scale-[.95] motion-reduce:transition-none ${item.meaning.status === result ? "opacity-100 shadow-[0_4px_14px_rgba(0,0,0,.09)]" : "opacity-55 shadow-none"}`}
+                onClick={() => void onReview(result)}
+              >
+                <b className="block text-[length:var(--seed-font-size-t4)]">
+                  {reviewResultMeta[result].label}
+                </b>
+                {removeCorrectFromQueue && result === "correct" && (
+                  <span className="mt-0.5 block text-[length:var(--seed-font-size-t1)]">
+                    목록에서 제외
+                  </span>
+                )}
+              </button>
+            ),
+          )}
+        </div>
       </div>
     </>
   );

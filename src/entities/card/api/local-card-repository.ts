@@ -310,7 +310,7 @@ export async function persistMemoryAid(
   memoryAid: string,
 ): Promise<Meaning> {
   const normalizedMemoryAid = memoryAid.trim();
-  if (!normalizedMemoryAid) throw new Error("기억 장치가 비어 있어요.");
+  if (!normalizedMemoryAid) throw new Error("외우는 팁이 비어 있어요.");
 
   const updatedMeaning: Meaning = {
     ...meaning,

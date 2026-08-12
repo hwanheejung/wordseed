@@ -8,7 +8,7 @@ export function PageLoadingState() {
         role="status"
       >
         <ProgressCircle size="40" />
-        <span>단어를 불러오는 중...</span>
+        <span>단어를 불러오고 있어요</span>
       </div>
     </main>
   );

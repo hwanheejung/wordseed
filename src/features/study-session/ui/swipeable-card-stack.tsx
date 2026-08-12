@@ -33,7 +33,7 @@ export function SwipeableCardStack({
     align: "center",
     containScroll: false,
     dragFree: false,
-    duration: 24,
+    duration: 20,
     skipSnaps: false,
     startIndex: 1,
     watchDrag: (_api, event) =>
@@ -92,10 +92,10 @@ export function SwipeableCardStack({
     >
       {Array.from({ length: Math.max(0, layerCount - 1) }, (_, index) => (
         <div
-          className="absolute inset-x-5 top-0 bottom-12 origin-bottom rounded-[28px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] shadow-[0_10px_28px_rgba(0,0,0,.07)] transition-transform duration-[160ms] ease-[cubic-bezier(.23,1,.32,1)]"
+          className="absolute inset-x-5 top-0 bottom-12 origin-bottom rounded-[32px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] shadow-[0_12px_34px_rgba(0,0,0,.08)] transition-transform duration-300 ease-[cubic-bezier(.23,1,.32,1)] motion-reduce:transition-none"
           key={index}
           style={{
-            transform: `translate3d(${(index + 2) * 5}px, ${(index + 2) * 5}px, 0)`,
+            transform: `translate3d(0, ${(index + 1) * 7}px, 0) scale(${1 - (index + 1) * 0.018})`,
             zIndex: 1 - index,
           }}
           aria-hidden="true"
@@ -109,7 +109,7 @@ export function SwipeableCardStack({
           dragIntent.current = false;
         }}
         onPointerMove={(event) => {
-          if (Math.abs(event.clientX - dragStartX.current) > 24)
+          if (Math.abs(event.clientX - dragStartX.current) > 12)
             dragIntent.current = true;
         }}
         onPointerUp={() =>

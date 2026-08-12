@@ -17,7 +17,7 @@ export function FocusStudyPage() {
   if (isLoading)
     return (
       <>
-        <AppHeader title="몰랐어요 · 헷갈려요" onBack={() => navigate({ page: "home" })} />
+        <AppHeader title="헷갈리는 단어 복습" onBack={() => navigate({ page: "home" })} />
         <PageLoadingState />
       </>
     );
@@ -62,12 +62,12 @@ function FocusStudyPageSession({
   if (!item)
     return (
       <>
-        <AppHeader title="몰랐어요 · 헷갈려요" onBack={() => navigate({ page: "home" })} />
+        <AppHeader title="헷갈리는 단어 복습" onBack={() => navigate({ page: "home" })} />
         <main className="min-h-[calc(100vh-84px)] p-5">
           <EmptyState
-            title="집중 학습할 단어가 없어요"
-            description="몰랐어요 또는 헷갈려요로 표시한 단어가 여기에 모여요."
-            action={<ActionButton onClick={() => navigate({ page: "home" })}>돌아가기</ActionButton>}
+            title="다시 볼 단어가 없어요"
+            description="‘몰랐어요’나 ‘헷갈려요’로 표시한 단어가 여기에 모여요."
+            action={<ActionButton onClick={() => navigate({ page: "home" })}>홈으로</ActionButton>}
           />
         </main>
       </>
@@ -76,7 +76,7 @@ function FocusStudyPageSession({
   return (
     <>
       <AppHeader
-        title="몰랐어요 · 헷갈려요"
+        title="헷갈리는 단어 복습"
         subtitle={`${session.queue.length}개 뜻`}
         onBack={() => navigate({ page: "home" })}
         action={

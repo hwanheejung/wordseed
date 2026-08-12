@@ -51,8 +51,8 @@ export function CandidateSelection({
   return (
     <>
       <AppHeader
-        title="추출한 단어"
-        subtitle={`${items.length}개를 찾았어요. 저장할 단어를 골라 주세요.`}
+        title="찾은 단어"
+        subtitle={`${items.length}개의 단어를 찾았어요. 저장할 단어를 골라 주세요.`}
         onBack={onBack}
       />
       <main className="p-5">
@@ -96,8 +96,8 @@ export function CandidateSelection({
                 <p>{item.meanings[0]?.definitionKo}</p>
                 <small>
                   {item.meanings[0]?.provenance === "source"
-                    ? "원문 정보"
-                    : "AI가 보완"}
+                    ? "입력한 내용"
+                    : "자동 완성"}
                 </small>
               </div>
             </article>
@@ -121,7 +121,7 @@ export function CandidateSelection({
           onClick={() => onContinue(selectedDrafts())}
           className="min-w-0 justify-center"
         >
-          검토하기
+          하나씩 확인
         </ActionButton>
       </AppFooter>
     </>

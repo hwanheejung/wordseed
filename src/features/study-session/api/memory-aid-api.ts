@@ -47,12 +47,12 @@ export async function requestMemoryAid(
 
     const result = memoryAidResponseSchema.safeParse(parsedBody);
     if (!result.success)
-      throw new Error("AI 기억 장치 응답 형식이 올바르지 않아요.");
+      throw new Error("외우는 팁을 만들지 못했어요. 다시 시도해 주세요.");
 
     return result.data.memoryAid;
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError")
-      throw new Error("기억 장치를 만드는 데 시간이 너무 오래 걸렸어요.", {
+      throw new Error("외우는 팁을 만드는 데 시간이 걸리고 있어요. 다시 시도해 주세요.", {
         cause: error,
       });
 

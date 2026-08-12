@@ -83,7 +83,7 @@ export function AddCardPage() {
     const validationIssue = validateDrafts(drafts);
     if (validationIssue) {
       notify(
-        `${validationIssue.message} 검토 화면에서 확인해 주세요.`,
+        `${validationIssue.message} 카드 확인 화면에서 고쳐 주세요.`,
         "critical",
       );
       dispatch({
@@ -275,7 +275,7 @@ function clearAddCardSession() {
 
 function confirmOverwrite(term: string) {
   return window.confirm(
-    `‘${term}’ 카드가 이미 있어요. 기존 카드를 업데이트할까요?\n취소하면 이 카드는 건너뜁니다.`,
+    `‘${term}’ 카드가 이미 있어요. 저장된 카드에 새 내용을 덮어쓸까요?\n취소하면 이 카드는 저장하지 않아요.`,
   );
 }
 

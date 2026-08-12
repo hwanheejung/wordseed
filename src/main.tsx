@@ -3,15 +3,15 @@ import "./app/styles/global.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { registerSW } from "virtual:pwa-register";
-import { SnackbarProvider } from "seed-design/ui/snackbar";
 import App from "./app/App";
+import { AppSnackbarProvider } from "./shared/hooks/use-app-snackbar";
 
 registerSW({ immediate: true });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <SnackbarProvider>
+    <AppSnackbarProvider>
       <App />
-    </SnackbarProvider>
+    </AppSnackbarProvider>
   </React.StrictMode>,
 );

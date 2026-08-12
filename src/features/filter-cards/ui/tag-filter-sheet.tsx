@@ -84,7 +84,7 @@ export function TagFilterSheet({
               disabled={draftSelected.length === 0}
               onClick={() => setDraftSelected([])}
             >
-              초기화
+              선택 해제
             </ActionButton>
             <ActionButton
               size="large"
@@ -95,7 +95,7 @@ export function TagFilterSheet({
                 setOpen(false);
               }}
             >
-              적용하기
+              필터 적용
               {draftSelected.length > 0 ? ` ${draftSelected.length}` : ""}
             </ActionButton>
           </BottomSheet.Footer>

@@ -63,7 +63,7 @@ export function HomePage() {
 
   return (
     <>
-      <AppHeader title="Wordseed" subtitle="오늘도 문맥으로 기억해요" />
+      <AppHeader title="Wordseed" subtitle="오늘도 한 단어씩 익혀 봐요" />
       <main className="min-h-[calc(100vh-84px)] p-5">
         <LearningSummarySection
           cardCount={cards.length}
@@ -103,14 +103,14 @@ interface EmptyHomePageProps {
 function EmptyHomePage({ onAdd }: EmptyHomePageProps) {
   return (
     <>
-      <AppHeader title="Wordseed" subtitle="오늘도 문맥으로 기억해요" />
+      <AppHeader title="Wordseed" subtitle="오늘도 한 단어씩 익혀 봐요" />
       <main className="min-h-[calc(100vh-84px)] p-5">
         <EmptyState
-          title="아직 추가된 단어가 없어요"
-          description="추가해볼까요?"
+          title="아직 단어가 없어요"
+          description="첫 단어를 추가하고 바로 학습해 보세요."
           action={
             <ActionButton size="small" variant="neutralWeak" onClick={onAdd}>
-              단어 추가하기
+              첫 단어 추가
             </ActionButton>
           }
         />
@@ -135,19 +135,19 @@ function LearningSummarySection({
   statusCounts,
 }: LearningSummarySectionProps) {
   return (
-    <section className="relative flex justify-between gap-[18px] overflow-hidden rounded-[28px] border border-[var(--seed-color-stroke-brand-weak)] bg-[linear-gradient(135deg,var(--seed-color-bg-brand-weak),#fff8ef)] p-6 after:absolute after:right-[-70px] after:bottom-[-75px] after:size-[150px] after:rounded-full after:border-[28px] after:border-[color-mix(in_srgb,var(--seed-color-bg-brand-solid)_12%,transparent)] after:content-[''] [&_h2]:mt-[18px] [&_h2]:mb-2 [&_h2]:text-[length:var(--seed-font-size-t7)] [&_h2]:leading-[1.28] [&_h2]:tracking-[-.035em] [&_h2_strong]:text-[var(--seed-color-fg-brand)] [&_p]:m-0 [&_p]:text-[length:var(--seed-font-size-t3)] [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
+    <section className="relative flex justify-between gap-[18px] overflow-hidden rounded-[28px] border border-[var(--seed-color-stroke-brand-weak)] bg-[linear-gradient(135deg,var(--seed-color-bg-brand-weak),var(--seed-color-bg-layer-default))] p-6 after:absolute after:right-[-70px] after:bottom-[-75px] after:size-[150px] after:rounded-full after:border-[28px] after:border-[color-mix(in_srgb,var(--seed-color-bg-brand-solid)_12%,transparent)] after:content-[''] [&_h2]:mt-[18px] [&_h2]:mb-2 [&_h2]:text-[length:var(--seed-font-size-t7)] [&_h2]:leading-[1.28] [&_h2]:tracking-[-.035em] [&_h2_strong]:text-[var(--seed-color-fg-brand)] [&_p]:m-0 [&_p]:text-[length:var(--seed-font-size-t3)] [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
       <div>
         <Badge tone="brand" variant="weak">
-          반복 학습
+          학습 현황
         </Badge>
         <h2>
-          <strong>{cardCount}개</strong>의 단어를
+          단어 <strong>{cardCount}개</strong>를
           <br />
-          계속 순환해요
+          학습하고 있어요
         </h2>
         <p>
           몰랐어요 {statusCounts.unknown} · 헷갈려요 {statusCounts.confusing} ·
-          알고있어요 {statusCounts.correct}
+          알고 있어요 {statusCounts.correct}
         </p>
       </div>
     </section>
@@ -182,8 +182,8 @@ function StudyActionsSection({
             ▤
           </span>
           <span>
-            <b>학습 모드</b>
-            <small>전체 카드를 보며 익혀요</small>
+            <b>전체 단어 학습</b>
+            <small>모든 뜻을 카드로 확인해요</small>
           </span>
           <span>›</span>
         </button>
@@ -196,8 +196,8 @@ function StudyActionsSection({
             !
           </span>
           <span>
-            <b>몰랐어요 · 헷갈려요 학습</b>
-            <small>{focusCount}개를 집중해서 반복해요</small>
+            <b>헷갈리는 단어 복습</b>
+            <small>다시 볼 단어 {focusCount}개</small>
           </span>
           <span>›</span>
         </button>
@@ -210,7 +210,7 @@ function StudyActionsSection({
           </span>
           <span>
             <b>빈칸 채우기</b>
-            <small>문제 {fillInBlankCount}개 · 문맥에 맞게 직접 입력해요</small>
+            <small>문제 {fillInBlankCount}개 · 문장에 맞는 표현을 입력해요</small>
           </span>
           <span>›</span>
         </button>
@@ -221,7 +221,7 @@ function StudyActionsSection({
           onClick={onAdd}
           className="w-full justify-center"
         >
-          ＋ 새 단어 추가
+          ＋ 단어 추가
         </ActionButton>
       </div>
     </section>
@@ -291,11 +291,11 @@ function ReviewCandidatesSection({
   return (
     <section className="mt-7">
       <div className="mb-2.5 flex items-center justify-between [&_h2]:m-0 [&_h2]:text-[length:var(--seed-font-size-t5)]">
-        <h2>계속 까먹는 단어</h2>
+        <h2>다시 볼 단어</h2>
       </div>
       <div
         className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pt-1 pb-3 [scroll-padding-inline:20px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        aria-label="계속 까먹는 단어"
+        aria-label="다시 볼 단어"
       >
         {candidates.map(({ meaning, stats }) => (
           <button
@@ -308,7 +308,7 @@ function ReviewCandidatesSection({
               <span>{meaning.definitionKo}</span>
             </div>
             <Badge tone="warning" variant="weak">
-              어려움 {stats.difficultCount}/{stats.reviewCount}
+              {stats.reviewCount}번 중 {stats.difficultCount}번 어려웠어요
             </Badge>
           </button>
         ))}

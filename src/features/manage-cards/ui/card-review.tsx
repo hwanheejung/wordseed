@@ -189,8 +189,8 @@ export function CardReview({
   return (
     <>
       <AppHeader
-        title="카드 검토"
-        subtitle={`${active + 1} / ${drafts.length} · 저장 전에 수정할 수 있어요`}
+        title="카드 확인"
+        subtitle={`${active + 1} / ${drafts.length} · 저장하기 전에 고칠 수 있어요`}
         onBack={onBack}
         action={
           drafts.length > 1 ? (
@@ -209,7 +209,7 @@ export function CardReview({
         {drafts.length > 1 && (
           <section className="mb-3.5 rounded-[18px] border border-[var(--seed-color-stroke-brand-weak)] bg-[var(--seed-color-bg-brand-weak)] p-4 [&>section]:mt-0">
             <TagSelector
-              label="모든 카드에 추가할 태그"
+              label="모든 카드에 넣을 태그"
               options={availableTags}
               selected={batchTags}
               onChange={setBatchTags}
@@ -221,7 +221,7 @@ export function CardReview({
               disabled={!batchTags.length}
               onClick={applyTagsToAll}
             >
-              선택한 태그 전체 적용
+              모든 카드에 적용
             </ActionButton>
           </section>
         )}
@@ -261,8 +261,8 @@ export function CardReview({
             <div className="flex gap-3 rounded-2xl bg-[var(--seed-color-bg-positive-weak)] p-3.5 text-[var(--seed-color-fg-positive-contrast)] [&_b]:m-0 [&_b]:block [&_p]:mt-[3px] [&_p]:mb-0 [&_p]:text-[length:var(--seed-font-size-t2)]">
               <span className="font-black">✓</span>
               <div>
-                <b>원문 정보를 우선했어요</b>
-                <p>AI가 보완한 항목은 파란색으로 표시돼요.</p>
+                <b>입력한 내용은 그대로 두었어요</b>
+                <p>추가로 채운 항목은 파란색으로 표시했어요.</p>
               </div>
             </div>
           )}
@@ -315,7 +315,7 @@ export function CardReview({
                     <ProvenanceBadge provenance={meaning.provenance} />
                   )}
                 </div>
-                <label className="field-label">이 뜻의 학습 표현</label>
+                <label className="field-label">학습할 표현</label>
                 <TextField.Root>
                   <TextField.Input
                     aria-label={`뜻 ${meaningIndex + 1}의 학습 표현`}
@@ -343,7 +343,7 @@ export function CardReview({
                 </TextField.Root>
                 <div className="grid grid-cols-2 gap-2.5 [&_.field-label]:mt-3.5">
                   <div>
-                    <label className="field-label">이 뜻의 품사</label>
+                    <label className="field-label">품사</label>
                     <TextField.Root>
                       <TextField.Input
                         aria-label={`뜻 ${meaningIndex + 1}의 품사`}
@@ -358,7 +358,7 @@ export function CardReview({
                     </TextField.Root>
                   </div>
                   <div>
-                    <label className="field-label">이 뜻의 발음</label>
+                    <label className="field-label">발음</label>
                     <TextField.Root>
                       <TextField.Input
                         aria-label={`뜻 ${meaningIndex + 1}의 발음`}
@@ -375,7 +375,7 @@ export function CardReview({
                 </div>
                 <div className="grid grid-cols-2 gap-2.5 [&_.field-label]:mt-3.5">
                   <div>
-                    <label className="field-label">이 뜻의 동의어</label>
+                    <label className="field-label">동의어</label>
                     <TextField.Root>
                       <TextField.Input
                         aria-label={`뜻 ${meaningIndex + 1}의 동의어`}
@@ -390,7 +390,7 @@ export function CardReview({
                     </TextField.Root>
                   </div>
                   <div>
-                    <label className="field-label">이 뜻의 반의어</label>
+                    <label className="field-label">반의어</label>
                     <TextField.Root>
                       <TextField.Input
                         aria-label={`뜻 ${meaningIndex + 1}의 반의어`}
@@ -408,7 +408,7 @@ export function CardReview({
                 {meaning.examples.map((example, exampleIndex) => (
                   <div className="mt-4" key={exampleIndex}>
                     <div className="label-with-tag">
-                      <small>이 뜻의 예문 {exampleIndex + 1}</small>
+                      <small>예문 {exampleIndex + 1}</small>
                       {example.provenance && (
                         <ProvenanceBadge provenance={example.provenance} />
                       )}
@@ -424,7 +424,7 @@ export function CardReview({
                             event.target.value,
                           )
                         }
-                        placeholder="이 뜻이 드러나는 예문을 입력해 주세요"
+                        placeholder="이 표현이 자연스럽게 쓰인 문장을 입력해 주세요"
                       />
                     </TextField.Root>
                   </div>
@@ -460,8 +460,8 @@ export function CardReview({
           <section className="mt-[18px] border-t border-[var(--seed-color-stroke-neutral-subtle)] pt-[18px]">
             <div className="flex items-start justify-between gap-3 [&_.field-label]:m-0 [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[length:var(--seed-font-size-t2)] [&_p]:leading-[1.45] [&_p]:text-[var(--seed-color-fg-neutral-subtle)]">
               <div>
-                <label className="field-label">뜻별 빈칸 문맥 (선택)</label>
-                <p>빈칸 퀴즈에 사용할 문맥만 추가해요.</p>
+                <label className="field-label">빈칸 문제용 문장 (선택)</label>
+                <p>빈칸 문제에 쓸 문장만 추가해 주세요.</p>
               </div>
             </div>
             {draft.meanings.map((meaning, meaningIndex) => (
@@ -476,7 +476,7 @@ export function CardReview({
                     variant="neutralWeak"
                     onClick={() => addFillInBlankExample(meaningIndex)}
                   >
-                    ＋ 문맥 추가
+                    ＋ 문장 추가
                   </ActionButton>
                 </div>
                 <div className="grid gap-3.5 [&_textarea]:min-h-[92px]">
@@ -485,7 +485,7 @@ export function CardReview({
                       <div className="mt-4" key={exampleIndex}>
                         <div className="label-with-tag">
                           <small>
-                            {example.type === "dialogue" ? "대화" : "예문"}{" "}
+                            {example.type === "dialogue" ? "대화" : "문장"}{" "}
                             {exampleIndex + 1}
                           </small>
                           {example.en && example.provenance && (
@@ -494,7 +494,7 @@ export function CardReview({
                         </div>
                         <TextField.Root>
                           <TextField.Textarea
-                            aria-label={`빈칸 문맥 ${exampleIndex + 1}`}
+                            aria-label={`빈칸 문장 ${exampleIndex + 1}`}
                             value={example.en}
                             onChange={(event) =>
                               updateFillInBlankExample(
@@ -505,13 +505,13 @@ export function CardReview({
                                 },
                               )
                             }
-                            placeholder={`${draft.term || "정답 표현"}을 자연스럽게 활용한 새로운 문맥`}
+                            placeholder={`‘${draft.term || "정답 표현"}’이 자연스럽게 쓰인 문장`}
                           />
                         </TextField.Root>
                         <label className="field-label">한국어 해석</label>
                         <TextField.Root>
                           <TextField.Input
-                            aria-label={`빈칸 문맥 ${exampleIndex + 1}의 한국어 해석`}
+                            aria-label={`빈칸 문장 ${exampleIndex + 1}의 한국어 해석`}
                             value={example.ko ?? ""}
                             onChange={(event) =>
                               updateFillInBlankExample(
@@ -522,15 +522,15 @@ export function CardReview({
                                 },
                               )
                             }
-                            placeholder="문맥의 자연스러운 한국어 해석"
+                            placeholder="문장의 자연스러운 한국어 해석"
                           />
                         </TextField.Root>
                         <label className="field-label">
-                          빈칸 처리할 정답 구간
+                          빈칸으로 가릴 부분
                         </label>
                         <TextField.Root>
                           <TextField.Input
-                            aria-label={`빈칸 문맥 ${exampleIndex + 1}의 정답 구간`}
+                            aria-label={`빈칸 문장 ${exampleIndex + 1}의 정답 부분`}
                             value={example.answer ?? ""}
                             onChange={(event) =>
                               updateFillInBlankExample(
@@ -557,7 +557,7 @@ export function CardReview({
                               })
                             }
                           >
-                            문맥 삭제
+                            문장 삭제
                           </ActionButton>
                         )}
                       </div>
@@ -603,7 +603,7 @@ export function CardReview({
           disabled={active === 0}
           onClick={() => onActiveChange(active - 1)}
         >
-          이전
+          이전 카드
         </ActionButton>
         {active < drafts.length - 1 ? (
           <ActionButton
@@ -624,6 +624,6 @@ export function CardReview({
 
 function confirmOverwrite(term: string) {
   return window.confirm(
-    `‘${term}’ 카드가 이미 있어요. 기존 카드를 업데이트할까요?\n취소하면 이 카드는 건너뜁니다.`,
+    `‘${term}’ 카드가 이미 있어요. 저장된 카드에 새 내용을 덮어쓸까요?\n취소하면 이 카드는 저장하지 않아요.`,
   );
 }

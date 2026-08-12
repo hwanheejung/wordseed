@@ -6,7 +6,7 @@ export function validateDrafts(
   drafts: CardDraft[],
 ): DraftValidationIssue | undefined {
   for (const [cardIndex, item] of drafts.entries()) {
-    const cardLabel = `${cardIndex + 1}번째 카드 ‘${item.term.trim() || "이름 없음"}’`;
+    const cardLabel = `${cardIndex + 1}번째 카드 ‘${item.term.trim() || "단어 없음"}’`;
     if (!item.term.trim())
       return {
         cardIndex,

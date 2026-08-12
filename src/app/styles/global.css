@@ -1,4 +1,16 @@
-:root {
+html:root,
+html:root[data-seed-color-mode="system"][data-seed-user-color-scheme="light"],
+html:root[data-seed-color-mode="light-only"],
+html:root [data-seed-color-mode="light-only"] {
+  --seed-color-fg-brand: #426b52;
+  --seed-color-fg-brand-contrast: #31513e;
+  --seed-color-bg-brand-solid: #426b52;
+  --seed-color-bg-brand-solid-pressed: #355742;
+  --seed-color-bg-brand-weak: #ecf3ee;
+  --seed-color-bg-brand-weak-pressed: #dfebe2;
+  --seed-color-stroke-brand: #426b52;
+  --seed-color-stroke-brand-solid: #426b52;
+  --seed-color-stroke-brand-weak: #b7cdbd;
   font-family:
     Pretendard,
     -apple-system,
@@ -9,6 +21,20 @@
   background: var(--seed-color-bg-layer-basement);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+}
+
+html:root[data-seed-color-mode="system"][data-seed-user-color-scheme="dark"],
+html:root[data-seed-color-mode="dark-only"],
+html:root [data-seed-color-mode="dark-only"] {
+  --seed-color-fg-brand: #a8cbb0;
+  --seed-color-fg-brand-contrast: #c1ddc7;
+  --seed-color-bg-brand-solid: #426b52;
+  --seed-color-bg-brand-solid-pressed: #355742;
+  --seed-color-bg-brand-weak: #1e2b23;
+  --seed-color-bg-brand-weak-pressed: #29392e;
+  --seed-color-stroke-brand: #86ac8f;
+  --seed-color-stroke-brand-solid: #86ac8f;
+  --seed-color-stroke-brand-weak: #3b5141;
 }
 
 * {

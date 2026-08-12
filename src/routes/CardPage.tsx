@@ -71,7 +71,7 @@ function CardPageSession({ availableTags, items }: CardPageSessionProps) {
           <EmptyState
             title="표시할 단어가 없어요"
             description="단어장에서 다른 카드를 선택해 주세요."
-            action={<ActionButton onClick={() => navigate({ page: "library" })}>단어장으로</ActionButton>}
+            action={<ActionButton onClick={() => navigate({ page: "library" })}>단어장 보기</ActionButton>}
           />
         </main>
       </>

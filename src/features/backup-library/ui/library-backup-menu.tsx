@@ -53,10 +53,10 @@ export function LibraryBackupMenu() {
         <Menu.Positioner>
           <Menu.Content>
             <Menu.Item onClick={() => void download()}>
-              <Menu.ItemLabel>JSON 내보내기</Menu.ItemLabel>
+              <Menu.ItemLabel>백업 파일로 내보내기</Menu.ItemLabel>
             </Menu.Item>
             <Menu.Item onClick={() => importRef.current?.click()}>
-              <Menu.ItemLabel>가져오기</Menu.ItemLabel>
+              <Menu.ItemLabel>백업 파일 가져오기</Menu.ItemLabel>
             </Menu.Item>
           </Menu.Content>
         </Menu.Positioner>

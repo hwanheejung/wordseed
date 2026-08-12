@@ -47,8 +47,11 @@ export function AllTagsPage() {
         "positive",
       );
       setRenameDialog(undefined);
-    } catch {
-      notify("태그 이름을 변경하지 못했어요. 다시 시도해 주세요.", "critical");
+    } catch (error) {
+      notify(
+        `태그 이름을 변경하지 못했어요.\n${error instanceof Error ? error.message : String(error)}`,
+        "critical",
+      );
     } finally {
       setRenaming(false);
     }
@@ -57,7 +60,7 @@ export function AllTagsPage() {
   return (
     <>
       <AppHeader
-        title="전체 태그"
+        title="태그"
         subtitle={`${groups.length}개 태그`}
         onBack={() => navigate({ page: "home" })}
       />
@@ -98,7 +101,7 @@ export function AllTagsPage() {
         <ContentDialog.Positioner>
           <ContentDialog.Content>
             <ContentDialog.Header>
-              <ContentDialog.Title>태그 이름 수정</ContentDialog.Title>
+              <ContentDialog.Title>태그 이름 바꾸기</ContentDialog.Title>
               <ContentDialog.Description>
                 이 태그가 등록된 모든 카드에 변경된 이름이 적용돼요.
               </ContentDialog.Description>
@@ -133,7 +136,7 @@ export function AllTagsPage() {
                 disabled={!canRename}
                 onClick={() => void handleRename()}
               >
-                변경하기
+                이름 바꾸기
               </ActionButton>
             </ContentDialog.Footer>
           </ContentDialog.Content>
@@ -160,7 +163,7 @@ function TagCard({ group, onSelect, onTest, onRename }: TagCardProps) {
         >
           <List.Title>{group.tag}</List.Title>
           <List.Detail>
-            {group.correctPercentage}% 학습 ({group.correctCount}/
+            학습 {group.correctPercentage}% ({group.correctCount}/
             {group.cardCount})
           </List.Detail>
         </button>
@@ -172,7 +175,7 @@ function TagCard({ group, onSelect, onTest, onRename }: TagCardProps) {
             variant="neutralWeak"
             onClick={() => onTest(group.tag)}
           >
-            테스트
+            빈칸 테스트
           </ActionButton>
           <Menu.Root size="medium" placement="bottom-end" gutter={6}>
             <Menu.Trigger asChild>
@@ -189,7 +192,7 @@ function TagCard({ group, onSelect, onTest, onRename }: TagCardProps) {
               <Menu.Content>
                 <Menu.Item onClick={() => onRename(group.tag)}>
                   <Icon svg={<IconPencilLine />} />
-                  <Menu.ItemLabel>수정하기</Menu.ItemLabel>
+                  <Menu.ItemLabel>이름 바꾸기</Menu.ItemLabel>
                 </Menu.Item>
               </Menu.Content>
             </Menu.Positioner>

@@ -63,18 +63,18 @@ export default async function handler(
       reasoning: { effort: "low" },
       instructions: MEMORY_AID_SYSTEM_PROMPT,
       input: JSON.stringify(parsed.data),
-      max_output_tokens: 2_400,
-      text: { verbosity: "high" },
+      max_output_tokens: 700,
+      text: { verbosity: "low" },
     });
     if (result.status !== "completed")
       throw new MemoryAidValidationError(
-        "기억 장치 생성이 완료되지 않았어요.",
+        "외우는 팁을 만들지 못했어요.",
       );
 
     const memoryAid = normalizeGeneratedMemoryAid(result.output_text);
     if (!memoryAid || memoryAid.length > 16_000)
       throw new MemoryAidValidationError(
-        "사용할 수 있는 기억 장치가 반환되지 않았어요.",
+        "외우는 팁을 만들지 못했어요.",
       );
 
     return response.status(200).json({ memoryAid });

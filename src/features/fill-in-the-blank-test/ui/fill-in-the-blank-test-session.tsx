@@ -40,8 +40,8 @@ export function FillInTheBlankTestSession({
         <main className="min-h-[calc(100vh-84px)] p-5">
           <EmptyState
             title="빈칸 문제가 없어요"
-            description="저장된 카드 중 빈칸 퀴즈에 사용할 수 있는 문맥이 없어요."
-            action={<ActionButton onClick={onBack}>돌아가기</ActionButton>}
+            description="빈칸 문제로 만들 수 있는 예문이 없어요."
+            action={<ActionButton onClick={onBack}>홈으로</ActionButton>}
           />
         </main>
       </>
@@ -124,7 +124,7 @@ export function FillInTheBlankTestSession({
                     {reviewResultMeta[graded].label}
                   </Badge>
                   <p>
-                    문맥의 정답은 <strong>{expectedAnswer}</strong>예요.
+                    정답은 <strong>{expectedAnswer}</strong>예요.
                   </p>
                   <span>
                     학습 표현: {meaning.expression} · {meaning.definitionKo}
@@ -136,7 +136,7 @@ export function FillInTheBlankTestSession({
         ) : (
           <EmptyState
             title="빈칸 문제를 준비하지 못했어요"
-            description="이 카드에는 빈칸 퀴즈에 사용할 수 있는 문맥이 없어요."
+            description="이 카드에는 빈칸 문제로 만들 수 있는 예문이 없어요."
           />
         )}
       </main>

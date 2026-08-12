@@ -153,7 +153,7 @@ async function requestCards(
   });
   if (!result.output_parsed)
     throw new CardGenerationValidationError(
-      "구조화된 카드가 반환되지 않았어요.",
+      "카드를 정리하지 못했어요. 입력을 확인하고 다시 시도해 주세요.",
     );
 
   return result.output_parsed.cards;

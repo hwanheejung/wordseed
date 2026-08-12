@@ -73,7 +73,7 @@ export function CaptureCards({
           notify(
             error instanceof Error
               ? error.message
-              : "AI 카드 생성에 실패했어요. 다시 시도해 주세요.",
+              : "카드를 만들지 못했어요. 잠시 후 다시 시도해 주세요.",
             "critical",
           );
         }
@@ -87,7 +87,7 @@ export function CaptureCards({
     <>
       <AppHeader
         title="단어 추가"
-        subtitle="자료를 그대로 가져오고, 빈칸만 AI가 채워요"
+        subtitle="단어, 문장, 사진으로 카드를 만들어 보세요"
         onBack={onBack}
       />
       <main className="p-5">
@@ -105,8 +105,7 @@ export function CaptureCards({
             />
           </TextField.Root>
           <p className="field-help">
-            단어와 아는 뜻, 예문을 편한 형식으로 입력해 주세요. AI가 항목과
-            뜻을 구분해요.
+            형식은 자유로워요. 아는 뜻이나 예문도 함께 적어 주세요.
           </p>
         </section>
 
@@ -196,7 +195,7 @@ export function CaptureCards({
           onClick={createCards}
           className="w-full justify-center"
         >
-          카드 초안 만들기
+          카드 확인하기
         </ActionButton>
       </AppFooter>
     </>
