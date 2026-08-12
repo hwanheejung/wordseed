@@ -36,7 +36,11 @@ async function postJson<T>(path: string, body: unknown, timeoutMs: number): Prom
 }
 
 export async function enrichText(text: string) {
-  const result = await postJson<{ cards: CardDraft[] }>("/api/cards/enrich", { text }, 120_000);
+  const result = await postJson<{ cards: CardDraft[] }>(
+    "/api/cards/enrich",
+    { text },
+    210_000,
+  );
   if (!Array.isArray(result.cards)) throw new Error("AI 카드 응답 형식이 올바르지 않아요.");
 
   return result.cards;

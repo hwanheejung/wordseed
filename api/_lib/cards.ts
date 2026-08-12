@@ -30,6 +30,8 @@ export const CardSchema = z.object({
   meanings: z.array(MeaningSchema).min(1),
 });
 
+export type GeneratedCard = z.infer<typeof CardSchema>;
+
 export const CardsResponseSchema = z.object({ cards: z.array(CardSchema).min(1).max(20) });
 const CandidateSchema = CardSchema.extend({ confidence: z.number().min(0).max(1) });
 export const CandidatesResponseSchema = z.object({ candidates: z.array(CandidateSchema).min(1).max(30) });

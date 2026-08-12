@@ -105,8 +105,8 @@ export function CaptureCards({
             />
           </TextField.Root>
           <p className="field-help">
-            문장을 함께 넣으면 그 문맥의 뜻을 가장 먼저 정리해요. 생성 후 바로
-            저장하거나 내용을 검토할 수 있어요.
+            단어와 아는 뜻, 예문을 편한 형식으로 입력해 주세요. AI가 항목과
+            뜻을 구분해요.
           </p>
         </section>
 

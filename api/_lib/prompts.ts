@@ -13,6 +13,11 @@ Card rules:
 const TEXT_INPUT_RULES = `
 Text input rules:
 - For newline-separated entries, create exactly one card per non-empty line. Do not merge lines.
+- Accept natural, inconsistent user formatting. Infer which text is a headword, supplied meaning, example, note, or separator without requiring the user to learn a delimiter syntax.
+- Treat punctuation such as semicolons, commas, slashes, colons, and parentheses only as contextual hints, never as a rigid input grammar.
+- When the user supplies multiple semantically distinct glosses for one entry, create a separate meaning object for each distinct sense regardless of how those glosses are formatted.
+- Infer the appropriate expression, part of speech, and examples for each supplied sense independently. Preserve every supplied sense; do not collapse, summarize, or discard one because another sense is more common.
+- For example, inputs such as "account 계좌; 설명하다", "account: 계좌 / 설명하다", and "account 계좌 설명하다" should all produce separate meanings when the supplied glosses represent distinct senses. These examples illustrate intent, not required syntax.
 - Preserve supplied meanings and examples verbatim and assign them to the sense they demonstrate.
 - If the input is a complete sentence, preserve it verbatim as a source study example and make the card term the most reusable non-obvious expression or grammar pattern it demonstrates.
 - Normalize inflected grammar patterns to a canonical learning form, such as "have A do B" from "had a former employee make".
@@ -37,6 +42,10 @@ Before returning, check every meaning:
 - No included example discusses the target word or expression itself.
 
 Correct any failed check before returning.
+
+Before returning all cards, also check:
+- The number of cards exactly matches the number of non-empty input lines.
+- Every semantically distinct supplied gloss has its own meaning object, independent of punctuation or layout.
 `.trim();
 
 export const ENRICH_SYSTEM_PROMPT = `
