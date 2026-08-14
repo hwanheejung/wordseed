@@ -15,6 +15,7 @@ import {
   useReviewStatsQuery,
 } from "@/entities/card";
 import { buildFillInTheBlankQueue } from "@/features/fill-in-the-blank-test";
+import { useTagStudyGroupSortPreference } from "@/features/sort-tag-groups";
 import { shouldRecheckMeaning } from "@/features/study-session";
 import { navigate } from "@/shared/navigation";
 import {
@@ -28,6 +29,7 @@ import { EmptyState } from "../shared/ui/empty-state";
 export function HomePage() {
   const { cards } = useCardsQuery();
   const reviewStats = useReviewStatsQuery();
+  const { sort: tagGroupSort } = useTagStudyGroupSortPreference();
 
   if (!cards.length) {
     return <EmptyHomePage onAdd={() => navigate({ page: "add" })} />;
@@ -58,7 +60,11 @@ export function HomePage() {
       right.stats.lastReviewedAt.localeCompare(left.stats.lastReviewedAt),
     )
     .slice(0, 10);
-  const tagGroups = buildTagStudyGroups(cards).slice(0, 10);
+  const tagGroups = buildTagStudyGroups(
+    cards,
+    tagGroupSort,
+    reviewStats,
+  ).slice(0, 10);
   const cardIds = cards.map((card) => card.id);
 
   const handleCardSelect = (cardId: string) =>

@@ -2,7 +2,13 @@ import {
   IconDot3HorizontalLine,
   IconPencilLine,
 } from "@karrotmarket/react-monochrome-icon";
-import { ContentDialog, Icon, List, Menu, TextField } from "@seed-design/react";
+import {
+  ContentDialog,
+  Icon,
+  List,
+  Menu,
+  TextField,
+} from "@seed-design/react";
 import { useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import {
@@ -10,8 +16,13 @@ import {
   normalizeTags,
   type TagStudyGroup,
   useCardsQuery,
+  useReviewStatsQuery,
 } from "@/entities/card";
 import { renameLibraryTag } from "@/features/manage-cards";
+import {
+  TagStudyGroupSortMenu,
+  useTagStudyGroupSortPreference,
+} from "@/features/sort-tag-groups";
 import { useAppSnackbar } from "@/shared/hooks/use-app-snackbar";
 import { navigate } from "@/shared/navigation";
 import { AppHeader } from "@/shared/ui/app-header";
@@ -24,10 +35,12 @@ interface RenameDialogState {
 
 export function AllTagsPage() {
   const { cards } = useCardsQuery();
-  const groups = buildTagStudyGroups(cards);
+  const reviewStats = useReviewStatsQuery();
   const notify = useAppSnackbar();
+  const { sort, saveSort } = useTagStudyGroupSortPreference();
   const [renameDialog, setRenameDialog] = useState<RenameDialogState>();
   const [renaming, setRenaming] = useState(false);
+  const groups = buildTagStudyGroups(cards, sort, reviewStats);
   const normalizedName = normalizeTags([renameDialog?.name])[0] ?? "";
   const canRename = Boolean(
     renameDialog &&
@@ -66,23 +79,28 @@ export function AllTagsPage() {
       />
       <main className="p-5">
         {groups.length ? (
-          <section aria-label="전체 태그">
-            <List.Root>
-              {groups.map((group) => (
-                <TagCard
-                  key={group.tag}
-                  group={group}
-                  onSelect={(tag) => navigate({ page: "study", tag })}
-                  onTest={(tag) =>
-                    navigate({ page: "fill-in-the-blank-test", tag })
-                  }
-                  onRename={(tag) =>
-                    setRenameDialog({ originalTag: tag, name: tag })
-                  }
-                />
-              ))}
-            </List.Root>
-          </section>
+          <>
+            <div className="mb-3 flex justify-end">
+              <TagStudyGroupSortMenu sort={sort} onChange={saveSort} />
+            </div>
+            <section aria-label="전체 태그">
+              <List.Root>
+                {groups.map((group) => (
+                  <TagCard
+                    key={group.tag}
+                    group={group}
+                    onSelect={(tag) => navigate({ page: "study", tag })}
+                    onTest={(tag) =>
+                      navigate({ page: "fill-in-the-blank-test", tag })
+                    }
+                    onRename={(tag) =>
+                      setRenameDialog({ originalTag: tag, name: tag })
+                    }
+                  />
+                ))}
+              </List.Root>
+            </section>
+          </>
         ) : (
           <EmptyState
             title="아직 태그가 없어요"

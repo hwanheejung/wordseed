@@ -28,4 +28,5 @@ export { isSpecificFillInBlankContext } from "./utils/fill-in-blank-context";
 export {
   buildTagStudyGroups,
   type TagStudyGroup,
+  type TagStudyGroupSort,
 } from "./utils/tag-study-groups";

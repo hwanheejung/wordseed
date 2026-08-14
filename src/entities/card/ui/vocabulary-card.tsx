@@ -65,7 +65,11 @@ export function VocabularyCard({
       <div className="px-6 pb-6">
         {visibleMeanings.map((meaning, meaningIndex) => (
           <section
-            className={meaningIndex > 0 ? "border-t border-[var(--seed-color-stroke-neutral-subtle)] pt-6" : undefined}
+            className={
+              meaningIndex > 0
+                ? "border-t border-[var(--seed-color-stroke-neutral-subtle)] pt-6"
+                : undefined
+            }
             key={meaning.id}
           >
             <div className="pb-5">
