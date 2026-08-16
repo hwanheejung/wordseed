@@ -54,7 +54,9 @@ export default async function handler(
     parseRequestBody(request.body),
   );
   if (!parsed.success)
-    return response.status(400).json({ error: "단어 뜻 정보를 확인해 주세요." });
+    return response
+      .status(400)
+      .json({ error: "단어 뜻 정보를 확인해 주세요." });
 
   try {
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -63,19 +65,15 @@ export default async function handler(
       reasoning: { effort: "low" },
       instructions: MEMORY_AID_SYSTEM_PROMPT,
       input: JSON.stringify(parsed.data),
-      max_output_tokens: 700,
+      max_output_tokens: 2_400,
       text: { verbosity: "low" },
     });
     if (result.status !== "completed")
-      throw new MemoryAidValidationError(
-        "외우는 팁을 만들지 못했어요.",
-      );
+      throw new MemoryAidValidationError("외우는 팁을 만들지 못했어요.");
 
     const memoryAid = normalizeGeneratedMemoryAid(result.output_text);
     if (!memoryAid || memoryAid.length > 16_000)
-      throw new MemoryAidValidationError(
-        "외우는 팁을 만들지 못했어요.",
-      );
+      throw new MemoryAidValidationError("외우는 팁을 만들지 못했어요.");
 
     return response.status(200).json({ memoryAid });
   } catch (error) {
