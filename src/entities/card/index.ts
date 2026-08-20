@@ -12,7 +12,6 @@ export {
 } from "./api/local-card-repository";
 export { useCardsQuery, type CardsQueryInput } from "./hooks/use-cards-query";
 export { useReviewStatsQuery } from "./hooks/use-review-stats-query";
-export { useRecentlyRepeatedUnknownCardIds } from "./hooks/use-recently-repeated-unknown-card-ids";
 export type {
   CardRepositorySnapshot,
   CardWriteInput,
@@ -26,10 +25,15 @@ export { VocabularyCard as VocabularyCardView } from "./ui/vocabulary-card";
 export { TagStudyProgressCard } from "./ui/tag-study-progress-card";
 export {
   getCardStatus,
+  getMeaningLearningStatus,
   getReviewedCardStatus,
   reviewResultMeta,
-  shouldRecheckMeaning,
 } from "./utils/card-status";
+export type {
+  CardLearningStatus,
+  CardReviewPeriod,
+  CardSort,
+} from "./utils/card-collection-query";
 export { isSpecificFillInBlankContext } from "./utils/fill-in-blank-context";
 export {
   buildTagStudyGroups,

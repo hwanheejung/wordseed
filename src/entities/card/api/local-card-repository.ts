@@ -11,7 +11,6 @@ import type {
   VocabularyCard,
 } from "../types/card";
 import { normalizeAnswer } from "@/shared/utils/normalize-answer";
-import { getRecentlyRepeatedUnknownCardIds as selectRecentlyRepeatedUnknownCardIds } from "../utils/repeated-unknown-reviews";
 
 const DATABASE_VERSION = 1;
 const DATABASE_NAME = "wordseed-v2";
@@ -147,15 +146,6 @@ export async function getReviewHistoryStats() {
   }
 
   return stats;
-}
-
-export async function getRecentlyRepeatedUnknownCardIds(
-  since: string,
-): Promise<string[]> {
-  return selectRecentlyRepeatedUnknownCardIds(
-    await db.reviewEvents.toArray(),
-    since,
-  );
 }
 
 function writeInputToRecords(input: CardWriteInput, previous?: VocabularyCard) {

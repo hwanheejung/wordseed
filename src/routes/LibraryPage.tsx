@@ -14,15 +14,16 @@ import {
 import {
   getReviewedCardStatus,
   reviewResultMeta,
-  shouldRecheckMeaning,
   useCardsQuery,
-  useRecentlyRepeatedUnknownCardIds,
   useReviewStatsQuery,
 } from "@/entities/card";
 import { LibraryBackupMenu } from "@/features/backup-library";
 import {
+  createLibrarySearch,
+  LearningStatusFilterSheet,
   libraryFiltersReducer,
-  libraryStudyFilterOptions,
+  libraryReviewPeriodOptions,
+  librarySortOptions,
   readLibraryFilters,
   TagFilterSheet,
 } from "@/features/filter-cards";
@@ -40,37 +41,14 @@ export function LibraryPage({ initialScrollTop }: LibraryPageProps) {
     undefined,
     readLibraryFilters,
   );
-  const recentlyRepeatedUnknownCardIds =
-    useRecentlyRepeatedUnknownCardIds(3);
   const reviewStats = useReviewStatsQuery();
-  const {
-    cards: queriedCards,
-    availableTags,
-    totalCount,
-    isLoading,
-  } = useCardsQuery({
+  const { cards, availableTags, totalCount, isLoading } = useCardsQuery({
     search: filters.search,
-    status:
-      filters.status === "unknown" ||
-      filters.status === "confusing" ||
-      filters.status === "correct"
-        ? filters.status
-        : undefined,
-    ids:
-      filters.status === "recently-repeated-unknown"
-        ? recentlyRepeatedUnknownCardIds
-        : undefined,
+    statuses: filters.statuses,
+    reviewPeriod: filters.reviewPeriod,
     tags: filters.tags,
     sort: filters.sort,
   });
-  const cards =
-    filters.status === "needs-review"
-      ? queriedCards.filter((card) =>
-          card.meanings.some((meaning) =>
-            shouldRecheckMeaning(meaning.status, reviewStats[meaning.id]),
-          ),
-        )
-      : queriedCards;
   const mainRef = useRef<HTMLElement>(null);
   const didRestoreScroll = useRef(initialScrollTop === undefined);
 
@@ -102,14 +80,9 @@ export function LibraryPage({ initialScrollTop }: LibraryPageProps) {
 
   // Synchronize the declarative library query variables with the browser URL.
   useEffect(() => {
-    const params = new URLSearchParams();
-    params.set("sort", filters.sort);
-    if (filters.status !== "all") params.set("status", filters.status);
-    filters.tags.forEach((tag) => params.append("tag", tag));
-    if (filters.search.trim()) params.set("q", filters.search.trim());
     replaceNavigationEntry(
       { page: "library", scrollTop: initialScrollTop },
-      `/library?${params.toString()}`,
+      `/library?${createLibrarySearch(filters)}`,
     );
   }, [filters, initialScrollTop]);
 
@@ -117,7 +90,11 @@ export function LibraryPage({ initialScrollTop }: LibraryPageProps) {
     <>
       <AppHeader
         title="내 단어"
-        subtitle={`전체 ${totalCount}개`}
+        subtitle={
+          cards.length === totalCount
+            ? `전체 ${totalCount}개`
+            : `${totalCount}개 중 ${cards.length}개`
+        }
         onBack={() => navigate({ page: "home" })}
         action={<LibraryBackupMenu />}
       />
@@ -140,7 +117,9 @@ export function LibraryPage({ initialScrollTop }: LibraryPageProps) {
           align="center"
           aria-label="정렬과 필터"
         >
-          {(filters.status !== "all" || filters.tags.length > 0) && (
+          {(filters.statuses.length > 0 ||
+            filters.reviewPeriod ||
+            filters.tags.length > 0) && (
             <Chip.Root
               size="large"
               layout="iconOnly"
@@ -155,7 +134,9 @@ export function LibraryPage({ initialScrollTop }: LibraryPageProps) {
             <Menu.Trigger asChild>
               <Chip.Root size="large" variant="solid" aria-label="단어 정렬">
                 <Chip.Label>
-                  {filters.sort === "newest" ? "최신순" : "오래된순"}
+                  {librarySortOptions.find(
+                    ({ value }) => value === filters.sort,
+                  )?.label ?? "최근 추가한 순"}
                 </Chip.Label>
                 <Chip.SuffixIcon>
                   <IconChevronDownSmallLine />
@@ -164,36 +145,36 @@ export function LibraryPage({ initialScrollTop }: LibraryPageProps) {
             </Menu.Trigger>
             <Menu.Positioner>
               <Menu.Content>
-                <Menu.Item
-                  onClick={() =>
-                    dispatch({ type: "sortChanged", sort: "newest" })
-                  }
-                >
-                  <Menu.ItemLabel>최신순</Menu.ItemLabel>
-                </Menu.Item>
-                <Menu.Item
-                  onClick={() =>
-                    dispatch({ type: "sortChanged", sort: "oldest" })
-                  }
-                >
-                  <Menu.ItemLabel>오래된순</Menu.ItemLabel>
-                </Menu.Item>
+                {librarySortOptions.map(({ value, label }) => (
+                  <Menu.Item
+                    key={value}
+                    onClick={() =>
+                      dispatch({ type: "sortChanged", sort: value })
+                    }
+                  >
+                    <Menu.ItemLabel>{label}</Menu.ItemLabel>
+                  </Menu.Item>
+                ))}
               </Menu.Content>
             </Menu.Positioner>
           </Menu.Root>
+          <LearningStatusFilterSheet
+            selected={filters.statuses}
+            onChange={(statuses) =>
+              dispatch({ type: "statusesChanged", statuses })
+            }
+          />
           <Menu.Root size="medium" placement="bottom-start" gutter={6}>
             <Menu.Trigger asChild>
               <Chip.Root
                 size="large"
-                variant={filters.status === "all" ? "outlineStrong" : "solid"}
-                aria-label="학습 상태"
+                variant={filters.reviewPeriod ? "solid" : "outlineStrong"}
+                aria-label="최근 학습 필터"
               >
                 <Chip.Label>
-                  {filters.status === "all"
-                    ? "학습 상태"
-                    : libraryStudyFilterOptions.find(
-                        ({ value }) => value === filters.status,
-                      )?.label}
+                  {libraryReviewPeriodOptions.find(
+                    ({ value }) => value === filters.reviewPeriod,
+                  )?.label ?? "최근 학습"}
                 </Chip.Label>
                 <Chip.SuffixIcon>
                   <IconChevronDownSmallLine />
@@ -202,11 +183,24 @@ export function LibraryPage({ initialScrollTop }: LibraryPageProps) {
             </Menu.Trigger>
             <Menu.Positioner>
               <Menu.Content>
-                {libraryStudyFilterOptions.map(({ value, label }) => (
+                <Menu.Item
+                  onClick={() =>
+                    dispatch({
+                      type: "reviewPeriodChanged",
+                      reviewPeriod: undefined,
+                    })
+                  }
+                >
+                  <Menu.ItemLabel>전체 기간</Menu.ItemLabel>
+                </Menu.Item>
+                {libraryReviewPeriodOptions.map(({ value, label }) => (
                   <Menu.Item
                     key={value}
                     onClick={() =>
-                      dispatch({ type: "statusChanged", status: value })
+                      dispatch({
+                        type: "reviewPeriodChanged",
+                        reviewPeriod: value,
+                      })
                     }
                   >
                     <Menu.ItemLabel>{label}</Menu.ItemLabel>

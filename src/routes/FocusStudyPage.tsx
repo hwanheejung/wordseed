@@ -1,7 +1,11 @@
 import { useReducer, useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import { navigate } from "@/shared/navigation";
-import { type VocabularyCard, useCardsQuery } from "@/entities/card";
+import {
+  type VocabularyCard,
+  useCardsQuery,
+  useReviewStatsQuery,
+} from "@/entities/card";
 import { CardVisibilitySheet, useCardVisibilityPreferences } from "@/features/configure-card-visibility";
 import { CardActionsMenu, CardEditor } from "@/features/manage-cards";
 import { buildFocusQueue, createStudySession, getCurrentStudyItem, getNextStudyItem, getPreviousStudyItem, LearningCardSession, studySessionReducer, submitStudyReview, type StudyQueueItem } from "@/features/study-session";
@@ -13,6 +17,7 @@ export function FocusStudyPage() {
   const { availableTags, cards, isLoading } = useCardsQuery({
     statuses: ["unknown", "confusing"],
   });
+  const reviewStats = useReviewStatsQuery();
 
   if (isLoading)
     return (
@@ -25,7 +30,7 @@ export function FocusStudyPage() {
   return (
     <FocusStudyPageSession
       availableTags={availableTags}
-      items={buildFocusQueue(cards)}
+      items={buildFocusQueue(cards, reviewStats)}
     />
   );
 }

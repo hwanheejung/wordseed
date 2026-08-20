@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { VocabularyCard } from "../types/card";
-import { getReviewedCardStatus, shouldRecheckMeaning } from "./card-status";
+import {
+  getMeaningLearningStatus,
+  getReviewedCardStatus,
+} from "./card-status";
 
 const card: VocabularyCard = {
   id: "card-1",
@@ -76,21 +79,15 @@ describe("reviewed card status", () => {
   });
 });
 
-describe("review candidates", () => {
-  it("rechecks known meanings with at least three mostly difficult reviews", () => {
-    const stats = {
-      reviewCount: 3,
-      difficultCount: 2,
-      lastReviewedAt: "2026-01-01T00:00:00.000Z",
-    };
-
-    expect(shouldRecheckMeaning("correct", stats)).toBe(true);
-    expect(shouldRecheckMeaning("unknown", stats)).toBe(false);
+describe("meaning learning status", () => {
+  it("treats the stored default as unreviewed until history exists", () => {
+    expect(getMeaningLearningStatus(card.meanings[1])).toBe("unreviewed");
     expect(
-      shouldRecheckMeaning("correct", { ...stats, reviewCount: 2 }),
-    ).toBe(false);
-    expect(
-      shouldRecheckMeaning("correct", { ...stats, difficultCount: 1 }),
-    ).toBe(false);
+      getMeaningLearningStatus(card.meanings[1], {
+        reviewCount: 1,
+        difficultCount: 1,
+        lastReviewedAt: "2026-01-03T00:00:00.000Z",
+      }),
+    ).toBe("unknown");
   });
 });

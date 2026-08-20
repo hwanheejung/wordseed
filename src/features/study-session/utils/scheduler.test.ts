@@ -81,6 +81,21 @@ describe("meaning-level review scheduling", () => {
     ]);
   });
 
+  it("excludes untouched meanings from a focused review", () => {
+    const [unknown] = buildFocusQueue([makeCard("unknown", ["unknown"])]);
+
+    expect(buildFocusQueue([unknown.card], {})).toEqual([]);
+    expect(
+      buildFocusQueue([unknown.card], {
+        [unknown.meaning.id]: {
+          reviewCount: 1,
+          difficultCount: 1,
+          lastReviewedAt: timestamp,
+        },
+      }),
+    ).toHaveLength(1);
+  });
+
   it("preserves order cyclically and moves a reviewed meaning to the back", () => {
     const items = buildStudyQueue(cards);
     const started = startQueueAt(items, 1);

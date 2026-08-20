@@ -1,8 +1,10 @@
 import type {
+  Meaning,
   ReviewHistoryStats,
   ReviewResult,
   VocabularyCard,
 } from "../types/card";
+import type { CardLearningStatus } from "./card-collection-query";
 
 export const reviewResultMeta: Record<
   ReviewResult,
@@ -39,16 +41,9 @@ export function getReviewedCardStatus(
   return "correct";
 }
 
-export function shouldRecheckMeaning(
-  status: ReviewResult,
+export function getMeaningLearningStatus(
+  meaning: Meaning,
   stats?: ReviewHistoryStats,
-): boolean {
-  return (
-    status === "correct" &&
-    Boolean(
-      stats &&
-        stats.reviewCount >= 3 &&
-        stats.difficultCount * 2 >= stats.reviewCount,
-    )
-  );
+): CardLearningStatus {
+  return (stats?.reviewCount ?? 0) > 0 ? meaning.status : "unreviewed";
 }

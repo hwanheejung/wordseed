@@ -6,10 +6,17 @@ import { db, saveCard } from "../api/local-card-repository";
 import { useCardsQuery } from "./use-cards-query";
 
 beforeEach(async () => {
-  await db.transaction("rw", db.cards, db.meanings, async () => {
-    await db.cards.clear();
-    await db.meanings.clear();
-  });
+  await db.transaction(
+    "rw",
+    db.cards,
+    db.meanings,
+    db.reviewEvents,
+    async () => {
+      await db.cards.clear();
+      await db.meanings.clear();
+      await db.reviewEvents.clear();
+    },
+  );
 });
 
 describe("useCardsQuery", () => {

@@ -4,19 +4,19 @@ import { useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import {
   buildTagStudyGroups,
+  type CardsQueryInput,
+  getMeaningLearningStatus,
   getReviewedCardStatus,
-  type Meaning,
   type ReviewHistoryStats,
   reviewResultMeta,
-  shouldRecheckMeaning,
   type TagStudyGroup,
   TagStudyProgressCard,
   type VocabularyCard,
   useCardsQuery,
-  useRecentlyRepeatedUnknownCardIds,
   useReviewStatsQuery,
 } from "@/entities/card";
 import { buildFillInTheBlankQueue } from "@/features/fill-in-the-blank-test";
+import { createLibrarySearch } from "@/features/filter-cards";
 import { useTagStudyGroupSortPreference } from "@/features/sort-tag-groups";
 import { navigate } from "@/shared/navigation";
 import {
@@ -27,13 +27,36 @@ import {
 import { AppHeader } from "../shared/ui/app-header";
 import { EmptyState } from "../shared/ui/empty-state";
 
+const NEW_WORDS_QUERY = {
+  statuses: ["unreviewed"],
+  sort: "added-desc",
+} satisfies CardsQueryInput;
+const RECENT_DIFFICULT_WORDS_QUERY = {
+  statuses: ["unknown", "confusing"],
+  reviewPeriod: "3d",
+  sort: "reviewed-desc",
+} satisfies CardsQueryInput;
+const REVIEW_NOW_QUERY = {
+  statuses: ["unknown", "confusing"],
+  sort: "reviewed-asc",
+} satisfies CardsQueryInput;
+const RECENTLY_LEARNED_QUERY = {
+  statuses: ["correct"],
+  reviewPeriod: "7d",
+  sort: "reviewed-desc",
+} satisfies CardsQueryInput;
+const HOME_CURATION_LIMIT = 10;
+
 export function HomePage() {
   const { cards } = useCardsQuery();
-  const recentlyRepeatedUnknownCardIds =
-    useRecentlyRepeatedUnknownCardIds(3);
-  const { cards: recentlyRepeatedUnknownCards } = useCardsQuery({
-    ids: recentlyRepeatedUnknownCardIds.slice(0, 10),
-  });
+  const { cards: newWords } = useCardsQuery(NEW_WORDS_QUERY);
+  const { cards: recentDifficultWords } = useCardsQuery(
+    RECENT_DIFFICULT_WORDS_QUERY,
+  );
+  const { cards: reviewNowWords } = useCardsQuery(REVIEW_NOW_QUERY);
+  const { cards: recentlyLearnedWords } = useCardsQuery(
+    RECENTLY_LEARNED_QUERY,
+  );
   const reviewStats = useReviewStatsQuery();
   const { sort: tagGroupSort } = useTagStudyGroupSortPreference();
 
@@ -42,30 +65,16 @@ export function HomePage() {
   }
 
   const meanings = cards.flatMap((card) => card.meanings);
-  const statusCounts = {
-    unknown: meanings.filter((meaning) => meaning.status === "unknown").length,
-    confusing: meanings.filter((meaning) => meaning.status === "confusing")
-      .length,
-    correct: meanings.filter((meaning) => meaning.status === "correct").length,
-  };
+  const statusCounts = meanings.reduce<MeaningStatusCounts>(
+    (counts, meaning) => {
+      counts[getMeaningLearningStatus(meaning, reviewStats[meaning.id])] += 1;
+
+      return counts;
+    },
+    { unreviewed: 0, unknown: 0, confusing: 0, correct: 0 },
+  );
   const focusCount = statusCounts.unknown + statusCounts.confusing;
   const fillInBlankCount = buildFillInTheBlankQueue(cards, () => 0.5).length;
-  const recentCards = cards
-    .slice()
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-    .slice(0, 10);
-  const reviewCandidates = cards
-    .flatMap((card) =>
-      card.meanings.map((meaning) => ({
-        meaning,
-        stats: reviewStats[meaning.id],
-      })),
-    )
-    .filter(({ meaning, stats }) => shouldRecheckMeaning(meaning.status, stats))
-    .sort((left, right) =>
-      right.stats.lastReviewedAt.localeCompare(left.stats.lastReviewedAt),
-    )
-    .slice(0, 10);
   const tagGroups = buildTagStudyGroups(
     cards,
     tagGroupSort,
@@ -100,76 +109,61 @@ export function HomePage() {
           onFillInBlank={() => navigate({ page: "fill-in-the-blank-test" })}
           onAdd={() => navigate({ page: "add" })}
         />
-        <RecentWordsSection
-          cards={recentCards}
-          reviewStats={reviewStats}
-          onSelect={handleCardSelect}
-          onViewAll={() => navigate({ page: "library" })}
-        />
-        <RepeatedUnknownWordsSection
-          cards={recentlyRepeatedUnknownCards}
-          onSelect={handleCardSelect}
-          onViewAll={() =>
-            navigate({
-              page: "library",
-              search: "status=recently-repeated-unknown",
-            })
-          }
-        />
-        <ReviewCandidatesSection
-          candidates={reviewCandidates}
-          onSelect={(meaningId) => navigate({ page: "study", meaningId })}
-        />
         <TagStudySection
           groups={tagGroups}
           onSelect={(tag) => navigate({ page: "study", tag })}
           onViewAll={() => navigate({ page: "all-tags" })}
         />
+        <CuratedWordsSection
+          title="최근 어려웠던 단어"
+          cards={recentDifficultWords.slice(0, HOME_CURATION_LIMIT)}
+          reviewStats={reviewStats}
+          onSelect={handleCardSelect}
+          onViewAll={() =>
+            navigate({
+              page: "library",
+              search: createLibrarySearch(RECENT_DIFFICULT_WORDS_QUERY),
+            })
+          }
+        />
+        <CuratedWordsSection
+          title="지금 복습할 단어"
+          cards={reviewNowWords.slice(0, HOME_CURATION_LIMIT)}
+          reviewStats={reviewStats}
+          onSelect={handleCardSelect}
+          onViewAll={() =>
+            navigate({
+              page: "library",
+              search: createLibrarySearch(REVIEW_NOW_QUERY),
+            })
+          }
+        />
+        <CuratedWordsSection
+          title="새로 추가한 단어"
+          cards={newWords.slice(0, HOME_CURATION_LIMIT)}
+          reviewStats={reviewStats}
+          onSelect={handleCardSelect}
+          onViewAll={() =>
+            navigate({
+              page: "library",
+              search: createLibrarySearch(NEW_WORDS_QUERY),
+            })
+          }
+        />
+        <CuratedWordsSection
+          title="최근 익힌 단어"
+          cards={recentlyLearnedWords.slice(0, HOME_CURATION_LIMIT)}
+          reviewStats={reviewStats}
+          onSelect={handleCardSelect}
+          onViewAll={() =>
+            navigate({
+              page: "library",
+              search: createLibrarySearch(RECENTLY_LEARNED_QUERY),
+            })
+          }
+        />
       </main>
     </>
-  );
-}
-
-interface RepeatedUnknownWordsSectionProps {
-  cards: VocabularyCard[];
-  onSelect: (cardId: string) => void;
-  onViewAll: () => void;
-}
-
-function RepeatedUnknownWordsSection({
-  cards,
-  onSelect,
-  onViewAll,
-}: RepeatedUnknownWordsSectionProps) {
-  if (!cards.length) return null;
-
-  return (
-    <section className="mt-7">
-      <div className="mb-2.5 flex items-center justify-between [&_h2]:m-0 [&_h2]:text-[length:var(--seed-font-size-t5)] [&_button]:min-h-11 [&_button]:cursor-pointer [&_button]:border-0 [&_button]:bg-transparent [&_button]:font-bold [&_button]:text-[var(--seed-color-fg-brand)]">
-        <h2>최근 3일 다시 몰랐던 단어</h2>
-        <button onClick={onViewAll}>전체 보기</button>
-      </div>
-      <div
-        className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pt-1 pb-3 [scroll-padding-inline:20px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        aria-label="최근 3일 다시 몰랐던 단어"
-      >
-        {cards.map((card) => (
-          <button
-            key={card.id}
-            onClick={() => onSelect(card.id)}
-            className="flex min-h-[142px] w-[184px] shrink-0 snap-start cursor-pointer flex-col items-start justify-between rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-inherit shadow-[0_5px_18px_rgba(0,0,0,.045)] active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:block [&_b]:text-[length:var(--seed-font-size-t6)] [&_span]:block [&_div>span]:mt-1.5 [&_div>span]:line-clamp-2 [&_div>span]:leading-[1.4] [&_div>span]:text-[var(--seed-color-fg-neutral-subtle)]"
-          >
-            <div>
-              <b>{card.term}</b>
-              <span>{card.meanings[0]?.definitionKo || "뜻 미입력"}</span>
-            </div>
-            <Badge tone="critical" variant="weak">
-              다시 몰랐어요
-            </Badge>
-          </button>
-        ))}
-      </div>
-    </section>
   );
 }
 
@@ -224,6 +218,7 @@ function ColorModeButton() {
 }
 
 interface MeaningStatusCounts {
+  unreviewed: number;
   unknown: number;
   confusing: number;
   correct: number;
@@ -250,8 +245,8 @@ function LearningSummarySection({
           학습하고 있어요
         </h2>
         <p>
-          몰랐어요 {statusCounts.unknown} · 헷갈려요 {statusCounts.confusing} ·
-          알고 있어요 {statusCounts.correct}
+          학습 전 {statusCounts.unreviewed} · 몰랐어요 {statusCounts.unknown} ·
+          헷갈려요 {statusCounts.confusing} · 알고 있어요 {statusCounts.correct}
         </p>
       </div>
     </section>
@@ -332,28 +327,32 @@ function StudyActionsSection({
   );
 }
 
-interface RecentWordsSectionProps {
+interface CuratedWordsSectionProps {
+  title: string;
   cards: VocabularyCard[];
   reviewStats: Record<string, ReviewHistoryStats>;
   onSelect: (cardId: string) => void;
   onViewAll: () => void;
 }
 
-function RecentWordsSection({
+function CuratedWordsSection({
+  title,
   cards,
   reviewStats,
   onSelect,
   onViewAll,
-}: RecentWordsSectionProps) {
+}: CuratedWordsSectionProps) {
+  if (!cards.length) return null;
+
   return (
     <section className="mt-7">
       <div className="mb-2.5 flex items-center justify-between [&_h2]:m-0 [&_h2]:text-[length:var(--seed-font-size-t5)] [&_button]:min-h-11 [&_button]:cursor-pointer [&_button]:border-0 [&_button]:bg-transparent [&_button]:font-bold [&_button]:text-[var(--seed-color-fg-brand)]">
-        <h2>최근 단어</h2>
+        <h2>{title}</h2>
         <button onClick={onViewAll}>전체 보기</button>
       </div>
       <div
         className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pt-1 pb-3 [scroll-padding-inline:20px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        aria-label="최근 단어"
+        aria-label={title}
       >
         {cards.map((card) => {
           const reviewedStatus = getReviewedCardStatus(card, reviewStats);
@@ -379,51 +378,6 @@ function RecentWordsSection({
             </button>
           );
         })}
-      </div>
-    </section>
-  );
-}
-
-interface ReviewCandidate {
-  meaning: Meaning;
-  stats: ReviewHistoryStats;
-}
-
-interface ReviewCandidatesSectionProps {
-  candidates: ReviewCandidate[];
-  onSelect: (meaningId: string) => void;
-}
-
-function ReviewCandidatesSection({
-  candidates,
-  onSelect,
-}: ReviewCandidatesSectionProps) {
-  if (!candidates.length) return null;
-
-  return (
-    <section className="mt-7">
-      <div className="mb-2.5 flex items-center justify-between [&_h2]:m-0 [&_h2]:text-[length:var(--seed-font-size-t5)]">
-        <h2>다시 볼 단어</h2>
-      </div>
-      <div
-        className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pt-1 pb-3 [scroll-padding-inline:20px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        aria-label="다시 볼 단어"
-      >
-        {candidates.map(({ meaning, stats }) => (
-          <button
-            key={meaning.id}
-            onClick={() => onSelect(meaning.id)}
-            className="flex min-h-[142px] w-[184px] shrink-0 snap-start cursor-pointer flex-col items-start justify-between rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-inherit shadow-[0_5px_18px_rgba(0,0,0,.045)] active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:block [&_b]:text-[length:var(--seed-font-size-t6)] [&_span]:block [&_div>span]:mt-1.5 [&_div>span]:line-clamp-2 [&_div>span]:leading-[1.4] [&_div>span]:text-[var(--seed-color-fg-neutral-subtle)]"
-          >
-            <div>
-              <b>{meaning.expression}</b>
-              <span>{meaning.definitionKo}</span>
-            </div>
-            <Badge tone="warning" variant="weak">
-              {stats.reviewCount}번 중 {stats.difficultCount}번 어려웠어요
-            </Badge>
-          </button>
-        ))}
       </div>
     </section>
   );

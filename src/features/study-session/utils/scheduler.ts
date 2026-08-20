@@ -1,4 +1,8 @@
-import type { ReviewResult, VocabularyCard } from "@/entities/card";
+import type {
+  ReviewHistoryStats,
+  ReviewResult,
+  VocabularyCard,
+} from "@/entities/card";
 import type { StudyQueueItem } from "../types/study-queue-item";
 
 const STATUS_PRIORITY: Record<ReviewResult, number> = {
@@ -32,10 +36,15 @@ export function buildStudyQueue(cards: VocabularyCard[]) {
     );
 }
 
-export function buildFocusQueue(cards: VocabularyCard[]) {
+export function buildFocusQueue(
+  cards: VocabularyCard[],
+  reviewStats?: Record<string, ReviewHistoryStats>,
+) {
   return toStudyItems(cards).filter(
     ({ meaning }) =>
-      meaning.status === "unknown" || meaning.status === "confusing",
+      (meaning.status === "unknown" || meaning.status === "confusing") &&
+      (!reviewStats ||
+        (reviewStats[meaning.id]?.reviewCount ?? 0) > 0),
   );
 }
 
