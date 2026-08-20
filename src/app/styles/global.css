@@ -132,9 +132,9 @@ textarea:focus-visible {
   bottom: 0;
   width: min(520px, 100%);
   height: calc(68px + var(--seed-safe-area-bottom));
-  padding: 6px 30px var(--seed-safe-area-bottom);
+  padding: 6px 16px var(--seed-safe-area-bottom);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   background: color-mix(
     in srgb,
     var(--seed-color-bg-layer-default) 94%,

@@ -1,6 +1,7 @@
 export type NavigationEntry =
   | { page: "home" }
   | { page: "add" }
+  | { page: "toefl" }
   | { page: "library"; search?: string; scrollTop?: number }
   | { page: "all-tags" }
   | { page: "study"; tag?: string; meaningId?: string }

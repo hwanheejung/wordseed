@@ -1,8 +1,9 @@
+import { IconBookOpenLine } from "@karrotmarket/react-monochrome-icon";
 import { forwardRef } from "react";
 import { navigate } from "@/shared/navigation";
 
 interface BottomNavigationProps {
-  activePage: "home" | "add" | "library";
+  activePage: "home" | "add" | "library" | "toefl";
 }
 
 export const BottomNavigation = forwardRef<HTMLElement, BottomNavigationProps>(
@@ -25,6 +26,15 @@ export const BottomNavigation = forwardRef<HTMLElement, BottomNavigationProps>(
         onClick={() => navigate({ page: "library" })}
       >
         <span>▤</span>단어장
+      </button>
+      <button
+        className={activePage === "toefl" ? "active" : ""}
+        onClick={() => navigate({ page: "toefl" })}
+      >
+        <span aria-hidden="true">
+          <IconBookOpenLine size={22} />
+        </span>
+        TOEFL
       </button>
     </nav>
   ),

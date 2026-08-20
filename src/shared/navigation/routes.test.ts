@@ -4,6 +4,12 @@ import { describe, expect, it } from "vitest";
 import { navigationEntryFromWindow } from "./routes";
 
 describe("navigationEntryFromWindow", () => {
+  it("opens the TOEFL practice page from its URL", () => {
+    window.history.replaceState(null, "", "/toefl");
+
+    expect(navigationEntryFromWindow()).toEqual({ page: "toefl" });
+  });
+
   it("restores the Wordbook scroll position from browser history", () => {
     window.history.replaceState(
       { entry: { page: "library", scrollTop: 640 } },
