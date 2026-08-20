@@ -11,14 +11,18 @@ import {
   IconArrowClockwiseCircularLine,
   IconChevronDownSmallLine,
 } from "@karrotmarket/react-monochrome-icon";
-import { useCardsQuery } from "@/entities/card";
 import {
   getCardStatus,
   reviewResultMeta,
+  shouldRecheckMeaning,
+  useCardsQuery,
+  useRecentlyRepeatedUnknownCardIds,
+  useReviewStatsQuery,
 } from "@/entities/card";
 import { LibraryBackupMenu } from "@/features/backup-library";
 import {
   libraryFiltersReducer,
+  libraryStudyFilterOptions,
   readLibraryFilters,
   TagFilterSheet,
 } from "@/features/filter-cards";
@@ -32,12 +36,32 @@ export function LibraryPage() {
     undefined,
     readLibraryFilters,
   );
-  const { cards, availableTags, totalCount } = useCardsQuery({
+  const recentlyRepeatedUnknownCardIds =
+    useRecentlyRepeatedUnknownCardIds(3);
+  const reviewStats = useReviewStatsQuery();
+  const { cards: queriedCards, availableTags, totalCount } = useCardsQuery({
     search: filters.search,
-    status: filters.status === "all" ? undefined : filters.status,
+    status:
+      filters.status === "unknown" ||
+      filters.status === "confusing" ||
+      filters.status === "correct"
+        ? filters.status
+        : undefined,
+    ids:
+      filters.status === "recently-repeated-unknown"
+        ? recentlyRepeatedUnknownCardIds
+        : undefined,
     tags: filters.tags,
     sort: filters.sort,
   });
+  const cards =
+    filters.status === "needs-review"
+      ? queriedCards.filter((card) =>
+          card.meanings.some((meaning) =>
+            shouldRecheckMeaning(meaning.status, reviewStats[meaning.id]),
+          ),
+        )
+      : queriedCards;
 
   // Synchronize the declarative library query variables with the browser URL.
   useEffect(() => {
@@ -128,7 +152,9 @@ export function LibraryPage() {
                 <Chip.Label>
                   {filters.status === "all"
                     ? "학습 상태"
-                    : reviewResultMeta[filters.status].label}
+                    : libraryStudyFilterOptions.find(
+                        ({ value }) => value === filters.status,
+                      )?.label}
                 </Chip.Label>
                 <Chip.SuffixIcon>
                   <IconChevronDownSmallLine />
@@ -137,20 +163,16 @@ export function LibraryPage() {
             </Menu.Trigger>
             <Menu.Positioner>
               <Menu.Content>
-                {(["unknown", "confusing", "correct"] as const).map(
-                  (value) => (
-                    <Menu.Item
-                      key={value}
-                      onClick={() =>
-                        dispatch({ type: "statusChanged", status: value })
-                      }
-                    >
-                      <Menu.ItemLabel>
-                        {reviewResultMeta[value].label}
-                      </Menu.ItemLabel>
-                    </Menu.Item>
-                  ),
-                )}
+                {libraryStudyFilterOptions.map(({ value, label }) => (
+                  <Menu.Item
+                    key={value}
+                    onClick={() =>
+                      dispatch({ type: "statusChanged", status: value })
+                    }
+                  >
+                    <Menu.ItemLabel>{label}</Menu.ItemLabel>
+                  </Menu.Item>
+                ))}
               </Menu.Content>
             </Menu.Positioner>
           </Menu.Root>

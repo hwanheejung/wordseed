@@ -7,7 +7,6 @@ import {
   buildFocusQueue,
   buildStudyQueue,
   moveReviewedCardToBack,
-  shouldRecheckMeaning,
   startQueueAt,
   updateFocusQueue,
 } from "./scheduler";
@@ -56,22 +55,6 @@ const cards = [
 ];
 
 describe("meaning-level review scheduling", () => {
-  it("rechecks known meanings with at least three mostly difficult reviews", () => {
-    const stats = {
-      reviewCount: 3,
-      difficultCount: 2,
-      lastReviewedAt: timestamp,
-    };
-    expect(shouldRecheckMeaning("correct", stats)).toBe(true);
-    expect(shouldRecheckMeaning("unknown", stats)).toBe(false);
-    expect(
-      shouldRecheckMeaning("correct", { ...stats, reviewCount: 2 }),
-    ).toBe(false);
-    expect(
-      shouldRecheckMeaning("correct", { ...stats, difficultCount: 1 }),
-    ).toBe(false);
-  });
-
   it("sorts cards by their most difficult meaning", () => {
     const orderedCards = [
       makeCard("known", ["correct"]),

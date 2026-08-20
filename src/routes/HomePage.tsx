@@ -8,15 +8,16 @@ import {
   type Meaning,
   type ReviewHistoryStats,
   reviewResultMeta,
+  shouldRecheckMeaning,
   type TagStudyGroup,
   TagStudyProgressCard,
   type VocabularyCard,
   useCardsQuery,
+  useRecentlyRepeatedUnknownCardIds,
   useReviewStatsQuery,
 } from "@/entities/card";
 import { buildFillInTheBlankQueue } from "@/features/fill-in-the-blank-test";
 import { useTagStudyGroupSortPreference } from "@/features/sort-tag-groups";
-import { shouldRecheckMeaning } from "@/features/study-session";
 import { navigate } from "@/shared/navigation";
 import {
   applyColorMode,
@@ -28,6 +29,11 @@ import { EmptyState } from "../shared/ui/empty-state";
 
 export function HomePage() {
   const { cards } = useCardsQuery();
+  const recentlyRepeatedUnknownCardIds =
+    useRecentlyRepeatedUnknownCardIds(3);
+  const { cards: recentlyRepeatedUnknownCards } = useCardsQuery({
+    ids: recentlyRepeatedUnknownCardIds.slice(0, 10),
+  });
   const reviewStats = useReviewStatsQuery();
   const { sort: tagGroupSort } = useTagStudyGroupSortPreference();
 
@@ -99,6 +105,16 @@ export function HomePage() {
           onSelect={handleCardSelect}
           onViewAll={() => navigate({ page: "library" })}
         />
+        <RepeatedUnknownWordsSection
+          cards={recentlyRepeatedUnknownCards}
+          onSelect={handleCardSelect}
+          onViewAll={() =>
+            navigate({
+              page: "library",
+              search: "status=recently-repeated-unknown",
+            })
+          }
+        />
         <ReviewCandidatesSection
           candidates={reviewCandidates}
           onSelect={(meaningId) => navigate({ page: "study", meaningId })}
@@ -110,6 +126,49 @@ export function HomePage() {
         />
       </main>
     </>
+  );
+}
+
+interface RepeatedUnknownWordsSectionProps {
+  cards: VocabularyCard[];
+  onSelect: (cardId: string) => void;
+  onViewAll: () => void;
+}
+
+function RepeatedUnknownWordsSection({
+  cards,
+  onSelect,
+  onViewAll,
+}: RepeatedUnknownWordsSectionProps) {
+  if (!cards.length) return null;
+
+  return (
+    <section className="mt-7">
+      <div className="mb-2.5 flex items-center justify-between [&_h2]:m-0 [&_h2]:text-[length:var(--seed-font-size-t5)] [&_button]:min-h-11 [&_button]:cursor-pointer [&_button]:border-0 [&_button]:bg-transparent [&_button]:font-bold [&_button]:text-[var(--seed-color-fg-brand)]">
+        <h2>최근 3일 다시 몰랐던 단어</h2>
+        <button onClick={onViewAll}>전체 보기</button>
+      </div>
+      <div
+        className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pt-1 pb-3 [scroll-padding-inline:20px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        aria-label="최근 3일 다시 몰랐던 단어"
+      >
+        {cards.map((card) => (
+          <button
+            key={card.id}
+            onClick={() => onSelect(card.id)}
+            className="flex min-h-[142px] w-[184px] shrink-0 snap-start cursor-pointer flex-col items-start justify-between rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-inherit shadow-[0_5px_18px_rgba(0,0,0,.045)] active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:block [&_b]:text-[length:var(--seed-font-size-t6)] [&_span]:block [&_div>span]:mt-1.5 [&_div>span]:line-clamp-2 [&_div>span]:leading-[1.4] [&_div>span]:text-[var(--seed-color-fg-neutral-subtle)]"
+          >
+            <div>
+              <b>{card.term}</b>
+              <span>{card.meanings[0]?.definitionKo || "뜻 미입력"}</span>
+            </div>
+            <Badge tone="critical" variant="weak">
+              다시 몰랐어요
+            </Badge>
+          </button>
+        ))}
+      </div>
+    </section>
   );
 }
 

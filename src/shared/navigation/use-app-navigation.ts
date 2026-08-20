@@ -28,10 +28,13 @@ function subscribeToNavigation(onChange: () => void) {
 
 export function navigate(next: NavigationEntry) {
   window.scrollTo({ top: 0, behavior: "smooth" });
+  const path = PRIMARY_PAGE_PATHS[next.page] ?? window.location.pathname;
+  const destination =
+    next.page === "library" && next.search ? `${path}?${next.search}` : path;
   window.history.pushState(
     { entry: next },
     "",
-    PRIMARY_PAGE_PATHS[next.page] ?? window.location.pathname,
+    destination,
   );
   currentEntry = next;
   window.dispatchEvent(new Event(NAVIGATION_EVENT));

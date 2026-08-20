@@ -1,8 +1,4 @@
-import type {
-  ReviewHistoryStats,
-  ReviewResult,
-  VocabularyCard,
-} from "@/entities/card";
+import type { ReviewResult, VocabularyCard } from "@/entities/card";
 import type { StudyQueueItem } from "../types/study-queue-item";
 
 const STATUS_PRIORITY: Record<ReviewResult, number> = {
@@ -48,20 +44,6 @@ export function startQueueAt<T>(items: T[], startIndex: number) {
   const safeIndex = Math.min(Math.max(0, startIndex), items.length - 1);
 
   return [...items.slice(safeIndex), ...items.slice(0, safeIndex)];
-}
-
-export function shouldRecheckMeaning(
-  status: ReviewResult,
-  stats?: ReviewHistoryStats,
-) {
-  return (
-    status === "correct" &&
-    Boolean(
-      stats &&
-        stats.reviewCount >= 3 &&
-        stats.difficultCount * 2 >= stats.reviewCount,
-    )
-  );
 }
 
 export function moveReviewedCardToBack(

@@ -1,4 +1,8 @@
-import type { ReviewResult, VocabularyCard } from "../types/card";
+import type {
+  ReviewHistoryStats,
+  ReviewResult,
+  VocabularyCard,
+} from "../types/card";
 
 export const reviewResultMeta: Record<
   ReviewResult,
@@ -16,4 +20,18 @@ export function getCardStatus(card: VocabularyCard): ReviewResult {
     return "confusing";
 
   return "correct";
+}
+
+export function shouldRecheckMeaning(
+  status: ReviewResult,
+  stats?: ReviewHistoryStats,
+): boolean {
+  return (
+    status === "correct" &&
+    Boolean(
+      stats &&
+        stats.reviewCount >= 3 &&
+        stats.difficultCount * 2 >= stats.reviewCount,
+    )
+  );
 }

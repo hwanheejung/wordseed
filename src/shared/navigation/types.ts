@@ -1,7 +1,7 @@
 export type NavigationEntry =
   | { page: "home" }
   | { page: "add" }
-  | { page: "library" }
+  | { page: "library"; search?: string }
   | { page: "all-tags" }
   | { page: "study"; tag?: string; meaningId?: string }
   | { page: "focus-study" }

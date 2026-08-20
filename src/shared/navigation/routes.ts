@@ -11,7 +11,7 @@ export const PRIMARY_PAGE_PATHS: Partial<Record<Page, string>> = {
 const navigationEntrySchema = z.discriminatedUnion("page", [
   z.object({ page: z.literal("home") }),
   z.object({ page: z.literal("add") }),
-  z.object({ page: z.literal("library") }),
+  z.object({ page: z.literal("library"), search: z.string().optional() }),
   z.object({ page: z.literal("all-tags") }),
   z.object({
     page: z.literal("study"),

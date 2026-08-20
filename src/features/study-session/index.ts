@@ -11,6 +11,5 @@ export {
 export {
   buildFocusQueue,
   buildStudyQueue,
-  shouldRecheckMeaning,
   startQueueAt,
 } from "./utils/scheduler";
