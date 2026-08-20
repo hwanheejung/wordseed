@@ -348,7 +348,7 @@ function PracticeSession({
   const isLastQuestion = questionIndex === questionSet.questions.length - 1;
 
   return (
-    <main className="flex min-h-full flex-col p-5 pb-8">
+    <main className="flex min-h-full flex-col p-5 pb-[calc(100px+var(--seed-safe-area-bottom))]">
       <div className="flex justify-end">
         <span className="text-[length:var(--seed-font-size-t3)] font-semibold text-[var(--seed-color-fg-neutral-muted)]">
           {questionIndex + 1} / {questionSet.questions.length}
@@ -400,25 +400,25 @@ function PracticeSession({
         </div>
       </section>
 
-      <div className="grid gap-3">
-        <section className="[&_textarea]:min-h-[88px]">
-          <label
-            className="mb-2 block text-[length:var(--seed-font-size-t2)] font-semibold text-[var(--seed-color-fg-neutral-subtle)]"
-            htmlFor="speaking-memo"
-          >
-            메모
-          </label>
-          <TextField.Root>
-            <TextField.Textarea
-              id="speaking-memo"
-              aria-label="메모"
-              value={memo}
-              onChange={(event) => onMemoChange(event.target.value)}
-              placeholder="자유롭게 메모해보세요."
-            />
-          </TextField.Root>
-        </section>
+      <section className="[&_textarea]:min-h-[88px]">
+        <label
+          className="mb-2 block text-[length:var(--seed-font-size-t2)] font-semibold text-[var(--seed-color-fg-neutral-subtle)]"
+          htmlFor="speaking-memo"
+        >
+          메모
+        </label>
+        <TextField.Root>
+          <TextField.Textarea
+            id="speaking-memo"
+            aria-label="메모"
+            value={memo}
+            onChange={(event) => onMemoChange(event.target.value)}
+            placeholder="4개 질문 동안 유지되고, 연습 후 사라져요"
+          />
+        </TextField.Root>
+      </section>
 
+      <div className="sticky-cta">
         <div className={questionIndex === 0 ? "grid" : "grid grid-cols-2 gap-2.5"}>
           {questionIndex > 0 && (
             <ActionButton
