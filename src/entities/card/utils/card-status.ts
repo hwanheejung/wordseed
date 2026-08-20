@@ -22,6 +22,23 @@ export function getCardStatus(card: VocabularyCard): ReviewResult {
   return "correct";
 }
 
+export function getReviewedCardStatus(
+  card: VocabularyCard,
+  reviewStats: Record<string, ReviewHistoryStats>,
+): ReviewResult | undefined {
+  const reviewedMeanings = card.meanings.filter(
+    (meaning) => (reviewStats[meaning.id]?.reviewCount ?? 0) > 0,
+  );
+
+  if (!reviewedMeanings.length) return undefined;
+  if (reviewedMeanings.some((meaning) => meaning.status === "unknown"))
+    return "unknown";
+  if (reviewedMeanings.some((meaning) => meaning.status === "confusing"))
+    return "confusing";
+
+  return "correct";
+}
+
 export function shouldRecheckMeaning(
   status: ReviewResult,
   stats?: ReviewHistoryStats,

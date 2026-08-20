@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import {
   buildTagStudyGroups,
-  getCardStatus,
+  getReviewedCardStatus,
   type Meaning,
   type ReviewHistoryStats,
   reviewResultMeta,
@@ -102,6 +102,7 @@ export function HomePage() {
         />
         <RecentWordsSection
           cards={recentCards}
+          reviewStats={reviewStats}
           onSelect={handleCardSelect}
           onViewAll={() => navigate({ page: "library" })}
         />
@@ -333,12 +334,14 @@ function StudyActionsSection({
 
 interface RecentWordsSectionProps {
   cards: VocabularyCard[];
+  reviewStats: Record<string, ReviewHistoryStats>;
   onSelect: (cardId: string) => void;
   onViewAll: () => void;
 }
 
 function RecentWordsSection({
   cards,
+  reviewStats,
   onSelect,
   onViewAll,
 }: RecentWordsSectionProps) {
@@ -352,24 +355,30 @@ function RecentWordsSection({
         className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pt-1 pb-3 [scroll-padding-inline:20px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         aria-label="최근 단어"
       >
-        {cards.map((card) => (
-          <button
-            key={card.id}
-            onClick={() => onSelect(card.id)}
-            className="flex min-h-[142px] w-[184px] shrink-0 snap-start cursor-pointer flex-col items-start justify-between rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-inherit shadow-[0_5px_18px_rgba(0,0,0,.045)] active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:block [&_b]:text-[length:var(--seed-font-size-t6)] [&_span]:block [&_div>span]:mt-1.5 [&_div>span]:line-clamp-2 [&_div>span]:leading-[1.4] [&_div>span]:text-[var(--seed-color-fg-neutral-subtle)]"
-          >
-            <div>
-              <b>{card.term}</b>
-              <span>{card.meanings[0]?.definitionKo || "뜻 미입력"}</span>
-            </div>
-            <Badge
-              tone={reviewResultMeta[getCardStatus(card)].tone}
-              variant="weak"
+        {cards.map((card) => {
+          const reviewedStatus = getReviewedCardStatus(card, reviewStats);
+
+          return (
+            <button
+              key={card.id}
+              onClick={() => onSelect(card.id)}
+              className="flex min-h-[142px] w-[184px] shrink-0 snap-start cursor-pointer flex-col items-start justify-between rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4 text-left text-inherit shadow-[0_5px_18px_rgba(0,0,0,.045)] active:scale-[.985] active:bg-[var(--seed-color-bg-layer-default-pressed)] [&_b]:block [&_b]:text-[length:var(--seed-font-size-t6)] [&_span]:block [&_div>span]:mt-1.5 [&_div>span]:line-clamp-2 [&_div>span]:leading-[1.4] [&_div>span]:text-[var(--seed-color-fg-neutral-subtle)]"
             >
-              {reviewResultMeta[getCardStatus(card)].label}
-            </Badge>
-          </button>
-        ))}
+              <div>
+                <b>{card.term}</b>
+                <span>{card.meanings[0]?.definitionKo || "뜻 미입력"}</span>
+              </div>
+              {reviewedStatus && (
+                <Badge
+                  tone={reviewResultMeta[reviewedStatus].tone}
+                  variant="weak"
+                >
+                  {reviewResultMeta[reviewedStatus].label}
+                </Badge>
+              )}
+            </button>
+          );
+        })}
       </div>
     </section>
   );

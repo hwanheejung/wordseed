@@ -216,7 +216,7 @@ export function CardReview({
               onCreate={registerTag}
             />
             <ActionButton
-              className="w-full justify-center"
+              className="w-full justify-center mt-2"
               variant="neutralSolid"
               disabled={!batchTags.length}
               onClick={applyTagsToAll}

@@ -37,8 +37,8 @@ export default function App() {
         .with({ page: "card" }, ({ cardIds, startIndex }) => (
           <CardPage cardIds={cardIds} startIndex={startIndex} />
         ))
-        .with({ page: "library" }, () => (
-          <LibraryPage />
+        .with({ page: "library" }, ({ scrollTop }) => (
+          <LibraryPage initialScrollTop={scrollTop} />
         ))
         .with({ page: "all-tags" }, () => (
           <AllTagsPage />

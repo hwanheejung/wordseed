@@ -1,1 +1,6 @@
-export { navigate, useNavigationEntry } from "./use-app-navigation";
+export {
+  goBack,
+  navigate,
+  replaceNavigationEntry,
+  useNavigationEntry,
+} from "./use-app-navigation";

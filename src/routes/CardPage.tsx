@@ -1,6 +1,6 @@
 import { useReducer, useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
-import { navigate } from "@/shared/navigation";
+import { goBack, navigate } from "@/shared/navigation";
 import { type VocabularyCard, useCardsQuery } from "@/entities/card";
 import { CardVisibilitySheet, useCardVisibilityPreferences } from "@/features/configure-card-visibility";
 import { CardActionsMenu, CardEditor } from "@/features/manage-cards";
@@ -20,7 +20,7 @@ export function CardPage({ cardIds, startIndex }: CardPageProps) {
   if (isLoading)
     return (
       <>
-        <AppHeader title="단어 카드" onBack={() => navigate({ page: "library" })} />
+        <AppHeader title="단어 카드" onBack={goBack} />
         <PageLoadingState />
       </>
     );
@@ -66,7 +66,7 @@ function CardPageSession({ availableTags, items }: CardPageSessionProps) {
   if (!item)
     return (
       <>
-        <AppHeader title="단어 카드" onBack={() => navigate({ page: "library" })} />
+        <AppHeader title="단어 카드" onBack={goBack} />
         <main className="min-h-[calc(100vh-84px)] p-5">
           <EmptyState
             title="표시할 단어가 없어요"
@@ -82,7 +82,7 @@ function CardPageSession({ availableTags, items }: CardPageSessionProps) {
       <AppHeader
         title="단어 카드"
         subtitle={`${item.card.meanings.length}개 뜻`}
-        onBack={() => navigate({ page: "library" })}
+        onBack={goBack}
         action={
           <CardActionsMenu
             card={item.card}

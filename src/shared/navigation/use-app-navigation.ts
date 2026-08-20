@@ -40,6 +40,18 @@ export function navigate(next: NavigationEntry) {
   window.dispatchEvent(new Event(NAVIGATION_EVENT));
 }
 
+export function replaceNavigationEntry(
+  next: NavigationEntry,
+  destination = window.location.href,
+) {
+  window.history.replaceState({ entry: next }, "", destination);
+  currentEntry = next;
+}
+
+export function goBack() {
+  window.history.back();
+}
+
 export function useNavigationEntry() {
   return useSyncExternalStore(
     subscribeToNavigation,

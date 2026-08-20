@@ -6,13 +6,13 @@ import {
   Menu,
   TextField,
 } from "@seed-design/react";
-import { useEffect, useReducer } from "react";
+import { useEffect, useLayoutEffect, useReducer, useRef } from "react";
 import {
   IconArrowClockwiseCircularLine,
   IconChevronDownSmallLine,
 } from "@karrotmarket/react-monochrome-icon";
 import {
-  getCardStatus,
+  getReviewedCardStatus,
   reviewResultMeta,
   shouldRecheckMeaning,
   useCardsQuery,
@@ -26,11 +26,15 @@ import {
   readLibraryFilters,
   TagFilterSheet,
 } from "@/features/filter-cards";
-import { navigate } from "@/shared/navigation";
+import { navigate, replaceNavigationEntry } from "@/shared/navigation";
 import { AppHeader } from "../shared/ui/app-header";
 import { EmptyState } from "../shared/ui/empty-state";
 
-export function LibraryPage() {
+interface LibraryPageProps {
+  initialScrollTop?: number;
+}
+
+export function LibraryPage({ initialScrollTop }: LibraryPageProps) {
   const [filters, dispatch] = useReducer(
     libraryFiltersReducer,
     undefined,
@@ -39,7 +43,12 @@ export function LibraryPage() {
   const recentlyRepeatedUnknownCardIds =
     useRecentlyRepeatedUnknownCardIds(3);
   const reviewStats = useReviewStatsQuery();
-  const { cards: queriedCards, availableTags, totalCount } = useCardsQuery({
+  const {
+    cards: queriedCards,
+    availableTags,
+    totalCount,
+    isLoading,
+  } = useCardsQuery({
     search: filters.search,
     status:
       filters.status === "unknown" ||
@@ -62,6 +71,34 @@ export function LibraryPage() {
           ),
         )
       : queriedCards;
+  const mainRef = useRef<HTMLElement>(null);
+  const didRestoreScroll = useRef(initialScrollTop === undefined);
+
+  const handleCardSelect = (index: number) => {
+    replaceNavigationEntry({
+      page: "library",
+      scrollTop: mainRef.current?.scrollTop ?? 0,
+    });
+    navigate({
+      page: "card",
+      cardIds: cards.map((item) => item.id),
+      startIndex: index,
+    });
+  };
+
+  // Restore the Wordbook scroll container from browser history after its cards load.
+  useLayoutEffect(() => {
+    if (
+      didRestoreScroll.current ||
+      isLoading ||
+      !cards.length ||
+      !mainRef.current
+    )
+      return;
+
+    mainRef.current.scrollTop = initialScrollTop ?? 0;
+    didRestoreScroll.current = true;
+  }, [cards.length, initialScrollTop, isLoading]);
 
   // Synchronize the declarative library query variables with the browser URL.
   useEffect(() => {
@@ -70,12 +107,11 @@ export function LibraryPage() {
     if (filters.status !== "all") params.set("status", filters.status);
     filters.tags.forEach((tag) => params.append("tag", tag));
     if (filters.search.trim()) params.set("q", filters.search.trim());
-    window.history.replaceState(
-      { entry: { page: "library" } },
-      "",
+    replaceNavigationEntry(
+      { page: "library", scrollTop: initialScrollTop },
       `/library?${params.toString()}`,
     );
-  }, [filters]);
+  }, [filters, initialScrollTop]);
 
   return (
     <>
@@ -85,7 +121,10 @@ export function LibraryPage() {
         onBack={() => navigate({ page: "home" })}
         action={<LibraryBackupMenu />}
       />
-      <main className="min-h-[calc(100vh-84px)] p-5 pb-[100px]">
+      <main
+        ref={mainRef}
+        className="min-h-[calc(100vh-84px)] p-5 pb-[100px]"
+      >
         <TextField.Root>
           <TextField.Input
             aria-label="단어 또는 뜻 검색"
@@ -185,50 +224,50 @@ export function LibraryPage() {
           )}
         </Flex>
         <div className="grid gap-2.5">
-          {cards.map((card, index) => (
-            <article
-              key={card.id}
-              className="overflow-hidden rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)]"
-            >
-              <button
-                className="grid min-h-[100px] w-full cursor-pointer grid-cols-[1fr_auto] gap-3 border-0 bg-transparent p-4 text-left text-inherit [&>span]:self-center [&>span]:text-2xl [&>span]:text-[var(--seed-color-fg-neutral-subtle)] [&_p]:mt-[7px] [&_p]:mb-1 [&_p]:text-[var(--seed-color-fg-neutral-muted)] [&_small]:text-[var(--seed-color-fg-neutral-subtle)]"
-                onClick={() =>
-                  navigate({
-                    page: "card",
-                    cardIds: cards.map((item) => item.id),
-                    startIndex: index,
-                  })
-                }
+          {cards.map((card, index) => {
+            const reviewedStatus = getReviewedCardStatus(card, reviewStats);
+
+            return (
+              <article
+                key={card.id}
+                className="overflow-hidden rounded-[20px] border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)]"
               >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="m-0 text-[length:var(--seed-font-size-t6)]">
-                      {card.term}
-                    </h2>
-                    <Badge
-                      tone={reviewResultMeta[getCardStatus(card)].tone}
-                      variant="weak"
-                    >
-                      {reviewResultMeta[getCardStatus(card)].label}
-                    </Badge>
-                  </div>
-                  <p>
-                    {card.meanings
-                      .map((meaning) => meaning.definitionKo)
-                      .join(" · ")}
-                  </p>
-                  {card.tags.length > 0 && (
-                    <div className="mt-2.5 flex flex-wrap gap-1.5 [&_small]:rounded-full [&_small]:bg-[var(--seed-color-bg-neutral-weak)] [&_small]:px-[7px] [&_small]:py-1">
-                      {card.tags.map((tag) => (
-                        <small key={tag}>#{tag}</small>
-                      ))}
+                <button
+                  className="grid min-h-[100px] w-full cursor-pointer grid-cols-[1fr_auto] gap-3 border-0 bg-transparent p-4 text-left text-inherit [&>span]:self-center [&>span]:text-2xl [&>span]:text-[var(--seed-color-fg-neutral-subtle)] [&_p]:mt-[7px] [&_p]:mb-1 [&_p]:text-[var(--seed-color-fg-neutral-muted)] [&_small]:text-[var(--seed-color-fg-neutral-subtle)]"
+                  onClick={() => handleCardSelect(index)}
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="m-0 text-[length:var(--seed-font-size-t6)]">
+                        {card.term}
+                      </h2>
+                      {reviewedStatus && (
+                        <Badge
+                          tone={reviewResultMeta[reviewedStatus].tone}
+                          variant="weak"
+                        >
+                          {reviewResultMeta[reviewedStatus].label}
+                        </Badge>
+                      )}
                     </div>
-                  )}
-                </div>
-                <span>›</span>
-              </button>
-            </article>
-          ))}
+                    <p>
+                      {card.meanings
+                        .map((meaning) => meaning.definitionKo)
+                        .join(" · ")}
+                    </p>
+                    {card.tags.length > 0 && (
+                      <div className="mt-2.5 flex flex-wrap gap-1.5 [&_small]:rounded-full [&_small]:bg-[var(--seed-color-bg-neutral-weak)] [&_small]:px-[7px] [&_small]:py-1">
+                        {card.tags.map((tag) => (
+                          <small key={tag}>#{tag}</small>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <span>›</span>
+                </button>
+              </article>
+            );
+          })}
           {!cards.length && (
             <EmptyState
               title="일치하는 단어가 없어요"

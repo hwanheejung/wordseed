@@ -26,6 +26,7 @@ export { VocabularyCard as VocabularyCardView } from "./ui/vocabulary-card";
 export { TagStudyProgressCard } from "./ui/tag-study-progress-card";
 export {
   getCardStatus,
+  getReviewedCardStatus,
   reviewResultMeta,
   shouldRecheckMeaning,
 } from "./utils/card-status";
