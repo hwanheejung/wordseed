@@ -6,6 +6,7 @@ import { HomePage } from "../routes/HomePage";
 import { LibraryPage } from "../routes/LibraryPage";
 import { StudyPage } from "../routes/StudyPage";
 import { ToeflPracticePage } from "../routes/ToeflPracticePage";
+import { ToeflSpeakingPage } from "../routes/ToeflSpeakingPage";
 import { AllTagsPage } from "../routes/AllTagsPage";
 import { FillInTheBlankTestPage } from "../routes/FillInTheBlankTestPage";
 import { BottomNavigation } from "@/widgets/bottom-navigation";
@@ -28,6 +29,9 @@ export default function App() {
         ))
         .with({ page: "toefl" }, () => (
           <ToeflPracticePage />
+        ))
+        .with({ page: "toefl-speaking" }, () => (
+          <ToeflSpeakingPage />
         ))
         .with({ page: "study" }, ({ tag, meaningId }) => (
           <StudyPage tag={tag} meaningId={meaningId} />

@@ -10,6 +10,12 @@ describe("navigationEntryFromWindow", () => {
     expect(navigationEntryFromWindow()).toEqual({ page: "toefl" });
   });
 
+  it("opens the TOEFL Speaking practice page from its URL", () => {
+    window.history.replaceState(null, "", "/toefl/speaking");
+
+    expect(navigationEntryFromWindow()).toEqual({ page: "toefl-speaking" });
+  });
+
   it("restores the Wordbook scroll position from browser history", () => {
     window.history.replaceState(
       { entry: { page: "library", scrollTop: 640 } },

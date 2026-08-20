@@ -1,0 +1,866 @@
+[
+  {
+    "id": "study-environments",
+    "title": "Study environments",
+    "category": "Campus and education",
+    "scenario": "You have volunteered for a university research study about the places where students learn best.",
+    "questions": [
+      { "id": "study-environments-1", "prompt": "Where do you usually study when you need to concentrate, and what makes that place effective for you?" },
+      { "id": "study-environments-2", "prompt": "Would you rather study in complete silence or in a place with some background activity? Explain your preference." },
+      { "id": "study-environments-3", "prompt": "Some students regularly change where they study because new surroundings help them stay alert. Others say that using one familiar place makes it easier to concentrate. Which approach is more effective, and why?" },
+      { "id": "study-environments-4", "prompt": "Many university libraries are converting quiet individual study areas into spaces where students can talk and work together. Do the benefits of creating more collaborative space outweigh the disadvantages? Why or why not?" }
+    ]
+  },
+  {
+    "id": "time-management",
+    "title": "Time management",
+    "category": "Daily habits and preferences",
+    "scenario": "You have agreed to take part in a study about how university students manage busy schedules.",
+    "questions": [
+      { "id": "time-management-1", "prompt": "What is one method you use to remember important tasks or deadlines, and why does it work for you?" },
+      { "id": "time-management-2", "prompt": "When you have several assignments, do you prefer to finish the easiest one first or begin with the most difficult one? Why?" },
+      { "id": "time-management-3", "prompt": "Some people plan nearly every part of their day in advance, while others leave room to change their plans when new opportunities arise. Which approach usually leads to better results? Explain your opinion." },
+      { "id": "time-management-4", "prompt": "First-year students often struggle to balance classes, activities, and personal responsibilities. Should universities require them to take a short course on time management, or should students learn these skills on their own? Why?" }
+    ]
+  },
+  {
+    "id": "learning-technology",
+    "title": "Technology for learning",
+    "category": "Technology and media",
+    "scenario": "You are participating in a research interview about the role of technology in learning.",
+    "questions": [
+      { "id": "learning-technology-1", "prompt": "Describe one digital tool that has helped you learn something. How did you use it?" },
+      { "id": "learning-technology-2", "prompt": "Would you rather take notes by hand or on a digital device? Explain your choice." },
+      { "id": "learning-technology-3", "prompt": "Online tools can help students find explanations and practice without waiting for a teacher. However, some people worry that students may become too dependent on technology. Overall, do these tools make learners more independent? Why or why not?" },
+      { "id": "learning-technology-4", "prompt": "Universities are developing rules about artificial intelligence tools for coursework. If students are allowed to use these tools, what should the most important rule be to protect learning and academic honesty? Explain your answer." }
+    ]
+  },
+  {
+    "id": "group-projects",
+    "title": "Group projects",
+    "category": "Campus and education",
+    "scenario": "You have volunteered for a study about students' experiences with group projects.",
+    "questions": [
+      { "id": "group-projects-1", "prompt": "What role do you usually take when you work in a group, and why does that role suit you?" },
+      { "id": "group-projects-2", "prompt": "Would you prefer to choose your own teammates or have the instructor assign them? Why?" },
+      { "id": "group-projects-3", "prompt": "Supporters of group projects say that students learn by explaining ideas and solving problems together. Others say that unequal participation limits learning. Do students generally learn more from group projects or individual assignments? Why?" },
+      { "id": "group-projects-4", "prompt": "In many group projects, every member receives the same grade even when their contributions are different. Should instructors continue giving one group grade, or evaluate each student separately? Explain which policy is fairer and more effective." }
+    ]
+  },
+  {
+    "id": "course-choices",
+    "title": "Choosing courses",
+    "category": "Campus and education",
+    "scenario": "You are being interviewed for a study about how students choose university courses.",
+    "questions": [
+      { "id": "course-choices-1", "prompt": "What is one factor you consider when choosing a course, and why is it important to you?" },
+      { "id": "course-choices-2", "prompt": "Would you choose a difficult course on an interesting subject or an easier course on a less interesting subject? Why?" },
+      { "id": "course-choices-3", "prompt": "Some students take only courses that directly support their major and career plans. Others use part of their schedule to explore unfamiliar subjects. Which approach provides a better university education? Explain." },
+      { "id": "course-choices-4", "prompt": "Some universities want to reduce the number of required courses and allow students to design more of their own education. Would greater freedom improve students' education, or would it leave important gaps in their knowledge? Why?" }
+    ]
+  },
+  {
+    "id": "campus-transportation",
+    "title": "Campus transportation",
+    "category": "Travel, transportation, and places",
+    "scenario": "You have joined a study about the ways students travel to and around campus.",
+    "questions": [
+      { "id": "campus-transportation-1", "prompt": "How do you usually travel to school or work, and what is the main advantage of that method?" },
+      { "id": "campus-transportation-2", "prompt": "Would you choose a faster, more expensive commute or a slower, less expensive one? Explain your choice." },
+      { "id": "campus-transportation-3", "prompt": "Daily travel can be stressful and may feel like wasted time. What is one practical way people can make a long commute more enjoyable or productive? Explain why your suggestion would help." },
+      { "id": "campus-transportation-4", "prompt": "Some cities charge drivers a fee to enter crowded areas and use the money to improve public transportation. Do you think this is a fair and effective way to reduce traffic? Why or why not?" }
+    ]
+  },
+  {
+    "id": "healthy-routines",
+    "title": "Healthy routines",
+    "category": "Health, food, and exercise",
+    "scenario": "You are taking part in a research study about the routines people use to stay healthy.",
+    "questions": [
+      { "id": "healthy-routines-1", "prompt": "Describe one healthy habit that is realistic for a busy student to maintain. Why is it useful?" },
+      { "id": "healthy-routines-2", "prompt": "Would you rather exercise alone or with other people? Explain your preference." },
+      { "id": "healthy-routines-3", "prompt": "People with limited free time may find it difficult to improve every part of their health. If they could focus on only one change, would better food choices or regular exercise have a greater benefit? Why?" },
+      { "id": "healthy-routines-4", "prompt": "Universities have limited budgets for student wellness. Should they invest more in fitness facilities and exercise programs, or in counseling and other mental-health services? Explain which choice would benefit students more." }
+    ]
+  },
+  {
+    "id": "volunteering",
+    "title": "Volunteering",
+    "category": "Community and public policy",
+    "scenario": "You have volunteered for an interview about why people take part in community service.",
+    "questions": [
+      { "id": "volunteering-1", "prompt": "Describe a type of volunteer work you would be willing to do. What makes it appealing to you?" },
+      { "id": "volunteering-2", "prompt": "Would you prefer to volunteer for one organization regularly or help with several short projects? Why?" },
+      { "id": "volunteering-3", "prompt": "Volunteers often gain skills, friendships, or career experience while helping other people. Do volunteers sometimes benefit as much as the communities they serve? Explain your view with reasons or an example." },
+      { "id": "volunteering-4", "prompt": "Some universities require students to complete community service before graduation. Supporters say this builds responsibility, while critics say required service is no longer truly voluntary. Should community service be a graduation requirement? Why or why not?" }
+    ]
+  },
+  {
+    "id": "career-preparation",
+    "title": "Career preparation",
+    "category": "Work and career",
+    "scenario": "You are participating in a study about how students prepare for their future careers.",
+    "questions": [
+      { "id": "career-preparation-1", "prompt": "What is one skill you want to improve before beginning your next job, and why?" },
+      { "id": "career-preparation-2", "prompt": "Would you prefer an internship closely related to your major or one that lets you explore a different field? Why?" },
+      { "id": "career-preparation-3", "prompt": "Employers value both specialized knowledge and the ability to communicate with different people. If a student has limited time to develop one of these areas, which would contribute more to long-term career success? Why?" },
+      { "id": "career-preparation-4", "prompt": "Some employers are placing less importance on university degrees and more importance on tests, portfolios, or demonstrated skills. Would this trend make hiring fairer and more effective? Why or why not?" }
+    ]
+  },
+  {
+    "id": "remote-learning",
+    "title": "Remote learning",
+    "category": "Campus and education",
+    "scenario": "You have joined a study about students' experiences with remote and in-person learning.",
+    "questions": [
+      { "id": "remote-learning-1", "prompt": "What is one task that is easier for you to do online than in person, and why?" },
+      { "id": "remote-learning-2", "prompt": "Would you choose a fully in-person class or a class that combines online and in-person meetings? Why?" },
+      { "id": "remote-learning-3", "prompt": "Remote learning gives students more control over where and when they study, but it may also make it harder to stay motivated and connected. Overall, does this flexibility improve learning? Why or why not?" },
+      { "id": "remote-learning-4", "prompt": "Some universities may offer every large lecture both online and in person, allowing students to choose each day. Would this policy improve access to education, or would it weaken the campus learning experience? Explain your opinion." }
+    ]
+  },
+  {
+    "id": "public-spaces",
+    "title": "Public spaces",
+    "category": "Travel, transportation, and places",
+    "scenario": "You are being interviewed for a study about how people use public spaces in their communities.",
+    "questions": [
+      { "id": "public-spaces-1", "prompt": "Describe a public place you enjoy visiting. What do you usually do there?" },
+      { "id": "public-spaces-2", "prompt": "Would you rather live near a busy town square or a quiet park? Explain your preference." },
+      { "id": "public-spaces-3", "prompt": "A successful public space should be useful to children, older adults, and people from many backgrounds. What is the most important feature for making a shared space feel welcoming to such a wide range of people? Why?" },
+      { "id": "public-spaces-4", "prompt": "A city has limited money for parks and community spaces. Should it improve popular spaces that already attract many visitors, or create new spaces in neighborhoods that currently have few public facilities? Explain your choice." }
+    ]
+  },
+  {
+    "id": "cultural-exchange",
+    "title": "Cultural exchange",
+    "category": "Culture and traditions",
+    "scenario": "You have agreed to discuss how people learn about cultures different from their own.",
+    "questions": [
+      { "id": "cultural-exchange-1", "prompt": "Describe one experience that taught you something about another culture. What did you learn?" },
+      { "id": "cultural-exchange-2", "prompt": "Would you rather learn about a culture through travel or through books and films? Why?" },
+      { "id": "cultural-exchange-3", "prompt": "Short international trips give visitors direct experience with another culture, but they may see only tourist areas and form incomplete impressions. Can a short trip still change cultural understanding in a meaningful way? Why or why not?" },
+      { "id": "cultural-exchange-4", "prompt": "Some universities want every student to take a course focused on a culture outside their own. Would this requirement create deeper understanding, or is direct contact with people from other cultures more valuable? Explain your opinion." }
+    ]
+  },
+  {
+    "id": "news-habits",
+    "title": "News habits",
+    "category": "Technology and media",
+    "scenario": "You are participating in a study about how people find and evaluate news.",
+    "questions": [
+      { "id": "news-habits-1", "prompt": "Where do you usually hear about important news first, and why do you use that source?" },
+      { "id": "news-habits-2", "prompt": "Would you rather read one detailed news report or several short summaries from different sources? Why?" },
+      { "id": "news-habits-3", "prompt": "People often see surprising claims online before they know who originally published them. What is the most useful action a person can take to decide whether this information is trustworthy? Explain why it works." },
+      { "id": "news-habits-4", "prompt": "Social media companies can reduce false information by removing posts or making them less visible, but these actions may limit what users can share. How much responsibility should these companies have for controlling inaccurate content? Why?" }
+    ]
+  },
+  {
+    "id": "creative-activities",
+    "title": "Creative activities",
+    "category": "Creativity, leisure, and sports",
+    "scenario": "You have volunteered for a study about the role of creative activities in people's lives.",
+    "questions": [
+      { "id": "creative-activities-1", "prompt": "What is one creative activity you enjoy or would like to try, and what interests you about it?" },
+      { "id": "creative-activities-2", "prompt": "Would you rather create something by following clear instructions or by experimenting freely? Why?" },
+      { "id": "creative-activities-3", "prompt": "Some people value creative activities mainly when they produce something useful or impressive. Others believe the process itself can reduce stress and develop new ways of thinking. Which view do you agree with, and why?" },
+      { "id": "creative-activities-4", "prompt": "At some universities, relatively few students major in the arts, but many students attend performances or take creative courses. Should these universities increase funding for arts programs? Why or why not?" }
+    ]
+  },
+  {
+    "id": "environmental-choices",
+    "title": "Environmental choices",
+    "category": "Environment and future society",
+    "scenario": "You are taking part in a study about everyday decisions that affect the environment.",
+    "questions": [
+      { "id": "environmental-choices-1", "prompt": "Describe one environmentally friendly choice that is easy for you to make. Why is it manageable?" },
+      { "id": "environmental-choices-2", "prompt": "Would you pay more for a product that lasts longer and creates less waste? Why or why not?" },
+      { "id": "environmental-choices-3", "prompt": "Individuals can reduce waste and change how they travel, while large organizations can change how products are made and delivered. Which group's decisions have a greater effect on environmental problems? Explain your answer." },
+      { "id": "environmental-choices-4", "prompt": "Some governments want to place additional taxes on products that create a large amount of pollution or waste. Would higher prices encourage better environmental choices, or would they unfairly burden consumers? Why?" }
+    ]
+  },
+  {
+    "id": "feedback",
+    "title": "Receiving feedback",
+    "category": "Work and career",
+    "scenario": "You have agreed to be interviewed about how people receive and use feedback.",
+    "questions": [
+      { "id": "feedback-1", "prompt": "Describe a piece of advice or feedback that helped you improve. Why was it useful?" },
+      { "id": "feedback-2", "prompt": "Would you rather receive feedback immediately or have time to reflect on your work first? Why?" },
+      { "id": "feedback-3", "prompt": "An expert may notice technical problems, while a friend or colleague may understand a person's goals and personality better. Whose honest criticism is usually more helpful? Explain your answer." },
+      { "id": "feedback-4", "prompt": "Schools and companies sometimes use anonymous evaluations because people may be more honest when their names are hidden. However, anonymous comments can also be unfair. Should these evaluations influence important decisions about teachers or employees? Why?" }
+    ]
+  },
+  {
+    "id": "shared-housing",
+    "title": "Shared housing",
+    "category": "Family and relationships",
+    "scenario": "You are participating in a study about students' experiences with shared housing.",
+    "questions": [
+      { "id": "shared-housing-1", "prompt": "What is one quality that makes someone a good roommate, and why is it important?" },
+      { "id": "shared-housing-2", "prompt": "Would you rather live with a close friend or with someone you do not already know? Why?" },
+      { "id": "shared-housing-3", "prompt": "Some roommates create detailed rules about cleaning, noise, and shared belongings before problems occur. Others prefer to discuss each disagreement when it happens. Which approach is more likely to maintain a good relationship? Why?" },
+      { "id": "shared-housing-4", "prompt": "Living on campus can help first-year students make friends and adjust to university life, but building affordable housing is expensive. Should universities guarantee campus housing for every first-year student? Why or why not?" }
+    ]
+  },
+  {
+    "id": "leadership",
+    "title": "Leadership",
+    "category": "Work and career",
+    "scenario": "You have volunteered for a research interview about effective leadership.",
+    "questions": [
+      { "id": "leadership-1", "prompt": "Describe one quality you value in a leader. When have you seen that quality in action?" },
+      { "id": "leadership-2", "prompt": "Would you rather work with a leader who makes quick decisions or one who asks everyone for input? Why?" },
+      { "id": "leadership-3", "prompt": "Leadership courses can teach communication and decision-making strategies, but many people say leadership develops only through real responsibility and mistakes. Can leadership be taught effectively, or is experience more important? Explain." },
+      { "id": "leadership-4", "prompt": "A leader may achieve excellent results while creating a stressful environment for other people. When evaluating a leader, should an organization place more importance on measurable results or on how the leader treats people? Why?" }
+    ]
+  },
+  {
+    "id": "class-participation",
+    "title": "Class participation",
+    "category": "Campus and education",
+    "scenario": "You are participating in a university study about how students contribute during class.",
+    "questions": [
+      { "id": "class-participation-1", "prompt": "How comfortable are you speaking during a class discussion, and what affects your level of comfort?" },
+      { "id": "class-participation-2", "prompt": "Would you rather share an idea spontaneously or prepare your comment before class? Explain your preference." },
+      { "id": "class-participation-3", "prompt": "Some instructors grade students on how often they speak in class because participation can improve discussion. Others believe this disadvantages quiet students who learn by listening. Should participation affect grades? Why or why not?" },
+      { "id": "class-participation-4", "prompt": "Universities increasingly offer digital tools that let students contribute questions or comments without speaking aloud. Would using these tools create more meaningful participation, or would it weaken face-to-face discussion? Explain your opinion." }
+    ]
+  },
+  {
+    "id": "academic-advising",
+    "title": "Academic advising",
+    "category": "Campus and education",
+    "scenario": "You have volunteered for a study about the advice students receive while planning their education.",
+    "questions": [
+      { "id": "academic-advising-1", "prompt": "Who do you usually ask for advice about an important academic decision, and why do you trust that person?" },
+      { "id": "academic-advising-2", "prompt": "Would you prefer regular scheduled meetings with an adviser or meetings only when you need help? Why?" },
+      { "id": "academic-advising-3", "prompt": "Academic advisers understand university requirements, while professors often know more about particular careers and fields of study. Which type of guidance is more valuable when students choose their courses? Explain." },
+      { "id": "academic-advising-4", "prompt": "Some universities use automated systems to recommend courses based on students' grades and goals. Should these recommendations play a major role in academic planning, or should human advisers remain primarily responsible? Why?" }
+    ]
+  },
+  {
+    "id": "workplace-communication",
+    "title": "Workplace communication",
+    "category": "Work and career",
+    "scenario": "You have agreed to discuss how people communicate with colleagues at work.",
+    "questions": [
+      { "id": "workplace-communication-1", "prompt": "What communication habit helps people work well together, and why is it effective?" },
+      { "id": "workplace-communication-2", "prompt": "Would you rather discuss a difficult problem in person or explain it in writing? Why?" },
+      { "id": "workplace-communication-3", "prompt": "Frequent meetings can keep team members informed, but they can also interrupt focused work and consume time. Do regular meetings generally improve workplace communication? Explain why or why not." },
+      { "id": "workplace-communication-4", "prompt": "Companies with employees in different countries often choose one common language for communication. Does this policy improve cooperation, or can it prevent some employees from contributing fully? Explain your view." }
+    ]
+  },
+  {
+    "id": "flexible-work-arrangements",
+    "title": "Flexible work arrangements",
+    "category": "Work and career",
+    "scenario": "You are taking part in a research interview about flexibility in the workplace.",
+    "questions": [
+      { "id": "flexible-work-arrangements-1", "prompt": "What part of a work or study schedule would you most like to control yourself, and why?" },
+      { "id": "flexible-work-arrangements-2", "prompt": "Would you prefer flexible working hours or the ability to work from home? Explain your choice." },
+      { "id": "flexible-work-arrangements-3", "prompt": "Flexible schedules may help employees balance their responsibilities, but managers sometimes worry that teamwork becomes more difficult. Do flexible arrangements generally improve employees' performance? Why or why not?" },
+      { "id": "flexible-work-arrangements-4", "prompt": "In the future, some companies may allow employees to work whenever and wherever they choose as long as they meet their goals. How could this change benefit both workers and companies, and what problem might it create?" }
+    ]
+  },
+  {
+    "id": "changing-careers",
+    "title": "Changing careers",
+    "category": "Work and career",
+    "scenario": "You have volunteered for a study about why people change careers during their lives.",
+    "questions": [
+      { "id": "changing-careers-1", "prompt": "What is one reason a person you know might consider changing careers?" },
+      { "id": "changing-careers-2", "prompt": "Would you accept a lower salary to move into work that interests you more? Why or why not?" },
+      { "id": "changing-careers-3", "prompt": "Changing careers can lead to greater satisfaction and new skills, but it may also require people to begin again with less experience. Is changing careers usually a positive decision? Explain." },
+      { "id": "changing-careers-4", "prompt": "As technology changes the kinds of jobs available, governments and employers may need to help experienced workers learn new skills. Who should have the greatest responsibility for paying for this training? Why?" }
+    ]
+  },
+  {
+    "id": "friendship-habits",
+    "title": "Maintaining friendships",
+    "category": "Family and relationships",
+    "scenario": "You are participating in a study about how people maintain close friendships.",
+    "questions": [
+      { "id": "friendship-habits-1", "prompt": "What is one activity that helps you stay connected with a friend, and why?" },
+      { "id": "friendship-habits-2", "prompt": "Would you rather have a few very close friends or a large group of friends? Explain." },
+      { "id": "friendship-habits-3", "prompt": "Digital communication makes it easy to contact friends frequently, but some people believe online messages cannot replace time spent together. Can a close friendship be maintained mainly online? Why or why not?" },
+      { "id": "friendship-habits-4", "prompt": "People often move away from friends for education or work. As moving becomes more common, do you think long-term friendships will become less important, or will people find new ways to preserve them? Explain." }
+    ]
+  },
+  {
+    "id": "generational-advice",
+    "title": "Advice across generations",
+    "category": "Family and relationships",
+    "scenario": "You have agreed to discuss how people of different generations learn from one another.",
+    "questions": [
+      { "id": "generational-advice-1", "prompt": "What is one useful thing a younger person can learn from an older person?" },
+      { "id": "generational-advice-2", "prompt": "Would you ask an older relative or a friend your age for advice about a major decision? Why?" },
+      { "id": "generational-advice-3", "prompt": "Older people may offer experience and long-term perspective, while younger people may understand recent technology and social changes better. Which group has more useful advice about modern life? Explain." },
+      { "id": "generational-advice-4", "prompt": "Some communities create programs that regularly bring younger and older residents together to exchange skills. Should public money support these programs even if participation is limited? Why or why not?" }
+    ]
+  },
+  {
+    "id": "making-new-friends",
+    "title": "Making new friends",
+    "category": "Family and relationships",
+    "scenario": "You are being interviewed for a study about how adults form new friendships.",
+    "questions": [
+      { "id": "making-new-friends-1", "prompt": "Where is a good place to meet someone with similar interests, and why?" },
+      { "id": "making-new-friends-2", "prompt": "Would you rather meet new people through an organized activity or through mutual friends? Why?" },
+      { "id": "making-new-friends-3", "prompt": "Some people believe it becomes harder to form close friendships as adults because work and family responsibilities take more time. Do you agree that age makes friendship more difficult? Why or why not?" },
+      { "id": "making-new-friends-4", "prompt": "Cities sometimes sponsor clubs, classes, and neighborhood events to reduce social isolation. Should helping residents form personal connections be considered an important responsibility of local government? Explain your opinion." }
+    ]
+  },
+  {
+    "id": "family-responsibilities",
+    "title": "Family responsibilities",
+    "category": "Family and relationships",
+    "scenario": "You have volunteered for a study about how families share responsibilities.",
+    "questions": [
+      { "id": "family-responsibilities-1", "prompt": "What household responsibility do you think every young person should learn, and why?" },
+      { "id": "family-responsibilities-2", "prompt": "Should family responsibilities be divided equally or according to each person's strengths and schedule? Why?" },
+      { "id": "family-responsibilities-3", "prompt": "Sharing household work can teach cooperation, but strict assignments may cause conflict when people's schedules change. Is it better for families to establish fixed responsibilities or decide tasks as needed? Explain." },
+      { "id": "family-responsibilities-4", "prompt": "As populations age, more adults may need to care for older family members while also working. Should employers provide paid leave for this kind of family care? Why or why not?" }
+    ]
+  },
+  {
+    "id": "resolving-conflicts",
+    "title": "Resolving conflicts",
+    "category": "Family and relationships",
+    "scenario": "You are participating in a study about how people resolve disagreements in close relationships.",
+    "questions": [
+      { "id": "resolving-conflicts-1", "prompt": "What is one helpful way to respond when someone disagrees with you?" },
+      { "id": "resolving-conflicts-2", "prompt": "Would you rather discuss a disagreement immediately or wait until everyone feels calmer? Why?" },
+      { "id": "resolving-conflicts-3", "prompt": "Compromise can preserve a relationship, but it may also leave both people partly dissatisfied. Is finding a compromise always the best way to resolve a personal disagreement? Explain." },
+      { "id": "resolving-conflicts-4", "prompt": "Schools sometimes teach students formal strategies for listening, negotiating, and resolving conflicts. Would required instruction in these skills improve relationships outside the classroom? Why or why not?" }
+    ]
+  },
+  {
+    "id": "morning-routines",
+    "title": "Morning routines",
+    "category": "Daily habits and preferences",
+    "scenario": "You have joined a study about how people begin their day.",
+    "questions": [
+      { "id": "morning-routines-1", "prompt": "What is one thing you usually do soon after waking up, and why?" },
+      { "id": "morning-routines-2", "prompt": "Would you rather wake up early and move slowly or sleep later and prepare quickly? Why?" },
+      { "id": "morning-routines-3", "prompt": "Some people follow the same morning routine every day because it reduces decisions and stress. Others prefer flexibility based on their plans. Which approach leads to a better start to the day? Explain." },
+      { "id": "morning-routines-4", "prompt": "Employers and schools often require everyone to begin at the same time, although people have different natural sleep patterns. Should starting times become more flexible? What benefits or problems could result?" }
+    ]
+  },
+  {
+    "id": "personal-organization",
+    "title": "Personal organization",
+    "category": "Daily habits and preferences",
+    "scenario": "You are taking part in a research interview about how people organize their belongings and information.",
+    "questions": [
+      { "id": "personal-organization-1", "prompt": "What is one item or type of information you make an effort to keep organized? Why?" },
+      { "id": "personal-organization-2", "prompt": "Would you rather organize everything at once or spend a few minutes organizing each day? Why?" },
+      { "id": "personal-organization-3", "prompt": "A highly organized system can save time, but maintaining it also requires effort and attention. Is being extremely organized generally worth the time it takes? Explain your opinion." },
+      { "id": "personal-organization-4", "prompt": "Digital services can automatically organize photographs, messages, and documents by analyzing their contents. Do the convenience benefits of this technology outweigh concerns about privacy and dependence? Why or why not?" }
+    ]
+  },
+  {
+    "id": "everyday-decisions",
+    "title": "Everyday decisions",
+    "category": "Daily habits and preferences",
+    "scenario": "You have volunteered for a study about how people make everyday decisions.",
+    "questions": [
+      { "id": "everyday-decisions-1", "prompt": "What is one small decision you prefer to make in advance, and why?" },
+      { "id": "everyday-decisions-2", "prompt": "When choosing between two good options, do you rely more on information or instinct? Why?" },
+      { "id": "everyday-decisions-3", "prompt": "Having many choices can help people find exactly what they want, but comparing every option may create stress and delay. Do more choices usually lead to better decisions? Explain." },
+      { "id": "everyday-decisions-4", "prompt": "Recommendation systems increasingly choose which products, entertainment, and information people see first. Will relying on these systems make everyday decisions easier, or will it reduce people's independence? Explain your view." }
+    ]
+  },
+  {
+    "id": "personal-goals",
+    "title": "Personal goals",
+    "category": "Daily habits and preferences",
+    "scenario": "You are participating in a study about how people set and pursue personal goals.",
+    "questions": [
+      { "id": "personal-goals-1", "prompt": "What is one goal you would enjoy working toward, and why does it matter to you?" },
+      { "id": "personal-goals-2", "prompt": "Would you rather set one ambitious goal or several smaller goals? Explain your preference." },
+      { "id": "personal-goals-3", "prompt": "Sharing a goal with other people may create encouragement and accountability, but it can also create pressure. Is it generally helpful to tell others about personal goals? Why or why not?" },
+      { "id": "personal-goals-4", "prompt": "Some schools and workplaces encourage people to record and formally review personal goals. Does this practice support genuine growth, or can it make people focus too much on measurable achievements? Explain." }
+    ]
+  },
+  {
+    "id": "convenience-services",
+    "title": "Convenience services",
+    "category": "Daily habits and preferences",
+    "scenario": "You have agreed to discuss services that make everyday tasks faster or easier.",
+    "questions": [
+      { "id": "convenience-services-1", "prompt": "What everyday task would you most like a service to make easier, and why?" },
+      { "id": "convenience-services-2", "prompt": "Would you pay more to have something delivered or spend time getting it yourself? Why?" },
+      { "id": "convenience-services-3", "prompt": "Delivery and on-demand services save customers time, but they may create more packaging, traffic, and low-paid work. Do their benefits to daily life outweigh these disadvantages? Explain." },
+      { "id": "convenience-services-4", "prompt": "As automated services handle more cooking, shopping, cleaning, and transportation, people may lose some practical skills. Should society be concerned about this change, or is it a natural form of progress? Why?" }
+    ]
+  },
+  {
+    "id": "food-preferences",
+    "title": "Food preferences",
+    "category": "Health, food, and exercise",
+    "scenario": "You have volunteered for a research study about people's food preferences.",
+    "questions": [
+      { "id": "food-preferences-1", "prompt": "What kind of meal do people your age seem to enjoy most, and why?" },
+      { "id": "food-preferences-2", "prompt": "On a busy day, would you rather cook, eat at a restaurant, or buy prepared food? Why?" },
+      { "id": "food-preferences-3", "prompt": "Modern life gives people access to a wider variety of food, but busy schedules also encourage quick and highly processed meals. Do people generally eat better today than in the past? Explain." },
+      { "id": "food-preferences-4", "prompt": "Preparing traditional food at home can help preserve culture, but younger people may lack the time or skills to cook it. Should schools or community organizations teach traditional cooking? Why or why not?" }
+    ]
+  },
+  {
+    "id": "exercise-habits",
+    "title": "Exercise habits",
+    "category": "Health, food, and exercise",
+    "scenario": "You are participating in a study about how people make exercise part of their lives.",
+    "questions": [
+      { "id": "exercise-habits-1", "prompt": "What kind of exercise do you or someone you know do regularly, and why?" },
+      { "id": "exercise-habits-2", "prompt": "Would you rather join an organized exercise class or follow your own routine? Explain your preference." },
+      { "id": "exercise-habits-3", "prompt": "Outdoor exercise offers fresh air and changing surroundings, while indoor exercise is often more convenient and predictable. Which environment is more likely to help people exercise consistently? Explain." },
+      { "id": "exercise-habits-4", "prompt": "Fitness applications can track activity and encourage people to meet goals, but they also collect personal health data. Do the motivational benefits of these applications outweigh the privacy concerns? Why or why not?" }
+    ]
+  },
+  {
+    "id": "sleep-habits",
+    "title": "Sleep habits",
+    "category": "Health, food, and exercise",
+    "scenario": "You have agreed to take part in a study about people's sleep habits.",
+    "questions": [
+      { "id": "sleep-habits-1", "prompt": "What is one habit that helps you sleep well, and why does it help?" },
+      { "id": "sleep-habits-2", "prompt": "Would you rather keep the same sleep schedule every day or change it on weekends? Why?" },
+      { "id": "sleep-habits-3", "prompt": "Many people reduce their sleep to make more time for work, study, or social activities. Can this choice ever be an effective way to manage a busy period? Why or why not?" },
+      { "id": "sleep-habits-4", "prompt": "Research suggests that teenagers often learn better later in the morning, but changing school schedules can create difficulties for families and transportation. Should secondary schools begin later? Explain your opinion." }
+    ]
+  },
+  {
+    "id": "stress-management",
+    "title": "Managing stress",
+    "category": "Health, food, and exercise",
+    "scenario": "You are being interviewed for a study about how people manage stress.",
+    "questions": [
+      { "id": "stress-management-1", "prompt": "What is one activity that helps you feel less stressed, and why?" },
+      { "id": "stress-management-2", "prompt": "When you feel stressed, would you rather spend time alone or talk with someone? Why?" },
+      { "id": "stress-management-3", "prompt": "A certain amount of stress can motivate people to prepare and work hard, but too much can damage performance and health. Is stress generally helpful or harmful when people face an important challenge? Explain." },
+      { "id": "stress-management-4", "prompt": "Some employers offer meditation classes, counseling, or wellness activities to reduce stress. Should workplaces invest in these programs, or should stress management remain an individual's responsibility? Why?" }
+    ]
+  },
+  {
+    "id": "preventive-health",
+    "title": "Preventive health",
+    "category": "Health, food, and exercise",
+    "scenario": "You have joined a study about how people prevent health problems before they begin.",
+    "questions": [
+      { "id": "preventive-health-1", "prompt": "What is one simple action people can take to protect their health over time?" },
+      { "id": "preventive-health-2", "prompt": "Would health advice from a medical professional or from someone you know influence you more? Why?" },
+      { "id": "preventive-health-3", "prompt": "Regular health examinations can identify problems early, but they also require time and money and may cause unnecessary worry. Should healthy adults receive examinations even when they have no symptoms? Explain." },
+      { "id": "preventive-health-4", "prompt": "Governments sometimes use public campaigns or financial incentives to encourage healthier behavior. How far should governments go in influencing personal choices about food, exercise, or other health habits? Why?" }
+    ]
+  },
+  {
+    "id": "urban-life",
+    "title": "Urban life",
+    "category": "Travel, transportation, and places",
+    "scenario": "You have agreed to participate in a study about people's experiences of living in cities.",
+    "questions": [
+      { "id": "urban-life-1", "prompt": "Think of a city you have visited. What did you like or dislike about it?" },
+      { "id": "urban-life-2", "prompt": "Do busy cities make you feel excited or overwhelmed? Explain why you react that way." },
+      { "id": "urban-life-3", "prompt": "Cities often provide more career opportunities and entertainment, while smaller communities may offer stronger relationships and a quieter life. Do city residents generally lead more interesting lives? Why or why not?" },
+      { "id": "urban-life-4", "prompt": "Urban land is expensive, and city governments must choose between housing, businesses, and green space. Should they reserve more land for parks even if this limits other development? Explain your opinion." }
+    ]
+  },
+  {
+    "id": "travel-planning",
+    "title": "Planning a trip",
+    "category": "Travel, transportation, and places",
+    "scenario": "You are participating in a study about how people plan trips.",
+    "questions": [
+      { "id": "travel-planning-1", "prompt": "What is the first thing you usually decide when planning a trip, and why?" },
+      { "id": "travel-planning-2", "prompt": "Would you rather plan every activity before traveling or make decisions after you arrive? Why?" },
+      { "id": "travel-planning-3", "prompt": "Careful planning can save money and prevent problems, but unexpected discoveries are often the most memorable part of travel. Does detailed planning improve or reduce the travel experience? Explain." },
+      { "id": "travel-planning-4", "prompt": "Travel websites increasingly use personal data to recommend destinations, hotels, and activities. Will these recommendations help people discover better experiences, or will they make travel choices more similar and predictable? Why?" }
+    ]
+  },
+  {
+    "id": "tourism-impacts",
+    "title": "Tourism and communities",
+    "category": "Travel, transportation, and places",
+    "scenario": "You have volunteered for a study about how tourism affects local communities.",
+    "questions": [
+      { "id": "tourism-impacts-1", "prompt": "What is one place in your country that visitors enjoy, and what attracts them?" },
+      { "id": "tourism-impacts-2", "prompt": "Would you rather visit a famous destination or a place that few tourists know? Why?" },
+      { "id": "tourism-impacts-3", "prompt": "Tourism creates jobs and introduces visitors to local culture, but large crowds can raise prices and disrupt residents' lives. Do the benefits of tourism usually outweigh its disadvantages? Explain." },
+      { "id": "tourism-impacts-4", "prompt": "Some popular destinations limit visitor numbers or charge tourists additional fees to protect local communities and natural areas. Are these restrictions fair and effective? Why or why not?" }
+    ]
+  },
+  {
+    "id": "choosing-where-to-live",
+    "title": "Choosing where to live",
+    "category": "Travel, transportation, and places",
+    "scenario": "You are taking part in a research interview about how people choose where to live.",
+    "questions": [
+      { "id": "choosing-where-to-live-1", "prompt": "What feature of a neighborhood is most important to you, and why?" },
+      { "id": "choosing-where-to-live-2", "prompt": "Would you choose a smaller home in a convenient location or a larger home farther away? Why?" },
+      { "id": "choosing-where-to-live-3", "prompt": "Living near family and friends provides support, while moving to a new place may offer better education or career opportunities. Which consideration should matter more when choosing where to live? Explain." },
+      { "id": "choosing-where-to-live-4", "prompt": "Remote work allows some people to leave expensive cities and live in smaller communities. How might this movement benefit smaller towns, and what new problems could it create for current residents?" }
+    ]
+  },
+  {
+    "id": "social-media-use",
+    "title": "Social media use",
+    "category": "Technology and media",
+    "scenario": "You have volunteered for a research study about people's use of social media.",
+    "questions": [
+      { "id": "social-media-use-1", "prompt": "What type of content do you find most useful or enjoyable on social media, and why?" },
+      { "id": "social-media-use-2", "prompt": "Is social media more beneficial for younger people or older people? Explain your opinion." },
+      { "id": "social-media-use-3", "prompt": "Social media helps people maintain connections across distance, but frequent use may also increase loneliness or comparison with others. Does social media generally strengthen relationships? Why or why not?" },
+      { "id": "social-media-use-4", "prompt": "Some people predict that social media use will continue growing, while others expect users to limit it because of privacy and well-being concerns. Which future seems more likely, and what will influence the change?" }
+    ]
+  },
+  {
+    "id": "digital-communication",
+    "title": "Digital communication",
+    "category": "Technology and media",
+    "scenario": "You are participating in a study about how digital communication affects conversation.",
+    "questions": [
+      { "id": "digital-communication-1", "prompt": "Which digital communication method do you use most often, and what makes it convenient?" },
+      { "id": "digital-communication-2", "prompt": "Would you rather receive a voice message or a written message? Explain your preference." },
+      { "id": "digital-communication-3", "prompt": "Written messages allow people to respond carefully and conveniently, but they can also hide tone and create misunderstandings. Is digital communication making people better or worse communicators? Explain." },
+      { "id": "digital-communication-4", "prompt": "New technology can translate conversations between languages almost immediately. Will easy automatic translation increase meaningful communication between cultures, or reduce people's motivation to learn other languages? Why?" }
+    ]
+  },
+  {
+    "id": "online-privacy",
+    "title": "Online privacy",
+    "category": "Technology and media",
+    "scenario": "You have agreed to discuss how people protect their information online.",
+    "questions": [
+      { "id": "online-privacy-1", "prompt": "What is one action people can take to protect their personal information online?" },
+      { "id": "online-privacy-2", "prompt": "Would you share some personal data in exchange for a more convenient digital service? Why or why not?" },
+      { "id": "online-privacy-3", "prompt": "Personalized services can recommend useful content and save time, but they often depend on collecting detailed information about users. Do convenience benefits justify this collection? Explain your view." },
+      { "id": "online-privacy-4", "prompt": "Some governments want companies to delete personal information whenever a user requests it, even when deletion is technically difficult or costly. Should people have this right? Why or why not?" }
+    ]
+  },
+  {
+    "id": "automation-daily-life",
+    "title": "Automation in daily life",
+    "category": "Technology and media",
+    "scenario": "You are being interviewed for a study about automated technology in everyday life.",
+    "questions": [
+      { "id": "automation-daily-life-1", "prompt": "What routine task would you most like technology to do for you, and why?" },
+      { "id": "automation-daily-life-2", "prompt": "Would you trust an automated system or a person to give you important advice? Why?" },
+      { "id": "automation-daily-life-3", "prompt": "Automated systems can complete routine tasks quickly and consistently, but people may lose skills when they stop practicing them. Does automation generally make people more capable or more dependent? Explain." },
+      { "id": "automation-daily-life-4", "prompt": "As automated systems make more decisions about transportation, employment, and public services, who should be responsible when those decisions cause harm: developers, organizations, or users? Explain your choice." }
+    ]
+  },
+  {
+    "id": "shopping-habits",
+    "title": "Shopping habits",
+    "category": "Money and consumer behavior",
+    "scenario": "You have volunteered for a study about how people shop for everyday products.",
+    "questions": [
+      { "id": "shopping-habits-1", "prompt": "What kind of product do you prefer to examine before buying, and why?" },
+      { "id": "shopping-habits-2", "prompt": "Would you rather shop online or visit a physical store? Explain your preference." },
+      { "id": "shopping-habits-3", "prompt": "Online shopping offers greater selection and convenience, while physical stores allow customers to inspect products and receive immediate help. Which type of shopping provides a better overall experience? Explain." },
+      { "id": "shopping-habits-4", "prompt": "The growth of online shopping has caused some local stores to close while creating new delivery jobs and services. Overall, has this change improved communities? Why or why not?" }
+    ]
+  },
+  {
+    "id": "saving-and-spending",
+    "title": "Saving and spending",
+    "category": "Money and consumer behavior",
+    "scenario": "You are participating in a research interview about how people use their money.",
+    "questions": [
+      { "id": "saving-and-spending-1", "prompt": "What is one purchase you think is worth saving for, and why?" },
+      { "id": "saving-and-spending-2", "prompt": "Would you rather spend extra money on an experience or on an object you can keep? Why?" },
+      { "id": "saving-and-spending-3", "prompt": "Saving money can provide security for the future, but spending on meaningful experiences can improve life in the present. Which should young adults generally prioritize? Explain your opinion." },
+      { "id": "saving-and-spending-4", "prompt": "Some schools require students to learn about budgeting, credit, and saving before graduation. Should financial education be mandatory even if it reduces time for traditional academic subjects? Why?" }
+    ]
+  },
+  {
+    "id": "advertising-influence",
+    "title": "Advertising influence",
+    "category": "Money and consumer behavior",
+    "scenario": "You have joined a study about how advertising influences people's choices.",
+    "questions": [
+      { "id": "advertising-influence-1", "prompt": "Where do you notice advertisements most often, and how much attention do you give them?" },
+      { "id": "advertising-influence-2", "prompt": "Would a recommendation from an online creator or from a friend influence you more? Why?" },
+      { "id": "advertising-influence-3", "prompt": "Personalized advertising can show people products that match their interests, but it may also encourage unnecessary spending and use private data. Is personalized advertising helpful to consumers? Explain." },
+      { "id": "advertising-influence-4", "prompt": "Some governments restrict advertising aimed at children because young audiences may not recognize persuasive techniques. Should similar restrictions apply to teenagers, or are they old enough to judge advertisements independently? Why?" }
+    ]
+  },
+  {
+    "id": "product-quality",
+    "title": "Product quality",
+    "category": "Money and consumer behavior",
+    "scenario": "You are taking part in a study about how consumers judge product quality.",
+    "questions": [
+      { "id": "product-quality-1", "prompt": "What is one sign that tells you a product is well made?" },
+      { "id": "product-quality-2", "prompt": "Would you buy one expensive product that lasts longer or replace a cheaper product more often? Why?" },
+      { "id": "product-quality-3", "prompt": "Customer reviews provide information from many users, but some reviews may be dishonest or based on unrealistic expectations. Are online reviews generally a reliable way to judge quality? Explain." },
+      { "id": "product-quality-4", "prompt": "Manufacturers could be required to repair products for several years instead of encouraging customers to replace them. Would this policy benefit consumers and the environment enough to justify higher prices? Why?" }
+    ]
+  },
+  {
+    "id": "cashless-payments",
+    "title": "Cashless payments",
+    "category": "Money and consumer behavior",
+    "scenario": "You have agreed to discuss the growing use of digital payments.",
+    "questions": [
+      { "id": "cashless-payments-1", "prompt": "How do you usually pay for small purchases, and why do you use that method?" },
+      { "id": "cashless-payments-2", "prompt": "Would you feel comfortable living in a place where most businesses did not accept cash? Why?" },
+      { "id": "cashless-payments-3", "prompt": "Digital payments are fast and convenient, but they can make spending less noticeable and exclude people without banking technology. Is a cashless society desirable? Explain your view." },
+      { "id": "cashless-payments-4", "prompt": "Governments may eventually create official digital currencies that allow transactions to be tracked more easily. Would the security and efficiency benefits outweigh concerns about financial privacy? Why or why not?" }
+    ]
+  },
+  {
+    "id": "sharing-economy",
+    "title": "Sharing instead of owning",
+    "category": "Money and consumer behavior",
+    "scenario": "You are participating in a study about services that let people share or rent possessions.",
+    "questions": [
+      { "id": "sharing-economy-1", "prompt": "What is one item you would rather borrow or rent than own, and why?" },
+      { "id": "sharing-economy-2", "prompt": "Would you feel comfortable lending an expensive possession to someone you did not know? Why?" },
+      { "id": "sharing-economy-3", "prompt": "Sharing services can reduce costs and waste, but users may receive inconsistent quality and have less responsibility for items they do not own. Do these services encourage better consumer behavior? Explain." },
+      { "id": "sharing-economy-4", "prompt": "As short-term rental and transportation platforms grow, they can create income for individuals but disrupt established businesses and neighborhoods. Should governments regulate these platforms more strictly? Why or why not?" }
+    ]
+  },
+  {
+    "id": "traditional-celebrations",
+    "title": "Traditional celebrations",
+    "category": "Culture and traditions",
+    "scenario": "You have volunteered for a study about how people celebrate cultural traditions.",
+    "questions": [
+      { "id": "traditional-celebrations-1", "prompt": "Describe a celebration that is meaningful in your culture. What do people usually do?" },
+      { "id": "traditional-celebrations-2", "prompt": "Would you rather celebrate a tradition in the customary way or adapt it to modern life? Why?" },
+      { "id": "traditional-celebrations-3", "prompt": "Large public celebrations can strengthen cultural identity and bring communities together, but they may become commercial and lose their original meaning. Does greater popularity usually help or harm a tradition? Explain." },
+      { "id": "traditional-celebrations-4", "prompt": "Some cities provide public funding for cultural celebrations organized by particular communities. Should governments support these events even when only part of the population directly participates? Why or why not?" }
+    ]
+  },
+  {
+    "id": "language-and-identity",
+    "title": "Language and identity",
+    "category": "Culture and traditions",
+    "scenario": "You are participating in a research interview about the relationship between language and identity.",
+    "questions": [
+      { "id": "language-and-identity-1", "prompt": "What word or expression from a language you know is difficult to translate, and why?" },
+      { "id": "language-and-identity-2", "prompt": "Would you rather become fluent in one additional language or learn the basics of several languages? Why?" },
+      { "id": "language-and-identity-3", "prompt": "Using one widely shared language can make education and business easier, but smaller languages carry unique histories and ways of thinking. How important is it to preserve languages with few speakers? Explain." },
+      { "id": "language-and-identity-4", "prompt": "Schools in multilingual communities must decide how much instruction to provide in students' home languages. Should preserving those languages be a major educational goal, even if it slows learning in the dominant language? Why?" }
+    ]
+  },
+  {
+    "id": "cultural-preservation",
+    "title": "Preserving cultural heritage",
+    "category": "Culture and traditions",
+    "scenario": "You have agreed to discuss how societies preserve cultural heritage.",
+    "questions": [
+      { "id": "cultural-preservation-1", "prompt": "What building, object, or tradition from the past should people preserve, and why?" },
+      { "id": "cultural-preservation-2", "prompt": "Would you rather learn history by visiting a historic place or by using an interactive digital experience? Why?" },
+      { "id": "cultural-preservation-3", "prompt": "Restoring historic buildings can protect a community's identity, but restoration is expensive and may limit new housing or development. When should preservation take priority over present needs? Explain." },
+      { "id": "cultural-preservation-4", "prompt": "Digital technology can record endangered traditions and recreate historic places, but a digital copy is not the original experience. Can digital preservation adequately protect cultural heritage for future generations? Why or why not?" }
+    ]
+  },
+  {
+    "id": "global-entertainment",
+    "title": "Global entertainment",
+    "category": "Culture and traditions",
+    "scenario": "You are taking part in a study about entertainment that becomes popular across cultures.",
+    "questions": [
+      { "id": "global-entertainment-1", "prompt": "What film, music, or other entertainment from another culture have you enjoyed? Why?" },
+      { "id": "global-entertainment-2", "prompt": "Would you rather watch entertainment in its original language or in a translated version? Why?" },
+      { "id": "global-entertainment-3", "prompt": "Global entertainment can introduce audiences to new cultures, but popular international content may reduce attention to local artists and stories. Does its spread increase or reduce cultural diversity? Explain." },
+      { "id": "global-entertainment-4", "prompt": "Streaming services can decide which local films and music receive international promotion. Should these companies be expected to support cultural variety, or should they promote only content likely to attract the largest audience? Why?" }
+    ]
+  },
+  {
+    "id": "customs-and-etiquette",
+    "title": "Customs and etiquette",
+    "category": "Culture and traditions",
+    "scenario": "You have joined a study about how people learn social customs and etiquette.",
+    "questions": [
+      { "id": "customs-and-etiquette-1", "prompt": "What social custom should a visitor understand before visiting your country, and why?" },
+      { "id": "customs-and-etiquette-2", "prompt": "When someone breaks an unfamiliar custom, should local people correct them directly or overlook the mistake? Why?" },
+      { "id": "customs-and-etiquette-3", "prompt": "Traditional rules of etiquette can show respect and make behavior predictable, but some rules may feel unnecessary or unequal today. Should customs change quickly as social values change? Explain." },
+      { "id": "customs-and-etiquette-4", "prompt": "International workplaces often include employees with different expectations about politeness, hierarchy, and disagreement. Should organizations establish one shared communication standard, or encourage people to adapt to each culture? Why?" }
+    ]
+  },
+  {
+    "id": "public-libraries",
+    "title": "Public libraries",
+    "category": "Community and public policy",
+    "scenario": "You have volunteered for a study about the changing role of public libraries.",
+    "questions": [
+      { "id": "public-libraries-1", "prompt": "What service besides lending books would make a library useful to you?" },
+      { "id": "public-libraries-2", "prompt": "Would you rather use library space for quiet study or for community activities? Why?" },
+      { "id": "public-libraries-3", "prompt": "Much information is now available online, but libraries also provide free technology, work space, and guidance. Are public libraries becoming less necessary, or is their role simply changing? Explain." },
+      { "id": "public-libraries-4", "prompt": "When local budgets are limited, should libraries spend more on digital resources that people can access anywhere or on physical spaces and in-person programs? Which investment better serves the community?" }
+    ]
+  },
+  {
+    "id": "community-events",
+    "title": "Community events",
+    "category": "Community and public policy",
+    "scenario": "You are participating in a study about events organized for local communities.",
+    "questions": [
+      { "id": "community-events-1", "prompt": "What kind of local event would you be interested in attending, and why?" },
+      { "id": "community-events-2", "prompt": "Would you rather attend a large citywide event or a small neighborhood gathering? Why?" },
+      { "id": "community-events-3", "prompt": "Community events can help residents meet one another and support local businesses, but planning them requires money and volunteer time. Are these events an effective way to strengthen communities? Explain." },
+      { "id": "community-events-4", "prompt": "Local governments often support festivals and public events with taxpayer money. Should funding decisions be based mainly on attendance numbers or on the cultural and social value of each event? Why?" }
+    ]
+  },
+  {
+    "id": "local-government-participation",
+    "title": "Local decision-making",
+    "category": "Community and public policy",
+    "scenario": "You have agreed to discuss how residents participate in local government decisions.",
+    "questions": [
+      { "id": "local-government-participation-1", "prompt": "What local issue would be most likely to make you attend a public meeting?" },
+      { "id": "local-government-participation-2", "prompt": "Would you rather share your opinion at a meeting or through an online survey? Why?" },
+      { "id": "local-government-participation-3", "prompt": "Public meetings allow detailed discussion, but they are often attended by only a small and unrepresentative group of residents. Are online surveys a better way to understand public opinion? Explain." },
+      { "id": "local-government-participation-4", "prompt": "Some cities allow residents to vote directly on how part of the public budget is spent. Would this system lead to better local decisions, or should elected officials remain responsible? Why?" }
+    ]
+  },
+  {
+    "id": "public-safety",
+    "title": "Public safety",
+    "category": "Community and public policy",
+    "scenario": "You are being interviewed for a study about how communities improve public safety.",
+    "questions": [
+      { "id": "public-safety-1", "prompt": "What feature makes a public place feel safe to you, and why?" },
+      { "id": "public-safety-2", "prompt": "Would better lighting or more people in public spaces improve safety more? Explain your choice." },
+      { "id": "public-safety-3", "prompt": "Security cameras may prevent crime and help investigations, but they also record the activities of people who have done nothing wrong. Do their safety benefits outweigh the privacy concerns? Explain." },
+      { "id": "public-safety-4", "prompt": "A city can invest limited safety funding in enforcement, environmental design, or social programs that address the causes of crime. Which approach should receive the highest priority, and why?" }
+    ]
+  },
+  {
+    "id": "campus-community",
+    "title": "Campus community",
+    "category": "Community and public policy",
+    "scenario": "You have joined a university study about creating a stronger sense of campus community.",
+    "questions": [
+      { "id": "campus-community-1", "prompt": "What activity can help new students feel that they belong at a university?" },
+      { "id": "campus-community-2", "prompt": "Would you rather join a club based on your major or on a personal interest? Why?" },
+      { "id": "campus-community-3", "prompt": "University traditions can create shared identity, but students from different backgrounds may not feel represented by older customs. Should campuses preserve their traditions or create new ones more often? Explain." },
+      { "id": "campus-community-4", "prompt": "Some universities require first-year students to participate in campus activities or service projects. Would required participation help students form connections, or would voluntary involvement be more meaningful? Why?" }
+    ]
+  },
+  {
+    "id": "renewable-energy",
+    "title": "Renewable energy",
+    "category": "Environment and future society",
+    "scenario": "You have volunteered for a study about public attitudes toward renewable energy.",
+    "questions": [
+      { "id": "renewable-energy-1", "prompt": "What type of renewable energy have you seen or learned about, and what interests you about it?" },
+      { "id": "renewable-energy-2", "prompt": "Would you accept higher energy costs if the energy came from cleaner sources? Why or why not?" },
+      { "id": "renewable-energy-3", "prompt": "Wind and solar projects can reduce pollution, but they may change landscapes and affect nearby communities. Should environmental benefits take priority over local objections? Explain your opinion." },
+      { "id": "renewable-energy-4", "prompt": "Governments can accelerate clean energy by offering financial support, but this may favor particular technologies before their long-term value is clear. How much should governments influence the energy market? Why?" }
+    ]
+  },
+  {
+    "id": "urban-green-spaces",
+    "title": "Urban green spaces",
+    "category": "Environment and future society",
+    "scenario": "You are participating in a research interview about nature in urban areas.",
+    "questions": [
+      { "id": "urban-green-spaces-1", "prompt": "What do you enjoy doing in a park or other natural space?" },
+      { "id": "urban-green-spaces-2", "prompt": "Would you prefer one large city park or many small green spaces throughout a city? Why?" },
+      { "id": "urban-green-spaces-3", "prompt": "Parks can improve health and reduce heat, but creating them may increase nearby housing prices and force some residents to move. Can green development sometimes harm the communities it is meant to help? Explain." },
+      { "id": "urban-green-spaces-4", "prompt": "Cities with limited land must balance affordable housing and public green space. Should new housing projects be required to include green areas even if this increases construction costs? Why or why not?" }
+    ]
+  },
+  {
+    "id": "food-waste",
+    "title": "Food waste",
+    "category": "Environment and future society",
+    "scenario": "You have agreed to discuss why food is wasted and how waste can be reduced.",
+    "questions": [
+      { "id": "food-waste-1", "prompt": "What is one practical way a household can avoid wasting food?" },
+      { "id": "food-waste-2", "prompt": "Would you buy food that looks imperfect if it cost less? Why or why not?" },
+      { "id": "food-waste-3", "prompt": "Restaurants and stores often provide large portions or perfect-looking products because customers expect them, but these practices increase waste. Should businesses or consumers take greater responsibility for changing expectations? Explain." },
+      { "id": "food-waste-4", "prompt": "Some governments require large food businesses to donate unsold food instead of throwing it away. Should donation be legally required even when storage and transportation create additional costs? Why?" }
+    ]
+  },
+  {
+    "id": "climate-adaptation",
+    "title": "Adapting to climate change",
+    "category": "Environment and future society",
+    "scenario": "You are taking part in a study about how communities prepare for changing weather conditions.",
+    "questions": [
+      { "id": "climate-adaptation-1", "prompt": "What weather condition creates the greatest difficulty where you live, and why?" },
+      { "id": "climate-adaptation-2", "prompt": "Should communities focus more on preparing for extreme heat or for severe storms? Explain your choice." },
+      { "id": "climate-adaptation-3", "prompt": "Protecting every building from floods, fires, or extreme heat can be very expensive. Should communities defend existing neighborhoods or help residents move away from areas with increasing risks? Explain." },
+      { "id": "climate-adaptation-4", "prompt": "Wealthier communities can often prepare for climate risks more easily than poorer ones. Should national governments direct more adaptation funding to the most vulnerable places, even when fewer people live there? Why?" }
+    ]
+  },
+  {
+    "id": "future-transportation",
+    "title": "Transportation of the future",
+    "category": "Environment and future society",
+    "scenario": "You have joined a research study about how transportation may change in the future.",
+    "questions": [
+      { "id": "future-transportation-1", "prompt": "What improvement would make transportation in your area more useful to you?" },
+      { "id": "future-transportation-2", "prompt": "Would you rather travel in an automated vehicle or continue controlling the vehicle yourself? Why?" },
+      { "id": "future-transportation-3", "prompt": "Automated vehicles may reduce accidents and make travel easier, but people could lose driving jobs and personal control. Do the expected benefits outweigh these disadvantages? Explain." },
+      { "id": "future-transportation-4", "prompt": "Future cities may restrict privately owned cars and rely on shared automated transportation. Would this change create a more efficient and fair city, or would it limit individual freedom too much? Why?" }
+    ]
+  },
+  {
+    "id": "team-sports",
+    "title": "Team sports",
+    "category": "Creativity, leisure, and sports",
+    "scenario": "You have volunteered for a study about people's experiences with team sports.",
+    "questions": [
+      { "id": "team-sports-1", "prompt": "What team sport do you enjoy playing or watching, and what makes it interesting?" },
+      { "id": "team-sports-2", "prompt": "Would you rather play an important role on an average team or a small role on an excellent team? Why?" },
+      { "id": "team-sports-3", "prompt": "Team sports can teach cooperation and discipline, but intense competition may create pressure and conflict. Are competitive sports generally beneficial for children and teenagers? Explain your opinion." },
+      { "id": "team-sports-4", "prompt": "Universities often spend significant money on competitive sports that involve only a small percentage of students. Does the school spirit and public attention justify this investment? Why or why not?" }
+    ]
+  },
+  {
+    "id": "outdoor-recreation",
+    "title": "Outdoor recreation",
+    "category": "Creativity, leisure, and sports",
+    "scenario": "You are participating in a research interview about outdoor recreational activities.",
+    "questions": [
+      { "id": "outdoor-recreation-1", "prompt": "What outdoor activity do you enjoy or want to try, and why?" },
+      { "id": "outdoor-recreation-2", "prompt": "Would you rather explore nature alone or with a group? Explain your preference." },
+      { "id": "outdoor-recreation-3", "prompt": "Outdoor recreation can increase appreciation for nature, but large numbers of visitors may damage trails and wildlife. Should access to popular natural areas be limited? Why or why not?" },
+      { "id": "outdoor-recreation-4", "prompt": "Some communities invest in trails and outdoor facilities mainly to attract visitors and businesses. Should economic development be a major goal when governments protect and promote natural areas? Explain." }
+    ]
+  },
+  {
+    "id": "music-in-life",
+    "title": "Music in everyday life",
+    "category": "Creativity, leisure, and sports",
+    "scenario": "You have agreed to discuss the role of music in people's daily lives.",
+    "questions": [
+      { "id": "music-in-life-1", "prompt": "When do you most often listen to music, and how does it affect you?" },
+      { "id": "music-in-life-2", "prompt": "Would you rather attend a live performance or listen to a high-quality recording? Why?" },
+      { "id": "music-in-life-3", "prompt": "Streaming services give listeners access to enormous music libraries, but recommendations may repeatedly promote similar popular songs. Has streaming expanded people's musical tastes or made them narrower? Explain." },
+      { "id": "music-in-life-4", "prompt": "Music education can develop creativity and discipline, but schools may reduce it to provide more time for academic subjects. Should learning music remain an important part of every child's education? Why?" }
+    ]
+  },
+  {
+    "id": "reading-for-pleasure",
+    "title": "Reading for pleasure",
+    "category": "Creativity, leisure, and sports",
+    "scenario": "You are being interviewed for a study about recreational reading.",
+    "questions": [
+      { "id": "reading-for-pleasure-1", "prompt": "What type of book or written content do you enjoy reading, and why?" },
+      { "id": "reading-for-pleasure-2", "prompt": "Would you rather read a printed book or a digital book? Explain your preference." },
+      { "id": "reading-for-pleasure-3", "prompt": "Short videos and interactive media provide entertainment quickly, while reading requires sustained attention and imagination. Will reading for pleasure become less common in the future? Why or why not?" },
+      { "id": "reading-for-pleasure-4", "prompt": "Schools often require students to read particular works of literature. Does required reading encourage a lasting interest in books, or can it make students less interested in reading? Explain." }
+    ]
+  },
+  {
+    "id": "competition-and-performance",
+    "title": "Competition and performance",
+    "category": "Creativity, leisure, and sports",
+    "scenario": "You have joined a study about how competition affects performance in activities and hobbies.",
+    "questions": [
+      { "id": "competition-and-performance-1", "prompt": "What activity makes you want to improve when you compare your performance with others?" },
+      { "id": "competition-and-performance-2", "prompt": "Would you rather compete against other people or try to improve your own previous result? Why?" },
+      { "id": "competition-and-performance-3", "prompt": "Competition can motivate people to practice and achieve more, but it may reduce enjoyment and discourage beginners. Does competition generally improve people's performance in hobbies and creative activities? Explain." },
+      { "id": "competition-and-performance-4", "prompt": "Schools and community organizations often give awards to the highest performers. Should they recognize improvement and effort equally, even if doing so makes top achievement seem less special? Why?" }
+    ]
+  }
+]

@@ -7,6 +7,7 @@ import {
 import { Badge, Icon } from "@seed-design/react";
 import type { ReactNode } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
+import { navigate } from "@/shared/navigation";
 import { AppHeader } from "@/shared/ui/app-header";
 
 export function ToeflPracticePage() {
@@ -20,6 +21,7 @@ export function ToeflPracticePage() {
             title="인터뷰"
             description="주제별 질문에 답하는 연습이에요"
             icon={<IconMicrophoneLine />}
+            onStart={() => navigate({ page: "toefl-speaking" })}
           />
         </PracticeSection>
 
@@ -75,9 +77,16 @@ interface PracticeCardProps {
   title: string;
   description: string;
   icon: ReactNode;
+  onStart?: () => void;
 }
 
-function PracticeCard({ task, title, description, icon }: PracticeCardProps) {
+function PracticeCard({
+  task,
+  title,
+  description,
+  icon,
+  onStart,
+}: PracticeCardProps) {
   return (
     <article className="rounded-[22px] flex flex-col gap-4 border border-[var(--seed-color-stroke-neutral-subtle)] bg-[var(--seed-color-bg-layer-default)] p-4">
       <div className="flex items-start gap-3.5">
@@ -98,12 +107,13 @@ function PracticeCard({ task, title, description, icon }: PracticeCardProps) {
       </div>
       <ActionButton
         className="w-full"
-        variant="neutralWeak"
+        variant={onStart ? "brandSolid" : "neutralWeak"}
         size="small"
-        disabled
-        aria-label={`${title} 연습 준비 중`}
+        disabled={!onStart}
+        onClick={onStart}
+        aria-label={onStart ? `${title} 연습 시작` : `${title} 연습 준비 중`}
       >
-        준비 중
+        {onStart ? "연습하기" : "준비 중"}
       </ActionButton>
     </article>
   );

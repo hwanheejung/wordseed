@@ -5,15 +5,18 @@ import { describe, expect, it } from "vitest";
 import { ToeflPracticePage } from "./ToeflPracticePage";
 
 describe("ToeflPracticePage", () => {
-  it("shows the four planned exercises without enabling unfinished flows", () => {
+  it("enables Speaking while keeping unfinished exercises disabled", () => {
     render(<ToeflPracticePage />);
 
     expect(
       screen.getByRole("heading", { name: "TOEFL 연습" }),
     ).toBeInTheDocument();
 
+    expect(
+      screen.getByRole("button", { name: "인터뷰 연습 시작" }),
+    ).toBeEnabled();
+
     [
-      "인터뷰 연습 준비 중",
       "이메일 쓰기 연습 준비 중",
       "토론 글쓰기 연습 준비 중",
       "단어 완성 연습 준비 중",
