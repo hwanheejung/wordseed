@@ -13,7 +13,7 @@ import { AppHeader } from "@/shared/ui/app-header";
 export function ToeflPracticePage() {
   return (
     <>
-      <AppHeader title="TOEFL 연습" subtitle="원하는 영역부터 연습해요" />
+      <AppHeader title="TOEFL" subtitle="틈틈이 연습해요" />
       <main className="min-h-[calc(100vh-84px)] p-5 pb-[100px]">
         <PracticeSection title="Speaking">
           <PracticeCard
@@ -21,6 +21,11 @@ export function ToeflPracticePage() {
             title="인터뷰"
             description="주제별 질문에 답하는 연습이에요"
             icon={<IconMicrophoneLine />}
+            secondaryAction={{
+              label: "Magic Expression",
+              ariaLabel: "Magic Expression 보기",
+              onClick: () => navigate({ page: "toefl-magic-expressions" }),
+            }}
             onStart={() => navigate({ page: "toefl-speaking" })}
           />
         </PracticeSection>
@@ -77,6 +82,11 @@ interface PracticeCardProps {
   title: string;
   description: string;
   icon: ReactNode;
+  secondaryAction?: {
+    label: string;
+    ariaLabel: string;
+    onClick: () => void;
+  };
   onStart?: () => void;
 }
 
@@ -85,6 +95,7 @@ function PracticeCard({
   title,
   description,
   icon,
+  secondaryAction,
   onStart,
 }: PracticeCardProps) {
   return (
@@ -105,16 +116,28 @@ function PracticeCard({
           </p>
         </div>
       </div>
-      <ActionButton
-        className="w-full"
-        variant={onStart ? "brandSolid" : "neutralWeak"}
-        size="small"
-        disabled={!onStart}
-        onClick={onStart}
-        aria-label={onStart ? `${title} 연습 시작` : `${title} 연습 준비 중`}
-      >
-        {onStart ? "연습하기" : "준비 중"}
-      </ActionButton>
+      <div className={secondaryAction ? "grid grid-cols-2 gap-2.5" : "grid"}>
+        {secondaryAction && (
+          <ActionButton
+            variant="neutralWeak"
+            size="small"
+            onClick={secondaryAction.onClick}
+            aria-label={secondaryAction.ariaLabel}
+          >
+            {secondaryAction.label}
+          </ActionButton>
+        )}
+        <ActionButton
+          className="w-full"
+          variant={onStart ? "brandSolid" : "neutralWeak"}
+          size="small"
+          disabled={!onStart}
+          onClick={onStart}
+          aria-label={onStart ? `${title} 연습 시작` : `${title} 연습 준비 중`}
+        >
+          {onStart ? "연습하기" : "준비 중"}
+        </ActionButton>
+      </div>
     </article>
   );
 }

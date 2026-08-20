@@ -6,6 +6,7 @@ export const PRIMARY_PAGE_PATHS: Partial<Record<Page, string>> = {
   add: "/add",
   toefl: "/toefl",
   "toefl-speaking": "/toefl/speaking",
+  "toefl-magic-expressions": "/toefl/speaking/magic-expressions",
   library: "/library",
   "all-tags": "/tags",
 };
@@ -15,6 +16,7 @@ const navigationEntrySchema = z.discriminatedUnion("page", [
   z.object({ page: z.literal("add") }),
   z.object({ page: z.literal("toefl") }),
   z.object({ page: z.literal("toefl-speaking") }),
+  z.object({ page: z.literal("toefl-magic-expressions") }),
   z.object({
     page: z.literal("library"),
     search: z.string().optional(),
@@ -48,6 +50,9 @@ export function navigationEntryFromWindow(): NavigationEntry {
   if (window.location.pathname === "/toefl") return { page: "toefl" };
   if (window.location.pathname === "/toefl/speaking") {
     return { page: "toefl-speaking" };
+  }
+  if (window.location.pathname === "/toefl/speaking/magic-expressions") {
+    return { page: "toefl-magic-expressions" };
   }
   if (window.location.pathname === "/tags") return { page: "all-tags" };
 

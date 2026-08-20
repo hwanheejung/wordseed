@@ -3,6 +3,7 @@ export type NavigationEntry =
   | { page: "add" }
   | { page: "toefl" }
   | { page: "toefl-speaking" }
+  | { page: "toefl-magic-expressions" }
   | { page: "library"; search?: string; scrollTop?: number }
   | { page: "all-tags" }
   | { page: "study"; tag?: string; meaningId?: string }

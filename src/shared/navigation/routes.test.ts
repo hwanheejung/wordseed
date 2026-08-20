@@ -16,6 +16,18 @@ describe("navigationEntryFromWindow", () => {
     expect(navigationEntryFromWindow()).toEqual({ page: "toefl-speaking" });
   });
 
+  it("opens the Magic Expression page from its URL", () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/toefl/speaking/magic-expressions",
+    );
+
+    expect(navigationEntryFromWindow()).toEqual({
+      page: "toefl-magic-expressions",
+    });
+  });
+
   it("restores the Wordbook scroll position from browser history", () => {
     window.history.replaceState(
       { entry: { page: "library", scrollTop: 640 } },
