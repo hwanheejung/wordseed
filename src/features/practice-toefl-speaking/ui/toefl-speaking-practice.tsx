@@ -16,7 +16,7 @@ const QUESTION_TIME_LIMIT_SECONDS = 45;
 
 type TimerState =
   | { status: "idle" }
-  | { status: "running"; secondsRemaining: number }
+  | { status: "running"; expiresAt: number; secondsRemaining: number }
   | { status: "expired" };
 
 type PracticeScreen =
@@ -44,25 +44,47 @@ export function ToeflSpeakingPractice({ onExit }: ToeflSpeakingPracticeProps) {
     screen.name === "session"
       ? `${screen.questionSetId}:${screen.questionIndex}`
       : undefined;
+  const timerExpiresAt =
+    timerState.status === "running" ? timerState.expiresAt : undefined;
 
-  // Synchronize the active question's running countdown with the browser timer.
+  // Synchronize the active question's countdown with the browser clock and paint loop.
   useEffect(() => {
-    if (screen.name !== "session" || timerState.status !== "running") return;
+    if (screen.name !== "session" || timerExpiresAt === undefined) return;
 
-    const intervalId = window.setInterval(() => {
+    const expiresAt = timerExpiresAt;
+    let animationFrameId: number;
+
+    function updateCountdown() {
+      const secondsRemaining = getSecondsRemaining(expiresAt, Date.now());
+
       setTimerState((current) => {
-        if (current.status !== "running") return current;
-        if (current.secondsRemaining <= 1) return { status: "expired" };
+        if (current.status !== "running" || current.expiresAt !== expiresAt) {
+          return current;
+        }
+
+        if (secondsRemaining === 0) return { status: "expired" };
+        if (secondsRemaining === current.secondsRemaining) return current;
 
         return {
           status: "running",
-          secondsRemaining: current.secondsRemaining - 1,
+          expiresAt,
+          secondsRemaining,
         };
       });
-    }, 1_000);
 
-    return () => window.clearInterval(intervalId);
-  }, [activeQuestionId, screen.name, timerState.status]);
+      if (secondsRemaining > 0) {
+        animationFrameId = window.requestAnimationFrame(updateCountdown);
+      }
+    }
+
+    animationFrameId = window.requestAnimationFrame(updateCountdown);
+    const intervalId = window.setInterval(updateCountdown, 1_000);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+      window.clearInterval(intervalId);
+    };
+  }, [activeQuestionId, screen.name, timerExpiresAt]);
 
   function startQuestionSet(questionSetId: string) {
     setPreviousQuestionSetId(questionSetId);
@@ -87,6 +109,7 @@ export function ToeflSpeakingPractice({ onExit }: ToeflSpeakingPracticeProps) {
   function startTimer() {
     setTimerState({
       status: "running",
+      expiresAt: Date.now() + QUESTION_TIME_LIMIT_SECONDS * 1_000,
       secondsRemaining: QUESTION_TIME_LIMIT_SECONDS,
     });
   }
@@ -473,4 +496,8 @@ function CompletionView({ title, onRandom, onOpenList }: CompletionViewProps) {
       </section>
     </main>
   );
+}
+
+function getSecondsRemaining(expiresAt: number, now: number) {
+  return Math.max(0, Math.ceil((expiresAt - now) / 1_000));
 }

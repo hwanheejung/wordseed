@@ -107,6 +107,50 @@ describe("ToeflSpeakingPractice", () => {
     );
   });
 
+  it("gives a restarted timer a full 45 seconds", () => {
+    vi.useFakeTimers();
+    renderPractice();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Study environments 인터뷰 시작",
+      }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "45초 타이머 시작" }),
+    );
+    act(() => vi.advanceTimersByTime(500));
+    fireEvent.click(
+      screen.getByRole("button", { name: "타이머 다시 시작" }),
+    );
+    act(() => vi.advanceTimersByTime(500));
+
+    expect(screen.getByRole("timer", { name: "45초 남음" })).toHaveTextContent(
+      "0:45",
+    );
+  });
+
+  it("uses elapsed time when browser timers are delayed", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-08-21T00:00:00Z"));
+    renderPractice();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Study environments 인터뷰 시작",
+      }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "45초 타이머 시작" }),
+    );
+    vi.setSystemTime(new Date("2026-08-21T00:00:30Z"));
+    act(() => vi.advanceTimersByTime(1_000));
+
+    expect(screen.getByRole("timer", { name: "14초 남음" })).toHaveTextContent(
+      "0:14",
+    );
+  });
+
   it("uses the header back button to return from a question to the list", () => {
     const onExit = vi.fn();
     renderPractice(onExit);
