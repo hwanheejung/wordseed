@@ -11,6 +11,7 @@
     "lint:fix": "eslint . --fix",
     "structure:check": "node scripts/check-structure.mjs",
     "test": "vitest run",
+    "verify": "pnpm structure:check && pnpm typecheck && pnpm lint && pnpm test",
     "seed:compat": "seed-design compat"
   },
   "dependencies": {

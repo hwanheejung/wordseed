@@ -15,7 +15,7 @@ export function AppHeader({
   action?: ReactNode;
 }) {
   return (
-    <header className="z-10 shrink-0 border-b border-[var(--seed-color-stroke-neutral-subtle)] bg-[color-mix(in_srgb,var(--seed-color-bg-layer-default)_92%,transparent)] px-5 pt-[calc(14px+var(--seed-safe-area-top))] pb-3.5 backdrop-blur-[18px] min-[700px]:rounded-t-[30px] min-[700px]:pt-3.5">
+    <header className="z-[var(--app-layer-header)] shrink-0 border-b border-[var(--seed-color-stroke-neutral-subtle)] bg-[color-mix(in_srgb,var(--seed-color-bg-layer-default)_92%,transparent)] px-5 pt-[calc(14px+var(--seed-safe-area-top))] pb-3.5 backdrop-blur-[18px] min-[700px]:rounded-t-[30px] min-[700px]:pt-3.5">
       <div className="flex min-h-12 items-center gap-3">
         {onBack ? (
           <ActionButton

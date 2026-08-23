@@ -34,11 +34,12 @@ Deploy the repository to Vercel so `/api/cards/extract`, `/api/cards/enrich`, an
 ## Verification
 
 ```bash
-pnpm typecheck
-pnpm lint
-pnpm test
+pnpm verify
 pnpm build
 pnpm seed:compat
 ```
+
+`pnpm verify` runs the structure check, type checking, lint, and test suite in
+the same order locally and in automation.
 
 The supplied SEED Design LLM reference is saved at `docs/seed-design-llm.md`. The project-local SEED skill is installed at `.agents/skills/seed-design/`.

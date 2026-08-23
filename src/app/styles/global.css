@@ -11,6 +11,12 @@ html:root [data-seed-color-mode="light-only"] {
   --seed-color-stroke-brand: #426b52;
   --seed-color-stroke-brand-solid: #426b52;
   --seed-color-stroke-brand-weak: #b7cdbd;
+  --app-layer-header: 10;
+  --app-layer-sticky-action: 12;
+  --app-layer-navigation: 20;
+  --app-layer-dragged: 30;
+  --app-layer-overlay: 40;
+  --app-layer-feedback: 50;
   font-family:
     Pretendard,
     -apple-system,
@@ -84,7 +90,7 @@ textarea:focus-visible {
 }
 .sticky-cta {
   position: fixed;
-  z-index: 12;
+  z-index: var(--app-layer-sticky-action);
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
@@ -126,7 +132,7 @@ textarea:focus-visible {
 
 .bottom-nav {
   position: fixed;
-  z-index: 20;
+  z-index: var(--app-layer-navigation);
   left: 50%;
   transform: translateX(-50%);
   bottom: 0;
@@ -164,7 +170,7 @@ textarea:focus-visible {
 }
 .toast {
   position: fixed;
-  z-index: 50;
+  z-index: var(--app-layer-feedback);
   left: 50%;
   transform: translateX(-50%);
   bottom: calc(88px + var(--seed-safe-area-bottom));
@@ -181,6 +187,10 @@ textarea:focus-visible {
   white-space: pre-wrap;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
   animation: toast-in 0.2s ease-out;
+}
+
+.app-overlay-layer {
+  z-index: var(--app-layer-overlay) !important;
 }
 
 @keyframes toast-in {

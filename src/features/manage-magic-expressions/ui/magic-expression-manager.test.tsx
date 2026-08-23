@@ -21,6 +21,12 @@ import {
 } from "vitest";
 import { MagicExpressionManager } from "./magic-expression-manager";
 
+const scrollIntoView = vi.fn();
+const originalScrollIntoView = Object.getOwnPropertyDescriptor(
+  HTMLElement.prototype,
+  "scrollIntoView",
+);
+
 beforeAll(() => {
   vi.stubGlobal(
     "PointerEvent",
@@ -56,14 +62,30 @@ beforeAll(() => {
       disconnect() {}
     },
   );
+  Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
+    configurable: true,
+    value: scrollIntoView,
+  });
 });
 
 beforeEach(() => {
   window.localStorage.clear();
+  scrollIntoView.mockClear();
 });
 
 afterEach(cleanup);
-afterAll(() => vi.unstubAllGlobals());
+afterAll(() => {
+  vi.unstubAllGlobals();
+  if (originalScrollIntoView) {
+    Object.defineProperty(
+      HTMLElement.prototype,
+      "scrollIntoView",
+      originalScrollIntoView,
+    );
+  } else {
+    Reflect.deleteProperty(HTMLElement.prototype, "scrollIntoView");
+  }
+});
 
 describe("MagicExpressionManager", () => {
   it("shows the seeded expressions", () => {
@@ -177,6 +199,38 @@ describe("MagicExpressionManager", () => {
     render(<TestManager initialAddOpen />);
 
     expect(screen.getByRole("textbox", { name: "제목" })).not.toHaveFocus();
+  });
+
+  it("keeps the focused field visible when the editor viewport changes", () => {
+    render(<TestManager initialAddOpen />);
+
+    fireEvent.focus(screen.getByRole("textbox", { name: "내용" }));
+
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: "nearest" });
+  });
+
+  it("does not dismiss the editor when the form is dragged to scroll", () => {
+    render(<TestManager initialAddOpen />);
+
+    const dialog = screen.getByRole("dialog");
+    fireEvent.pointerDown(dialog, {
+      button: 0,
+      clientY: 100,
+      pointerId: 2,
+      pointerType: "touch",
+    });
+    fireEvent.pointerMove(dialog, {
+      clientY: 320,
+      pointerId: 2,
+      pointerType: "touch",
+    });
+    fireEvent.pointerUp(dialog, {
+      clientY: 320,
+      pointerId: 2,
+      pointerType: "touch",
+    });
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 
   it("deletes an expression after confirmation", () => {

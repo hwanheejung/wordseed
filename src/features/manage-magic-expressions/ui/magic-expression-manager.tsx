@@ -1,5 +1,11 @@
 import { ContentDialog, ResponsiveDialog, TextField } from "@seed-design/react";
-import { type CSSProperties, useEffect, useState } from "react";
+import {
+  type CSSProperties,
+  type FocusEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import {
   createMagicExpression,
@@ -9,6 +15,7 @@ import {
   type MagicExpression,
   updateMagicExpression,
 } from "@/entities/magic-expression";
+import { useVisualViewportBounds } from "@/shared/hooks/use-visual-viewport-bounds";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { MagicExpressionList } from "./magic-expression-list";
 
@@ -20,11 +27,6 @@ type DialogState =
 interface Draft {
   title: string;
   description: string;
-}
-
-interface EditorViewport {
-  height: number;
-  offsetTop: number;
 }
 
 interface MagicExpressionManagerProps {
@@ -41,8 +43,9 @@ export function MagicExpressionManager({
   const [expressions, setExpressions] = useState(loadMagicExpressions);
   const [dialog, setDialog] = useState<DialogState>({ name: "closed" });
   const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT);
-  const [editorViewport, setEditorViewport] = useState(readEditorViewport);
+  const editorBodyRef = useRef<HTMLDivElement>(null);
   const editorOpen = addOpen || dialog.name === "edit";
+  const editorViewport = useVisualViewportBounds(editorOpen);
   const canSave = Boolean(draft.title.trim() && draft.description.trim());
 
   function handleSave() {
@@ -86,23 +89,24 @@ export function MagicExpressionManager({
     setDialog({ name: "closed" });
   }
 
-  // Synchronize the editor surface with the mobile browser's visual viewport.
+  function handleEditorFocus(event: FocusEvent<HTMLDivElement>) {
+    scrollEditorFieldIntoView(event.target);
+  }
+
+  // Keep the active form field visible while the mobile keyboard changes the viewport.
   useEffect(() => {
     if (!editorOpen) return;
 
-    const updateViewport = () => setEditorViewport(readEditorViewport());
+    const frameId = window.requestAnimationFrame(() => {
+      const activeElement = document.activeElement;
+      if (!activeElement || !editorBodyRef.current?.contains(activeElement))
+        return;
 
-    updateViewport();
-    window.addEventListener("resize", updateViewport);
-    window.visualViewport?.addEventListener("resize", updateViewport);
-    window.visualViewport?.addEventListener("scroll", updateViewport);
+      scrollEditorFieldIntoView(activeElement);
+    });
 
-    return () => {
-      window.removeEventListener("resize", updateViewport);
-      window.visualViewport?.removeEventListener("resize", updateViewport);
-      window.visualViewport?.removeEventListener("scroll", updateViewport);
-    };
-  }, [editorOpen]);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [editorOpen, editorViewport.height, editorViewport.offsetTop]);
 
   return (
     <>
@@ -127,10 +131,14 @@ export function MagicExpressionManager({
       <ResponsiveDialog.Root
         open={editorOpen}
         onOpenChange={handleEditorOpenChange}
+        bottomSheetRootProps={{
+          handleOnly: true,
+          repositionInputs: false,
+        }}
       >
-        <ResponsiveDialog.Backdrop className="!z-40" />
+        <ResponsiveDialog.Backdrop className="app-overlay-layer" />
         <ResponsiveDialog.Positioner
-          className="!z-40"
+          className="app-overlay-layer"
           style={
             {
               "--magic-expression-editor-height": `${editorViewport.height}px`,
@@ -141,6 +149,7 @@ export function MagicExpressionManager({
           }
         >
           <ResponsiveDialog.Content className="max-md:!flex max-md:!h-[var(--magic-expression-editor-height)] max-md:!max-h-[var(--magic-expression-editor-height)] max-md:flex-col max-md:rounded-t-[var(--seed-radius-r6)] max-md:rounded-b-none">
+            <ResponsiveDialog.Handle />
             <ResponsiveDialog.Header className="shrink-0">
               <ResponsiveDialog.Title>
                 {dialog.name === "edit" ? "표현 수정" : "표현 추가"}
@@ -149,7 +158,11 @@ export function MagicExpressionManager({
                 반복해서 활용할 문장이나 답변 틀을 저장해요.
               </ResponsiveDialog.Description>
             </ResponsiveDialog.Header>
-            <ResponsiveDialog.Body className="min-h-0 overflow-y-auto overscroll-contain touch-pan-y pb-2 max-md:flex-1">
+            <ResponsiveDialog.Body
+              ref={editorBodyRef}
+              className="min-h-0 overflow-y-auto overscroll-contain scroll-py-4 touch-pan-y pb-2 max-md:flex-1"
+              onFocusCapture={handleEditorFocus}
+            >
               <ExpressionFields draft={draft} onChange={setDraft} />
             </ResponsiveDialog.Body>
             <ResponsiveDialog.Footer className="shrink-0 bg-[var(--seed-color-bg-layer-floating)]">
@@ -172,8 +185,8 @@ export function MagicExpressionManager({
           if (!open) setDialog({ name: "closed" });
         }}
       >
-        <ContentDialog.Backdrop className="!z-40" />
-        <ContentDialog.Positioner className="!z-40">
+        <ContentDialog.Backdrop className="app-overlay-layer" />
+        <ContentDialog.Positioner className="app-overlay-layer">
           <ContentDialog.Content>
             {dialog.name === "delete" && (
               <>
@@ -251,9 +264,12 @@ function ExpressionFields({
   );
 }
 
-function readEditorViewport(): EditorViewport {
-  return {
-    height: window.visualViewport?.height ?? window.innerHeight,
-    offsetTop: window.visualViewport?.offsetTop ?? 0,
-  };
+function scrollEditorFieldIntoView(element: Element) {
+  if (
+    !(element instanceof HTMLInputElement) &&
+    !(element instanceof HTMLTextAreaElement)
+  )
+    return;
+
+  element.scrollIntoView({ block: "nearest" });
 }

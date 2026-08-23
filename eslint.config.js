@@ -10,7 +10,15 @@ const functionVariable = {
 };
 
 export default tseslint.config(
-  { ignores: ["dist", "coverage", "seed-design", "work"] },
+  {
+    ignores: [
+      "**/dist/**",
+      "**/coverage/**",
+      "apps/**",
+      "seed-design/**",
+      "work/**"
+    ]
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
