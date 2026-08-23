@@ -1,20 +1,16 @@
-import {
-  IconDot3HorizontalLine,
-  IconPencilLine,
-  IconTrashcanLine,
-} from "@karrotmarket/react-monochrome-icon";
-import { ContentDialog, Icon, Menu, TextField } from "@seed-design/react";
-import { useState } from "react";
+import { ContentDialog, ResponsiveDialog, TextField } from "@seed-design/react";
+import { type CSSProperties, useEffect, useState } from "react";
 import { ActionButton } from "seed-design/ui/action-button";
 import {
   createMagicExpression,
   loadMagicExpressions,
-  MagicExpressionCard,
+  moveMagicExpression,
   removeMagicExpression,
   type MagicExpression,
   updateMagicExpression,
 } from "@/entities/magic-expression";
 import { EmptyState } from "@/shared/ui/empty-state";
+import { MagicExpressionList } from "./magic-expression-list";
 
 type DialogState =
   | { name: "closed" }
@@ -24,6 +20,11 @@ type DialogState =
 interface Draft {
   title: string;
   description: string;
+}
+
+interface EditorViewport {
+  height: number;
+  offsetTop: number;
 }
 
 interface MagicExpressionManagerProps {
@@ -40,6 +41,7 @@ export function MagicExpressionManager({
   const [expressions, setExpressions] = useState(loadMagicExpressions);
   const [dialog, setDialog] = useState<DialogState>({ name: "closed" });
   const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT);
+  const [editorViewport, setEditorViewport] = useState(readEditorViewport);
   const editorOpen = addOpen || dialog.name === "edit";
   const canSave = Boolean(draft.title.trim() && draft.description.trim());
 
@@ -64,33 +66,56 @@ export function MagicExpressionManager({
     setDialog({ name: "closed" });
   }
 
+  function handleEdit(expression: MagicExpression) {
+    setDraft({
+      title: expression.title,
+      description: expression.description,
+    });
+    setDialog({ name: "edit", expression });
+  }
+
+  function handleMove(expressionId: string, targetIndex: number) {
+    setExpressions(moveMagicExpression(expressionId, targetIndex));
+  }
+
+  function handleEditorOpenChange(open: boolean) {
+    if (open) return;
+
+    setDraft(EMPTY_DRAFT);
+    onAddOpenChange(false);
+    setDialog({ name: "closed" });
+  }
+
+  // Synchronize the editor surface with the mobile browser's visual viewport.
+  useEffect(() => {
+    if (!editorOpen) return;
+
+    const updateViewport = () => setEditorViewport(readEditorViewport());
+
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+    window.visualViewport?.addEventListener("resize", updateViewport);
+    window.visualViewport?.addEventListener("scroll", updateViewport);
+
+    return () => {
+      window.removeEventListener("resize", updateViewport);
+      window.visualViewport?.removeEventListener("resize", updateViewport);
+      window.visualViewport?.removeEventListener("scroll", updateViewport);
+    };
+  }, [editorOpen]);
+
   return (
     <>
       <main className="p-5 pb-10">
         {expressions.length ? (
-          <section className="grid gap-3" aria-label="저장한 표현">
-            {expressions.map((expression) => (
-              <MagicExpressionCard
-                key={expression.id}
-                expression={expression}
-                action={
-                  <ExpressionActionsMenu
-                    expression={expression}
-                    onEdit={() => {
-                      setDraft({
-                        title: expression.title,
-                        description: expression.description,
-                      });
-                      setDialog({ name: "edit", expression });
-                    }}
-                    onDelete={() =>
-                      setDialog({ name: "delete", expression })
-                    }
-                  />
-                }
-              />
-            ))}
-          </section>
+          <MagicExpressionList
+            expressions={expressions}
+            onEdit={handleEdit}
+            onDelete={(expression) =>
+              setDialog({ name: "delete", expression })
+            }
+            onMove={handleMove}
+          />
         ) : (
           <EmptyState
             title="저장한 표현이 없어요"
@@ -99,40 +124,47 @@ export function MagicExpressionManager({
         )}
       </main>
 
-      <ContentDialog.Root
+      <ResponsiveDialog.Root
         open={editorOpen}
-        onOpenChange={(open) => {
-          if (open) return;
-          setDraft(EMPTY_DRAFT);
-          onAddOpenChange(false);
-          setDialog({ name: "closed" });
-        }}
+        onOpenChange={handleEditorOpenChange}
       >
-        <ContentDialog.Backdrop />
-        <ContentDialog.Positioner>
-          <ContentDialog.Content>
-            <ContentDialog.Header>
-              <ContentDialog.Title>
+        <ResponsiveDialog.Backdrop className="!z-40" />
+        <ResponsiveDialog.Positioner
+          className="!z-40"
+          style={
+            {
+              "--magic-expression-editor-height": `${editorViewport.height}px`,
+              top: `${editorViewport.offsetTop}px`,
+              bottom: "auto",
+              height: `${editorViewport.height}px`,
+            } as CSSProperties
+          }
+        >
+          <ResponsiveDialog.Content className="max-md:!flex max-md:!h-[var(--magic-expression-editor-height)] max-md:!max-h-[var(--magic-expression-editor-height)] max-md:flex-col max-md:rounded-t-[var(--seed-radius-r6)] max-md:rounded-b-none">
+            <ResponsiveDialog.Header className="shrink-0">
+              <ResponsiveDialog.Title>
                 {dialog.name === "edit" ? "표현 수정" : "표현 추가"}
-              </ContentDialog.Title>
-              <ContentDialog.Description>
+              </ResponsiveDialog.Title>
+              <ResponsiveDialog.Description>
                 반복해서 활용할 문장이나 답변 틀을 저장해요.
-              </ContentDialog.Description>
-            </ContentDialog.Header>
-            <ContentDialog.Body>
+              </ResponsiveDialog.Description>
+            </ResponsiveDialog.Header>
+            <ResponsiveDialog.Body className="min-h-0 overflow-y-auto overscroll-contain touch-pan-y pb-2 max-md:flex-1">
               <ExpressionFields draft={draft} onChange={setDraft} />
-            </ContentDialog.Body>
-            <ContentDialog.Footer>
-              <ContentDialog.CloseButton asChild>
-                <ActionButton variant="neutralWeak">취소</ActionButton>
-              </ContentDialog.CloseButton>
-              <ActionButton disabled={!canSave} onClick={handleSave}>
-                저장
-              </ActionButton>
-            </ContentDialog.Footer>
-          </ContentDialog.Content>
-        </ContentDialog.Positioner>
-      </ContentDialog.Root>
+            </ResponsiveDialog.Body>
+            <ResponsiveDialog.Footer className="shrink-0 bg-[var(--seed-color-bg-layer-floating)]">
+              <div className="grid grid-cols-2 gap-2.5">
+                <ResponsiveDialog.CloseButton asChild>
+                  <ActionButton variant="neutralWeak">취소</ActionButton>
+                </ResponsiveDialog.CloseButton>
+                <ActionButton disabled={!canSave} onClick={handleSave}>
+                  저장
+                </ActionButton>
+              </div>
+            </ResponsiveDialog.Footer>
+          </ResponsiveDialog.Content>
+        </ResponsiveDialog.Positioner>
+      </ResponsiveDialog.Root>
 
       <ContentDialog.Root
         open={dialog.name === "delete"}
@@ -140,8 +172,8 @@ export function MagicExpressionManager({
           if (!open) setDialog({ name: "closed" });
         }}
       >
-        <ContentDialog.Backdrop />
-        <ContentDialog.Positioner>
+        <ContentDialog.Backdrop className="!z-40" />
+        <ContentDialog.Positioner className="!z-40">
           <ContentDialog.Content>
             {dialog.name === "delete" && (
               <>
@@ -171,46 +203,6 @@ export function MagicExpressionManager({
   );
 }
 
-function ExpressionActionsMenu({
-  expression,
-  onEdit,
-  onDelete,
-}: {
-  expression: MagicExpression;
-  onEdit: () => void;
-  onDelete: () => void;
-}) {
-  return (
-    <Menu.Root size="medium" placement="bottom-end" gutter={6}>
-      <Menu.Trigger asChild>
-        <ActionButton
-          variant="ghost"
-          size="small"
-          layout="iconOnly"
-          aria-label={`${expression.title} 더보기`}
-        >
-          <Icon svg={<IconDot3HorizontalLine />} />
-        </ActionButton>
-      </Menu.Trigger>
-      <Menu.Positioner>
-        <Menu.Content>
-          <Menu.Item onClick={onEdit}>
-            <Icon svg={<IconPencilLine />} />
-            <Menu.ItemLabel>수정하기</Menu.ItemLabel>
-          </Menu.Item>
-          <Menu.Item
-            className="!text-[var(--seed-color-fg-critical)]"
-            onClick={onDelete}
-          >
-            <Icon svg={<IconTrashcanLine />} />
-            <Menu.ItemLabel>삭제하기</Menu.ItemLabel>
-          </Menu.Item>
-        </Menu.Content>
-      </Menu.Positioner>
-    </Menu.Root>
-  );
-}
-
 function ExpressionFields({
   draft,
   onChange,
@@ -227,7 +219,6 @@ function ExpressionFields({
         <TextField.Root>
           <TextField.Input
             id="expression-title"
-            autoFocus
             aria-label="제목"
             value={draft.title}
             onChange={(event) =>
@@ -258,4 +249,11 @@ function ExpressionFields({
       </div>
     </div>
   );
+}
+
+function readEditorViewport(): EditorViewport {
+  return {
+    height: window.visualViewport?.height ?? window.innerHeight,
+    offsetTop: window.visualViewport?.offsetTop ?? 0,
+  };
 }

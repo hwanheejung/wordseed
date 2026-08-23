@@ -1,6 +1,7 @@
 export {
   createMagicExpression,
   loadMagicExpressions,
+  moveMagicExpression,
   removeMagicExpression,
   updateMagicExpression,
 } from "./api/local-magic-expression-repository";

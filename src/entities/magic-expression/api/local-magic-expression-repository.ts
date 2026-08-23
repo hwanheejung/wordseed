@@ -86,6 +86,30 @@ export function updateMagicExpression(
   return next;
 }
 
+export function moveMagicExpression(
+  id: string,
+  targetIndex: number,
+): MagicExpression[] {
+  const expressions = loadMagicExpressions();
+  const sourceIndex = expressions.findIndex((expression) => expression.id === id);
+  if (sourceIndex === -1 || expressions.length < 2) return expressions;
+
+  const boundedTargetIndex = Math.min(
+    expressions.length - 1,
+    Math.max(0, targetIndex),
+  );
+  if (sourceIndex === boundedTargetIndex) return expressions;
+
+  const next = [...expressions];
+  const [movedExpression] = next.splice(sourceIndex, 1);
+  if (!movedExpression) return expressions;
+
+  next.splice(boundedTargetIndex, 0, movedExpression);
+  writeMagicExpressions(next);
+
+  return next;
+}
+
 export function removeMagicExpression(id: string): MagicExpression[] {
   const next = loadMagicExpressions().filter(
     (expression) => expression.id !== id,

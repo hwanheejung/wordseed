@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
   createMagicExpression,
   loadMagicExpressions,
+  moveMagicExpression,
   removeMagicExpression,
   updateMagicExpression,
 } from "./local-magic-expression-repository";
@@ -67,6 +68,24 @@ describe("local magic expression repository", () => {
       description: "**In my view**, this works better.",
     });
     expect(loadMagicExpressions()).toEqual(updated);
+  });
+
+  it("moves an expression to a bounded position and persists the order", () => {
+    const expressions = loadMagicExpressions();
+    const firstExpression = expressions[0];
+    if (!firstExpression) return;
+
+    const moved = moveMagicExpression(firstExpression.id, 2);
+
+    expect(moved.slice(0, 3).map(({ title }) => title)).toEqual([
+      "Meet People",
+      "Save Time",
+      "Fun",
+    ]);
+    expect(loadMagicExpressions()).toEqual(moved);
+    expect(moveMagicExpression(firstExpression.id, 99).at(-1)?.id).toBe(
+      firstExpression.id,
+    );
   });
 
   it("does not reseed defaults after the user deletes every expression", () => {
