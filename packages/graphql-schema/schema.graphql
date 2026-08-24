@@ -1,0 +1,13 @@
+"""Current operational status of the Wordseed API."""
+type HealthStatus {
+  """Name of the responding service."""
+  service: String!
+
+  """Whether the API can accept requests."""
+  status: String!
+}
+
+type Query {
+  """Checks whether the Wordseed API is available."""
+  health: HealthStatus!
+}

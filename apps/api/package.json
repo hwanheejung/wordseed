@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit --pretty false",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "schema:generate": "nest start --entryFile graphql/generate-schema",
     "test": "vitest run",
     "verify": "pnpm typecheck && pnpm lint && pnpm test"
   },

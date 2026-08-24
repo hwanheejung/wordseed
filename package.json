@@ -10,6 +10,7 @@
     "build": "turbo run build",
     "build:web": "turbo run build --filter=@wordseed/web",
     "build:api": "turbo run build --filter=@wordseed/api",
+    "schema:generate": "pnpm --filter @wordseed/api schema:generate",
     "start:api": "pnpm --filter @wordseed/api start",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
