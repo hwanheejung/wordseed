@@ -14,7 +14,6 @@ export default tseslint.config(
     ignores: [
       "**/dist/**",
       "**/coverage/**",
-      "apps/**",
       "seed-design/**",
       "work/**"
     ]

@@ -1,6 +1,14 @@
 # Wordseed
 
-A mobile-first vocabulary PWA for capturing English words and expressions from text or photos, reviewing complete cards, and testing recall in new contexts.
+Wordseed is a pnpm workspace orchestrated by Turborepo. The existing mobile-first vocabulary PWA is isolated in `apps/web` without changing its runtime behavior.
+
+## Workspace
+
+```text
+apps/
+  web/        # Existing Vite web application
+api/          # Legacy API prototype, excluded from the web workspace
+```
 
 ## Run locally
 
@@ -11,17 +19,20 @@ pnpm dev
 
 The app includes demo cards and keeps manual capture, study, test, search, and backup features available without an API key.
 
-## AI configuration
-
-Set `OPENAI_API_KEY` in the Vercel project environment. The key is read only by the serverless handlers under `api/cards/` and is never shipped to the browser.
-
-Optional environment setting:
+Run a command for the web package directly when needed:
 
 ```bash
-OPENAI_MODEL=gpt-5.6-terra
+pnpm --filter @wordseed/web dev
+pnpm --filter @wordseed/web build
 ```
 
-Deploy the repository to Vercel so `/api/cards/extract`, `/api/cards/enrich`, and `/api/cards/memory-aid` run as serverless functions. During plain Vite development, text input falls back to an editable manual card; photo extraction and memory-aid generation report that AI configuration is required.
+## API boundary
+
+The legacy `api/cards` prototype remains at the repository root for reference, but it is not part of the web workspace, web verification, or Vercel web deployment. The existing frontend request paths remain unchanged until the replacement API is connected.
+
+## Vercel
+
+Configure the existing Vercel project with `apps/web` as its Root Directory. The app-level `vercel.json` skips a deployment when that directory has no changes.
 
 ## Data and review schedule
 

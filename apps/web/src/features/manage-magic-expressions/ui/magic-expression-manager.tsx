@@ -115,9 +115,7 @@ export function MagicExpressionManager({
           <MagicExpressionList
             expressions={expressions}
             onEdit={handleEdit}
-            onDelete={(expression) =>
-              setDialog({ name: "delete", expression })
-            }
+            onDelete={(expression) => setDialog({ name: "delete", expression })}
             onMove={handleMove}
           />
         ) : (
@@ -166,7 +164,7 @@ export function MagicExpressionManager({
               <ExpressionFields draft={draft} onChange={setDraft} />
             </ResponsiveDialog.Body>
             <ResponsiveDialog.Footer className="shrink-0 bg-[var(--seed-color-bg-layer-floating)]">
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid">
                 <ResponsiveDialog.CloseButton asChild>
                   <ActionButton variant="neutralWeak">취소</ActionButton>
                 </ResponsiveDialog.CloseButton>
@@ -242,10 +240,7 @@ function ExpressionFields({
         </TextField.Root>
       </div>
       <div className="[&_textarea]:min-h-[180px]">
-        <label
-          className="field-label !mt-0"
-          htmlFor="expression-description"
-        >
+        <label className="field-label !mt-0" htmlFor="expression-description">
           내용 <span>Markdown</span>
         </label>
         <TextField.Root>
