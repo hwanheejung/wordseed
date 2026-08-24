@@ -6,8 +6,8 @@ Wordseed is a pnpm workspace orchestrated by Turborepo. The existing mobile-firs
 
 ```text
 apps/
-  web/        # Existing Vite web application
-api/          # Legacy API prototype, excluded from the web workspace
+  api/        # New NestJS + Apollo GraphQL server for the mobile app
+  web/        # Existing Vite web app and its Vercel functions under api/
 ```
 
 ## Run locally
@@ -17,7 +17,12 @@ pnpm install
 pnpm dev
 ```
 
-The app includes demo cards and keeps manual capture, study, test, search, and backup features available without an API key.
+`pnpm dev` runs the web app and its Vercel functions together at
+`http://localhost:5173`. The functions read `apps/web/.env`.
+
+The app includes demo cards and keeps study, test, search, and backup features
+available without an API key. AI-assisted card creation requires
+`OPENAI_API_KEY`.
 
 Run a command for the web package directly when needed:
 
@@ -26,9 +31,24 @@ pnpm --filter @wordseed/web dev
 pnpm --filter @wordseed/web build
 ```
 
+The package-level web dev command starts only Vite. Use `pnpm dev` when testing
+the `/api/cards/*` functions locally.
+
+Run the new mobile application API separately:
+
+```bash
+pnpm dev:api
+```
+
+The GraphQL endpoint is available at `http://localhost:4000/graphql`. The
+server validates its environment at startup; copy `apps/api/.env.example` to
+`apps/api/.env` only when overriding the local defaults.
+
 ## API boundary
 
-The legacy `api/cards` prototype remains at the repository root for reference, but it is not part of the web workspace, web verification, or Vercel web deployment. The existing frontend request paths remain unchanged until the replacement API is connected.
+The existing web-only functions live under `apps/web/api/cards` and are exposed
+as `/api/cards/*`. The new `apps/api` server is an independent backend for the
+mobile application and does not replace these web request paths.
 
 ## Vercel
 
