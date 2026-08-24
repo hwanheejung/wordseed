@@ -1,3 +1,26 @@
+type DictionaryEntry {
+  headword: String!
+  id: ID!
+  kind: DictionaryEntryKind!
+}
+
+type DictionaryEntryConnection {
+  edges: [DictionaryEntryEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type DictionaryEntryEdge {
+  cursor: String!
+  node: DictionaryEntry!
+}
+
+"""Whether a dictionary entry is a word or a multiword expression."""
+enum DictionaryEntryKind {
+  EXPRESSION
+  WORD
+}
+
 """Current operational status of the Wordseed API."""
 type HealthStatus {
   """Name of the responding service."""
@@ -7,7 +30,21 @@ type HealthStatus {
   status: String!
 }
 
+"""Cursor information for a Relay-compatible connection."""
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
 type Query {
+  """Searches dictionary entries using forward cursor pagination."""
+  dictionaryEntries(after: String, first: Int! = 20, query: String): DictionaryEntryConnection!
+
+  """Returns one dictionary entry by its stable ID."""
+  dictionaryEntry(id: ID!): DictionaryEntry
+
   """Checks whether the Wordseed API is available."""
   health: HealthStatus!
 }

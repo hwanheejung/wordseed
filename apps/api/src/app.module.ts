@@ -6,6 +6,7 @@ import {
   type ApiEnvironment,
   validateEnvironment,
 } from "./config/environment";
+import { DictionaryModule } from "./dictionary/dictionary.module";
 import { HealthModule } from "./health/health.module";
 
 @Module({
@@ -30,6 +31,7 @@ import { HealthModule } from "./health/health.module";
         sortSchema: true,
       }),
     }),
+    DictionaryModule,
     HealthModule,
   ],
 })

@@ -7,3 +7,4 @@ work/npm-cache
 *.tsbuildinfo
 .vercel
 .turbo
+apps/api/src/generated/

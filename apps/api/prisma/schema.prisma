@@ -1,0 +1,27 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+  engineType   = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum DictionaryEntryKind {
+  WORD
+  EXPRESSION
+}
+
+model DictionaryEntry {
+  id                 String              @id @default(uuid()) @db.Uuid
+  headword           String              @db.VarChar(255)
+  normalizedHeadword String              @unique @map("normalized_headword") @db.VarChar(255)
+  kind               DictionaryEntryKind
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+
+  @@index([headword])
+  @@map("dictionary_entries")
+}

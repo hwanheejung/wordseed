@@ -44,6 +44,46 @@ The GraphQL endpoint is available at `http://localhost:4000/graphql`. The
 server validates its environment at startup; copy `apps/api/.env.example` to
 `apps/api/.env` only when overriding the local defaults.
 
+### Local API database
+
+The API uses PostgreSQL through Prisma. The current development schema contains
+only `DictionaryEntry`; no Prisma migration files are created yet.
+
+After creating the local `wordseed_dev` database, apply the current development
+schema and insert one word plus one expression:
+
+```bash
+pnpm db:push
+pnpm db:seed
+pnpm db:check
+```
+
+`db:push` synchronizes the local development database without creating a
+migration. `db:check` verifies the Prisma connection and prints the current
+dictionary entry count.
+
+Start the API and open GraphiQL at `http://localhost:4000/graphql`:
+
+```graphql
+query DictionaryEntries {
+  dictionaryEntries(query: "grind", first: 10) {
+    totalCount
+    edges {
+      cursor
+      node {
+        id
+        headword
+        kind
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+```
+
 ## API boundary
 
 The existing web-only functions live under `apps/web/api/cards` and are exposed
