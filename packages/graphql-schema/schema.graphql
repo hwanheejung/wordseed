@@ -2,6 +2,8 @@ type DictionaryEntry {
   headword: String!
   id: ID!
   kind: DictionaryEntryKind!
+  languageTag: String!
+  senses: [DictionarySense!]!
 }
 
 type DictionaryEntryConnection {
@@ -19,6 +21,82 @@ type DictionaryEntryEdge {
 enum DictionaryEntryKind {
   EXPRESSION
   WORD
+}
+
+type DictionaryExample {
+  id: ID!
+  sourceLanguageTag: String!
+  sourceText: String!
+  translations: [DictionaryExampleTranslation!]!
+}
+
+type DictionaryExampleTranslation {
+  generatedBy: String
+  id: ID!
+  languageTag: String!
+  text: String!
+}
+
+type DictionaryForm {
+  id: ID!
+  kind: DictionaryFormKind!
+  surface: String!
+}
+
+enum DictionaryFormKind {
+  COMPARATIVE
+  OTHER
+  PAST
+  PAST_PARTICIPLE
+  PLURAL
+  PRESENT_PARTICIPLE
+  SUPERLATIVE
+  THIRD_PERSON_SINGULAR
+}
+
+"""The grammatical role of one dictionary sense."""
+enum DictionaryPartOfSpeech {
+  ADJECTIVE
+  ADVERB
+  AUXILIARY
+  CONJUNCTION
+  DETERMINER
+  INTERJECTION
+  NOUN
+  PARTICLE
+  PREPOSITION
+  PRONOUN
+  VERB
+}
+
+type DictionarySense {
+  commonnessScore: Float
+  definitions: [DictionarySenseDefinition!]!
+  examples: [DictionaryExample!]!
+  forms: [DictionaryForm!]!
+  id: ID!
+  narratives: [DictionarySenseNarrative!]!
+  partOfSpeech: DictionaryPartOfSpeech
+}
+
+type DictionarySenseDefinition {
+  id: ID!
+  languageTag: String!
+  text: String!
+}
+
+type DictionarySenseNarrative {
+  generatedBy: String
+  id: ID!
+  kind: DictionarySenseNarrativeKind!
+  languageTag: String!
+  markdown: String!
+}
+
+enum DictionarySenseNarrativeKind {
+  ORIGIN
+  STORY
+  USAGE_GUIDE
 }
 
 """Current operational status of the Wordseed API."""
@@ -40,7 +118,7 @@ type PageInfo {
 
 type Query {
   """Searches dictionary entries using forward cursor pagination."""
-  dictionaryEntries(after: String, first: Int! = 20, query: String): DictionaryEntryConnection!
+  dictionaryEntries(after: String, first: Int! = 20, languageTag: String! = "en", query: String): DictionaryEntryConnection!
 
   """Returns one dictionary entry by its stable ID."""
   dictionaryEntry(id: ID!): DictionaryEntry

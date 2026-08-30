@@ -14,14 +14,158 @@ enum DictionaryEntryKind {
   EXPRESSION
 }
 
-model DictionaryEntry {
-  id                 String              @id @default(uuid()) @db.Uuid
-  headword           String              @db.VarChar(255)
-  normalizedHeadword String              @unique @map("normalized_headword") @db.VarChar(255)
-  kind               DictionaryEntryKind
-  createdAt          DateTime            @default(now()) @map("created_at")
-  updatedAt          DateTime            @updatedAt @map("updated_at")
+enum DictionaryPartOfSpeech {
+  NOUN
+  VERB
+  ADJECTIVE
+  ADVERB
+  PRONOUN
+  PREPOSITION
+  CONJUNCTION
+  INTERJECTION
+  DETERMINER
+  AUXILIARY
+  PARTICLE
+}
 
-  @@index([headword])
+enum DictionarySenseRelationKind {
+  RELATED
+  DERIVED_FROM
+  SYNONYM
+  ANTONYM
+  CONFUSABLE
+}
+
+enum DictionarySenseNarrativeKind {
+  STORY
+  ORIGIN
+  USAGE_GUIDE
+}
+
+enum DictionaryFormKind {
+  THIRD_PERSON_SINGULAR
+  PAST
+  PAST_PARTICIPLE
+  PRESENT_PARTICIPLE
+  PLURAL
+  COMPARATIVE
+  SUPERLATIVE
+  OTHER
+}
+
+model User {
+  id                String   @id @default(uuid()) @db.Uuid
+  nativeLanguageTag String?  @map("native_language_tag") @db.VarChar(35)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model DictionaryEntry {
+  id          String              @id @default(uuid()) @db.Uuid
+  headword    String              @db.VarChar(255)
+  languageTag String              @map("language_tag") @db.VarChar(35)
+  kind        DictionaryEntryKind
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @updatedAt @map("updated_at")
+  senses      DictionarySense[]
+
+  @@unique([languageTag, headword])
   @@map("dictionary_entries")
+}
+
+model DictionarySense {
+  id                String                      @id @default(uuid()) @db.Uuid
+  entryId           String                      @map("entry_id") @db.Uuid
+  entry             DictionaryEntry             @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  partOfSpeech      DictionaryPartOfSpeech?     @map("part_of_speech")
+  commonnessScore   Float?                      @map("commonness_score")
+  createdAt         DateTime                    @default(now()) @map("created_at")
+  updatedAt         DateTime                    @updatedAt @map("updated_at")
+  definitions       DictionarySenseDefinition[]
+  narratives        DictionarySenseNarrative[]
+  examples          DictionaryExample[]
+  forms             DictionaryForm[]
+  outgoingRelations DictionarySenseRelation[]   @relation("DictionarySenseRelationSource")
+  incomingRelations DictionarySenseRelation[]   @relation("DictionarySenseRelationTarget")
+
+  @@index([entryId, commonnessScore])
+  @@map("dictionary_senses")
+}
+
+model DictionarySenseDefinition {
+  id          String          @id @default(uuid()) @db.Uuid
+  senseId     String          @map("sense_id") @db.Uuid
+  sense       DictionarySense @relation(fields: [senseId], references: [id], onDelete: Cascade)
+  languageTag String          @map("language_tag") @db.VarChar(35)
+  text        String          @db.Text
+
+  @@unique([senseId, languageTag])
+  @@map("dictionary_sense_definitions")
+}
+
+model DictionarySenseNarrative {
+  id          String                       @id @default(uuid()) @db.Uuid
+  senseId     String                       @map("sense_id") @db.Uuid
+  sense       DictionarySense              @relation(fields: [senseId], references: [id], onDelete: Cascade)
+  kind        DictionarySenseNarrativeKind
+  languageTag String                       @map("language_tag") @db.VarChar(35)
+  markdown    String                       @db.Text
+  generatedBy String?                      @map("generated_by") @db.VarChar(100)
+  createdAt   DateTime                     @default(now()) @map("created_at")
+  updatedAt   DateTime                     @updatedAt @map("updated_at")
+
+  @@unique([senseId, kind, languageTag])
+  @@map("dictionary_sense_narratives")
+}
+
+model DictionaryExample {
+  id                String                         @id @default(uuid()) @db.Uuid
+  senseId           String                         @map("sense_id") @db.Uuid
+  sense             DictionarySense                @relation(fields: [senseId], references: [id], onDelete: Cascade)
+  sourceLanguageTag String                         @map("source_language_tag") @db.VarChar(35)
+  sourceText        String                         @map("source_text") @db.Text
+  translations      DictionaryExampleTranslation[]
+  createdAt         DateTime                       @default(now()) @map("created_at")
+  updatedAt         DateTime                       @updatedAt @map("updated_at")
+
+  @@unique([senseId, sourceLanguageTag, sourceText])
+  @@map("dictionary_examples")
+}
+
+model DictionaryExampleTranslation {
+  id          String            @id @default(uuid()) @db.Uuid
+  exampleId   String            @map("example_id") @db.Uuid
+  example     DictionaryExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
+  languageTag String            @map("language_tag") @db.VarChar(35)
+  text        String            @db.Text
+  generatedBy String?           @map("generated_by") @db.VarChar(100)
+
+  @@unique([exampleId, languageTag])
+  @@map("dictionary_example_translations")
+}
+
+model DictionaryForm {
+  id      String             @id @default(uuid()) @db.Uuid
+  senseId String             @map("sense_id") @db.Uuid
+  sense   DictionarySense    @relation(fields: [senseId], references: [id], onDelete: Cascade)
+  surface String             @db.VarChar(255)
+  kind    DictionaryFormKind
+
+  @@unique([senseId, surface, kind])
+  @@map("dictionary_forms")
+}
+
+model DictionarySenseRelation {
+  id            String                      @id @default(uuid()) @db.Uuid
+  sourceSenseId String                      @map("source_sense_id") @db.Uuid
+  targetSenseId String                      @map("target_sense_id") @db.Uuid
+  kind          DictionarySenseRelationKind
+  sourceSense   DictionarySense             @relation("DictionarySenseRelationSource", fields: [sourceSenseId], references: [id], onDelete: Cascade)
+  targetSense   DictionarySense             @relation("DictionarySenseRelationTarget", fields: [targetSenseId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceSenseId, targetSenseId, kind])
+  @@index([targetSenseId])
+  @@map("dictionary_sense_relations")
 }

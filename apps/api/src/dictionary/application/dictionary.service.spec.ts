@@ -17,12 +17,16 @@ const entries: readonly DictionaryEntry[] = [
   {
     id: "entry:grind",
     headword: "grind",
+    languageTag: "en",
     kind: DictionaryEntryKind.WORD,
+    senses: [],
   },
   {
     id: "entry:grind-to-a-halt",
     headword: "grind to a halt",
+    languageTag: "en",
     kind: DictionaryEntryKind.EXPRESSION,
+    senses: [],
   },
 ];
 
@@ -34,11 +38,14 @@ class TestDictionaryRepository extends DictionaryRepository {
   search(
     criteria: SearchDictionaryEntriesCriteria,
   ): Promise<SearchDictionaryEntriesResult> {
+    const languageEntries = entries.filter(
+      (entry) => entry.languageTag === criteria.languageTag,
+    );
     const matchedEntries = criteria.normalizedQuery
-      ? entries.filter((entry) =>
+      ? languageEntries.filter((entry) =>
           entry.headword.toLowerCase().includes(criteria.normalizedQuery ?? ""),
         )
-      : entries;
+      : languageEntries;
 
     return Promise.resolve({
       entries: matchedEntries.slice(
@@ -91,6 +98,12 @@ describe("DictionaryService", () => {
   it("rejects an invalid cursor", async () => {
     await expect(
       service.search({ after: "not-a-dictionary-cursor" }),
+    ).rejects.toBeInstanceOf(InvalidDictionaryQueryError);
+  });
+
+  it("rejects an invalid language tag", async () => {
+    await expect(
+      service.search({ languageTag: "not_a_language" }),
     ).rejects.toBeInstanceOf(InvalidDictionaryQueryError);
   });
 });

@@ -9,10 +9,60 @@ async function checkDatabase(): Promise<void> {
   const prisma = new PrismaClient({ adapter });
 
   try {
-    const entryCount = await prisma.dictionaryEntry.count();
+    const [
+      userCount,
+      usersWithNativeLanguageCount,
+      entryCount,
+      expressionCount,
+      senseCount,
+      definitionCount,
+      relationCount,
+      narrativeCount,
+      exampleCount,
+      formCount,
+      entryLanguages,
+      definitionLanguages,
+      narrativeLanguages,
+    ] = await Promise.all([
+      prisma.user.count(),
+      prisma.user.count({ where: { nativeLanguageTag: { not: null } } }),
+      prisma.dictionaryEntry.count(),
+      prisma.dictionaryEntry.count({ where: { kind: "EXPRESSION" } }),
+      prisma.dictionarySense.count(),
+      prisma.dictionarySenseDefinition.count(),
+      prisma.dictionarySenseRelation.count(),
+      prisma.dictionarySenseNarrative.count(),
+      prisma.dictionaryExample.count(),
+      prisma.dictionaryForm.count(),
+      prisma.dictionaryEntry.findMany({
+        distinct: ["languageTag"],
+        select: { languageTag: true },
+      }),
+      prisma.dictionarySenseDefinition.findMany({
+        distinct: ["languageTag"],
+        select: { languageTag: true },
+      }),
+      prisma.dictionarySenseNarrative.findMany({
+        distinct: ["languageTag"],
+        select: { languageTag: true },
+      }),
+    ]);
 
     process.stdout.write(
-      `Database connected. Dictionary entries: ${entryCount}.\n`,
+      [
+        "Database connected.",
+        `Users: ${userCount} (${usersWithNativeLanguageCount} with a native language).`,
+        `Dictionary entries: ${entryCount} (${expressionCount} expressions).`,
+        `Entry languages: ${entryLanguages.map(({ languageTag }) => languageTag).sort().join(", ")}.`,
+        `Senses: ${senseCount} with ${definitionCount} localized definitions.`,
+        `Definition languages: ${definitionLanguages.map(({ languageTag }) => languageTag).sort().join(", ")}.`,
+        `Sense narratives: ${narrativeCount}.`,
+        `Narrative languages: ${narrativeLanguages.map(({ languageTag }) => languageTag).sort().join(", ")}.`,
+        `Examples: ${exampleCount}.`,
+        `Sense forms: ${formCount}.`,
+        `Sense relations: ${relationCount}.`,
+        "",
+      ].join("\n"),
     );
   } finally {
     await prisma.$disconnect();

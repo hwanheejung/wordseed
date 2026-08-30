@@ -1,6 +1,7 @@
 import type { DictionaryEntry } from "./dictionary-entry";
 
 export interface SearchDictionaryEntriesCriteria {
+  languageTag: string;
   normalizedQuery: string | null;
   offset: number;
   limit: number;

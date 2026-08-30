@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import type { DictionaryEntry } from "../domain/dictionary-entry";
-import { normalizeDictionaryHeadword } from "../domain/dictionary-entry";
+import {
+  normalizeDictionaryLanguageTag,
+  normalizeDictionarySearchQuery,
+} from "../domain/dictionary-entry";
 import { DictionaryRepository } from "../domain/dictionary.repository";
 
 const DEFAULT_PAGE_SIZE = 20;
@@ -8,6 +11,7 @@ const MAX_PAGE_SIZE = 50;
 const CURSOR_PREFIX = "dictionary-entry:";
 
 export interface SearchDictionaryEntriesInput {
+  languageTag?: string;
   query?: string;
   first?: number;
   after?: string;
@@ -59,7 +63,9 @@ export class DictionaryService {
     return this.repository.findById(id);
   }
 
-  async search(input: SearchDictionaryEntriesInput): Promise<DictionaryEntryPage> {
+  async search(
+    input: SearchDictionaryEntriesInput,
+  ): Promise<DictionaryEntryPage> {
     const first = input.first ?? DEFAULT_PAGE_SIZE;
 
     if (!Number.isInteger(first) || first < 1 || first > MAX_PAGE_SIZE) {
@@ -68,11 +74,20 @@ export class DictionaryService {
       );
     }
 
+    let languageTag: string;
+
+    try {
+      languageTag = normalizeDictionaryLanguageTag(input.languageTag ?? "en");
+    } catch {
+      throw new InvalidDictionaryQueryError("Invalid dictionary language tag.");
+    }
+
     const normalizedQuery = input.query
-      ? normalizeDictionaryHeadword(input.query)
+      ? normalizeDictionarySearchQuery(input.query, languageTag)
       : null;
     const offset = input.after ? decodeCursor(input.after) + 1 : 0;
     const result = await this.repository.search({
+      languageTag,
       normalizedQuery: normalizedQuery || null,
       offset,
       limit: first,

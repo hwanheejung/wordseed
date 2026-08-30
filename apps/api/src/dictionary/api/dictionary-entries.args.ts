@@ -2,6 +2,9 @@ import { ArgsType, Field, Int } from "@nestjs/graphql";
 
 @ArgsType()
 export class DictionaryEntriesArgs {
+  @Field(() => String, { defaultValue: "en" })
+  languageTag: string = "en";
+
   @Field(() => String, { nullable: true })
   query?: string;
 
