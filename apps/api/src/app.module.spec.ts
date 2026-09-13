@@ -19,6 +19,16 @@ const healthResponseSchema = z.object({
   }),
 });
 
+const unauthenticatedResponseSchema = z.object({
+  data: z.object({ me: z.null() }),
+  errors: z.array(
+    z.object({
+      message: z.literal("Authentication required."),
+      extensions: z.object({ code: z.literal("UNAUTHENTICATED") }),
+    }),
+  ),
+});
+
 const sharedSchemaPath = resolve(
   process.cwd(),
   "../../packages/graphql-schema/schema.graphql",
@@ -60,6 +70,17 @@ describe("AppModule", () => {
         },
       },
     });
+  });
+
+  it("keeps user queries behind authentication", async () => {
+    const httpServer = app.getHttpServer() as Server;
+    const response = await request(httpServer)
+      .post("/graphql")
+      .send({ query: "{ me { id } }" })
+      .expect(200);
+    const responseBody: unknown = response.body;
+
+    expect(() => unauthenticatedResponseSchema.parse(responseBody)).not.toThrow();
   });
 
   it("keeps the shared schema in sync with the runtime schema", async () => {

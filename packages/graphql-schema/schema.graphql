@@ -1,3 +1,8 @@
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type DictionaryEntry {
   headword: String!
   id: ID!
@@ -108,6 +113,13 @@ type HealthStatus {
   status: String!
 }
 
+type Mutation {
+  """
+  Creates the Wordseed user after external authentication, or returns the existing user.
+  """
+  completeSignIn: User!
+}
+
 """Cursor information for a Relay-compatible connection."""
 type PageInfo {
   endCursor: String
@@ -125,4 +137,17 @@ type Query {
 
   """Checks whether the Wordseed API is available."""
   health: HealthStatus!
+
+  """Returns the authenticated Wordseed user, when initialized."""
+  me: User
+}
+
+"""A Wordseed application user."""
+type User {
+  createdAt: DateTime!
+  id: ID!
+  nativeLanguageTag: String
+  onboardingCompletedAt: DateTime
+  timeZone: String
+  updatedAt: DateTime!
 }

@@ -19,9 +19,17 @@ async function seedDatabase(): Promise<void> {
         where: { id: "90000000-0000-4000-8000-000000000001" },
         create: {
           id: "90000000-0000-4000-8000-000000000001",
+          authSubject: "91000000-0000-4000-8000-000000000001",
           nativeLanguageTag: "ko",
+          onboardingCompletedAt: new Date("2026-01-01T00:00:00.000Z"),
+          timeZone: "Asia/Seoul",
         },
-        update: { nativeLanguageTag: "ko" },
+        update: {
+          authSubject: "91000000-0000-4000-8000-000000000001",
+          nativeLanguageTag: "ko",
+          onboardingCompletedAt: new Date("2026-01-01T00:00:00.000Z"),
+          timeZone: "Asia/Seoul",
+        },
       });
 
       for (const entry of dictionarySeedEntries) {

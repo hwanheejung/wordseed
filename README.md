@@ -44,10 +44,29 @@ The GraphQL endpoint is available at `http://localhost:4000/graphql`. The
 server validates its environment at startup; copy `apps/api/.env.example` to
 `apps/api/.env` only when overriding the local defaults.
 
+### Mobile authentication
+
+The mobile API accepts Supabase Auth access tokens for Apple and Google users.
+Configure `SUPABASE_URL` for the Supabase project and keep
+`SUPABASE_JWT_AUDIENCE=authenticated`. The Supabase project must use an
+asymmetric JWT signing key so the API can verify tokens through its JWKS
+endpoint.
+
+After native Apple or Google authentication creates a Supabase session, send
+the access token with each protected GraphQL request:
+
+```http
+Authorization: Bearer <supabase-access-token>
+```
+
+Call `completeSignIn` once after authentication to idempotently create the
+Wordseed user. `me` returns the initialized user. Health and dictionary queries
+remain public.
+
 ### Local API database
 
 The API uses PostgreSQL through Prisma. The current development schema contains
-only `DictionaryEntry`; no Prisma migration files are created yet.
+users and dictionary entries; no Prisma migration files are created yet.
 
 After creating the local `wordseed_dev` database, apply the current development
 schema and insert one word plus one expression:

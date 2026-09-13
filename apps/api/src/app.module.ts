@@ -8,6 +8,7 @@ import {
 } from "./config/environment";
 import { DictionaryModule } from "./dictionary/dictionary.module";
 import { HealthModule } from "./health/health.module";
+import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { HealthModule } from "./health/health.module";
     }),
     DictionaryModule,
     HealthModule,
+    UserModule,
   ],
 })
 export class AppModule {}

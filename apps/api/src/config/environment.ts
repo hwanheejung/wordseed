@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const localDatabaseUrl =
   "postgresql://wordseed:wordseed@127.0.0.1:5432/wordseed_dev?schema=public";
+const localSupabaseUrl = "http://127.0.0.1:54321";
 
 const environmentSchema = z
   .object({
@@ -19,6 +20,8 @@ const environmentSchema = z
           .filter((origin) => origin.length > 0),
       ),
     DATABASE_URL: z.url().optional(),
+    SUPABASE_URL: z.url().optional(),
+    SUPABASE_JWT_AUDIENCE: z.string().trim().min(1).default("authenticated"),
   })
   .superRefine((configuration, context) => {
     if (
@@ -31,10 +34,22 @@ const environmentSchema = z
         path: ["DATABASE_URL"],
       });
     }
+
+    if (
+      configuration.NODE_ENV === "production" &&
+      configuration.SUPABASE_URL === undefined
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "SUPABASE_URL is required in production.",
+        path: ["SUPABASE_URL"],
+      });
+    }
   })
   .transform((configuration) => ({
     ...configuration,
     DATABASE_URL: configuration.DATABASE_URL ?? localDatabaseUrl,
+    SUPABASE_URL: configuration.SUPABASE_URL ?? localSupabaseUrl,
   }));
 
 export type ApiEnvironment = z.output<typeof environmentSchema>;

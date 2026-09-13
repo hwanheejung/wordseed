@@ -9,6 +9,8 @@ describe("validateEnvironment", () => {
       CORS_ORIGINS: [],
       DATABASE_URL:
         "postgresql://wordseed:wordseed@127.0.0.1:5432/wordseed_dev?schema=public",
+      SUPABASE_URL: "http://127.0.0.1:54321",
+      SUPABASE_JWT_AUDIENCE: "authenticated",
     });
   });
 
@@ -19,6 +21,7 @@ describe("validateEnvironment", () => {
         PORT: "4100",
         CORS_ORIGINS: "https://app.wordseed.dev, https://admin.wordseed.dev ",
         DATABASE_URL: "postgresql://example.com/wordseed",
+        SUPABASE_URL: "https://example.supabase.co",
       }),
     ).toEqual({
       NODE_ENV: "production",
@@ -28,6 +31,8 @@ describe("validateEnvironment", () => {
         "https://admin.wordseed.dev",
       ],
       DATABASE_URL: "postgresql://example.com/wordseed",
+      SUPABASE_URL: "https://example.supabase.co",
+      SUPABASE_JWT_AUDIENCE: "authenticated",
     });
   });
 
@@ -38,8 +43,20 @@ describe("validateEnvironment", () => {
   });
 
   it("requires a database URL in production", () => {
-    expect(() => validateEnvironment({ NODE_ENV: "production" })).toThrow(
-      "DATABASE_URL is required in production",
-    );
+    expect(() =>
+      validateEnvironment({
+        NODE_ENV: "production",
+        SUPABASE_URL: "https://example.supabase.co",
+      }),
+    ).toThrow("DATABASE_URL is required in production");
+  });
+
+  it("requires a Supabase URL in production", () => {
+    expect(() =>
+      validateEnvironment({
+        NODE_ENV: "production",
+        DATABASE_URL: "postgresql://example.com/wordseed",
+      }),
+    ).toThrow("SUPABASE_URL is required in production");
   });
 });
