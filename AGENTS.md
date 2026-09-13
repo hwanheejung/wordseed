@@ -7,6 +7,17 @@
 - Load both skills when a task changes implementation and structure.
 - Treat these project-local skills and their routed references as the canonical engineering conventions. Do not duplicate their detailed rules in `AGENTS.md`.
 
+## Agent Collaboration
+
+- The primary Codex agent owns scope, sequencing, decisions, and the final answer. Do not create a separate lead subagent.
+- Use Codex's built-in `explorer` for codebase mapping and `worker` for implementation and fixes.
+- For material product changes, delegate bounded work to the matching project agent in `.codex/agents/`: `product_planner`, `product_designer`, `architecture_reviewer`, or `verifier`.
+- Use only the specialists the task needs. Keep small, sequential tasks in the primary agent.
+- Gather independent proposals before asking agents to critique one another. Limit debate to one evidence-based rebuttal round, then let the primary agent decide and record the material trade-off.
+- Parallelize read-heavy research, exploration, and review. Avoid parallel edits to the same files unless each worker has an isolated checkout and a clear ownership boundary.
+- After a material behavior change, have `verifier` check the stated acceptance criteria against the exact revision. A failed check returns to `worker` with reproduction evidence.
+- Wait for every requested specialist before consolidating the result. Distinguish verified facts, inferences, and unresolved questions.
+
 ## Implementation
 
 - Choose the simplest implementation that fully satisfies the current requirements.
