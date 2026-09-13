@@ -27,7 +27,7 @@ registerEnumType(DictionaryEntryKind, {
 
 registerEnumType(DictionaryPartOfSpeech, {
   name: "DictionaryPartOfSpeech",
-  description: "The grammatical role of one dictionary sense.",
+  description: "The grammatical role shared by one dictionary concept.",
 });
 
 registerEnumType(DictionarySenseNarrativeKind, {
@@ -38,8 +38,8 @@ registerEnumType(DictionaryFormKind, {
   name: "DictionaryFormKind",
 });
 
-@ObjectType("DictionarySenseDefinition")
-export class DictionarySenseDefinitionObject {
+@ObjectType("DictionarySynsetDefinition")
+export class DictionarySynsetDefinitionObject {
   @Field(() => ID)
   id!: string;
 
@@ -66,6 +66,9 @@ export class DictionarySenseNarrativeObject {
 
   @Field(() => String, { nullable: true })
   generatedBy!: string | null;
+
+  @Field(() => String, { nullable: true })
+  promptVersion!: string | null;
 }
 
 @ObjectType("DictionaryExampleTranslation")
@@ -110,19 +113,31 @@ export class DictionaryFormObject {
   kind!: DictionaryFormKindValue;
 }
 
-@ObjectType("DictionarySense")
-export class DictionarySenseObject {
+@ObjectType("DictionarySynset")
+export class DictionarySynsetObject {
   @Field(() => ID)
   id!: string;
 
   @Field(() => DictionaryPartOfSpeech, { nullable: true })
   partOfSpeech!: DictionaryPartOfSpeechValue | null;
 
+  @Field(() => [DictionarySynsetDefinitionObject])
+  definitions!: readonly DictionarySynsetDefinitionObject[];
+
+  @Field(() => [DictionaryExampleObject])
+  examples!: readonly DictionaryExampleObject[];
+}
+
+@ObjectType("DictionarySense")
+export class DictionarySenseObject {
+  @Field(() => ID)
+  id!: string;
+
   @Field(() => Float, { nullable: true })
   commonnessScore!: number | null;
 
-  @Field(() => [DictionarySenseDefinitionObject])
-  definitions!: readonly DictionarySenseDefinitionObject[];
+  @Field(() => DictionarySynsetObject)
+  synset!: DictionarySynsetObject;
 
   @Field(() => [DictionarySenseNarrativeObject])
   narratives!: readonly DictionarySenseNarrativeObject[];

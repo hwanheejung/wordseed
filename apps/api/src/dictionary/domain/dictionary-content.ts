@@ -27,6 +27,7 @@ export interface DictionarySenseNarrative {
   languageTag: string;
   markdown: string;
   generatedBy: string | null;
+  promptVersion: string | null;
 }
 
 export interface DictionaryExampleTranslation {

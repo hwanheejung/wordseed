@@ -20,6 +20,7 @@
     "db:push": "prisma db push",
     "db:seed": "nest start --entryFile database/seed",
     "db:check": "nest start --entryFile database/check-database",
+    "dictionary:prepare:oewn": "nest build && node dist/dictionary/infrastructure/import/oewn/prepare-oewn-source.js",
     "db:studio": "prisma studio",
     "schema:generate": "nest start --entryFile graphql/generate-schema",
     "test": "vitest run",
@@ -42,6 +43,8 @@
     "pg": "8.23.0",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2",
+    "saxes": "6.0.0",
+    "yaml": "2.8.1",
     "zod": "4.4.3"
   },
   "devDependencies": {

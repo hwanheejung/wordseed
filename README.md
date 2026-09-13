@@ -103,6 +103,42 @@ query DictionaryEntries {
 }
 ```
 
+### OEWN source preparation
+
+The first dictionary importer reads the pinned Open English WordNet 2025 XML
+release and prepares traceable source material for the current target expressions.
+Download the source file from the URL recorded in
+`apps/api/dictionary-import/oewn-2025.json`, then run:
+
+```bash
+pnpm --filter @wordseed/api dictionary:prepare:oewn -- /path/to/english-wordnet-2025.xml.gz
+```
+
+The importer verifies the source checksum, version, language, and license before
+writing `candidates.jsonl`, `import-report.json`, and sharded source YAML under
+`apps/api/.cache/dictionary-import/oewn-2025`. Generated files are ignored by
+Git:
+
+```text
+staging/
+  attribution.yaml
+  entries/en/a.yaml ... z.yaml, other.yaml
+  synsets/en/<part-of-speech>/<source-id-hash-prefix-00..ff>.yaml
+```
+
+Entry shards use the normalized headword's first ASCII letter and fall back to
+`other`. Synset shards use the lowercase part of speech plus the first two hex
+characters of a SHA-256 hash of the OEWN synset ID. Staging entries and synsets
+retain OEWN source IDs and release attribution so a later promotion step can be
+reviewed and traced.
+
+Staging YAML is regenerable source material. The API never serves it, and it is
+not the Wordseed dictionary source of truth. The PostgreSQL database is the only
+serving source. Promoting selected staging records into Wordseed-owned IDs and
+content will be a separate, controlled bootstrap step; this command does not
+write to the database. The current `db:seed` command continues to load the
+handcrafted Wordseed DB dataset.
+
 ## API boundary
 
 The existing web-only functions live under `apps/web/api/cards` and are exposed

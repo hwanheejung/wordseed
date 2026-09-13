@@ -4,7 +4,9 @@ import { validateEnvironment } from "../config/environment";
 import { canonicalizeDictionaryHeadword } from "../dictionary/domain/dictionary-entry";
 import {
   dictionarySeedEntries,
-  dictionarySeedRelations,
+  dictionarySeedSenseRelations,
+  dictionarySeedSynsetRelations,
+  dictionarySeedSynsets,
 } from "../dictionary/infrastructure/seed/dictionary-seed-data";
 import { PrismaClient } from "../generated/prisma/client";
 
@@ -32,6 +34,67 @@ async function seedDatabase(): Promise<void> {
         },
       });
 
+      for (const synset of dictionarySeedSynsets) {
+        const persistedSynset = await transaction.dictionarySynset.upsert({
+          where: { id: synset.id },
+          create: { id: synset.id, partOfSpeech: synset.partOfSpeech },
+          update: { partOfSpeech: synset.partOfSpeech },
+        });
+
+        for (const definition of synset.definitions) {
+          await transaction.dictionarySynsetDefinition.upsert({
+            where: {
+              synsetId_languageTag: {
+                synsetId: persistedSynset.id,
+                languageTag: definition.languageTag,
+              },
+            },
+            create: {
+              synsetId: persistedSynset.id,
+              languageTag: definition.languageTag,
+              text: definition.text,
+            },
+            update: { text: definition.text },
+          });
+        }
+
+        for (const example of synset.examples) {
+          const persistedExample = await transaction.dictionarySynsetExample.upsert({
+            where: { id: example.id },
+            create: {
+              id: example.id,
+              synsetId: persistedSynset.id,
+              sourceLanguageTag: example.sourceLanguageTag,
+              sourceText: example.sourceText,
+            },
+            update: {
+              synsetId: persistedSynset.id,
+              sourceLanguageTag: example.sourceLanguageTag,
+              sourceText: example.sourceText,
+            },
+          });
+
+          for (const translation of example.translations) {
+            await transaction.dictionarySynsetExampleTranslation.upsert({
+              where: { id: translation.id },
+              create: {
+                id: translation.id,
+                exampleId: persistedExample.id,
+                languageTag: translation.languageTag,
+                text: translation.text,
+                generatedBy: translation.generatedBy ?? null,
+              },
+              update: {
+                exampleId: persistedExample.id,
+                languageTag: translation.languageTag,
+                text: translation.text,
+                generatedBy: translation.generatedBy ?? null,
+              },
+            });
+          }
+        }
+      }
+
       for (const entry of dictionarySeedEntries) {
         const headword = canonicalizeDictionaryHeadword(entry.headword);
         const persistedEntry = await transaction.dictionaryEntry.upsert({
@@ -58,32 +121,15 @@ async function seedDatabase(): Promise<void> {
             create: {
               id: sense.id,
               entryId: persistedEntry.id,
-              partOfSpeech: sense.partOfSpeech,
+              synsetId: sense.synsetId,
               commonnessScore: sense.commonnessScore,
             },
             update: {
               entryId: persistedEntry.id,
-              partOfSpeech: sense.partOfSpeech,
+              synsetId: sense.synsetId,
               commonnessScore: sense.commonnessScore,
             },
           });
-
-          for (const definition of sense.definitions) {
-            await transaction.dictionarySenseDefinition.upsert({
-              where: {
-                senseId_languageTag: {
-                  senseId: persistedSense.id,
-                  languageTag: definition.languageTag,
-                },
-              },
-              create: {
-                senseId: persistedSense.id,
-                languageTag: definition.languageTag,
-                text: definition.text,
-              },
-              update: { text: definition.text },
-            });
-          }
 
           for (const narrative of sense.narratives ?? []) {
             await transaction.dictionarySenseNarrative.upsert({
@@ -94,20 +140,22 @@ async function seedDatabase(): Promise<void> {
                 kind: narrative.kind,
                 languageTag: narrative.languageTag,
                 markdown: narrative.markdown,
-                generatedBy: narrative.generatedBy ?? "seed:v4",
+                generatedBy: narrative.generatedBy ?? null,
+                promptVersion: narrative.promptVersion ?? null,
               },
               update: {
                 senseId: persistedSense.id,
                 kind: narrative.kind,
                 languageTag: narrative.languageTag,
                 markdown: narrative.markdown,
-                generatedBy: narrative.generatedBy ?? "seed:v4",
+                generatedBy: narrative.generatedBy ?? null,
+                promptVersion: narrative.promptVersion ?? null,
               },
             });
           }
 
           for (const example of sense.examples ?? []) {
-            const persistedExample = await transaction.dictionaryExample.upsert({
+            const persistedExample = await transaction.dictionarySenseExample.upsert({
               where: { id: example.id },
               create: {
                 id: example.id,
@@ -123,20 +171,20 @@ async function seedDatabase(): Promise<void> {
             });
 
             for (const translation of example.translations) {
-              await transaction.dictionaryExampleTranslation.upsert({
+              await transaction.dictionarySenseExampleTranslation.upsert({
                 where: { id: translation.id },
                 create: {
                   id: translation.id,
                   exampleId: persistedExample.id,
                   languageTag: translation.languageTag,
                   text: translation.text,
-                  generatedBy: translation.generatedBy ?? "seed:v4",
+                  generatedBy: translation.generatedBy ?? null,
                 },
                 update: {
                   exampleId: persistedExample.id,
                   languageTag: translation.languageTag,
                   text: translation.text,
-                  generatedBy: translation.generatedBy ?? "seed:v4",
+                  generatedBy: translation.generatedBy ?? null,
                 },
               });
             }
@@ -161,7 +209,7 @@ async function seedDatabase(): Promise<void> {
         }
       }
 
-      for (const relation of dictionarySeedRelations) {
+      for (const relation of dictionarySeedSenseRelations) {
         await transaction.dictionarySenseRelation.upsert({
           where: {
             sourceSenseId_targetSenseId_kind: {
@@ -178,10 +226,24 @@ async function seedDatabase(): Promise<void> {
           update: {},
         });
       }
+
+      for (const relation of dictionarySeedSynsetRelations) {
+        await transaction.dictionarySynsetRelation.upsert({
+          where: {
+            sourceSynsetId_targetSynsetId_kind: {
+              sourceSynsetId: relation.sourceSynsetId,
+              targetSynsetId: relation.targetSynsetId,
+              kind: relation.kind,
+            },
+          },
+          create: relation,
+          update: {},
+        });
+      }
     });
 
     process.stdout.write(
-      `Seeded one user, ${dictionarySeedEntries.length} dictionary entries, and ${dictionarySeedRelations.length} sense relations.\n`,
+      `Seeded one user, ${dictionarySeedEntries.length} dictionary entries, ${dictionarySeedSynsets.length} synsets, ${dictionarySeedSenseRelations.length} sense relations, and ${dictionarySeedSynsetRelations.length} synset relations.\n`,
     );
   } finally {
     await prisma.$disconnect();

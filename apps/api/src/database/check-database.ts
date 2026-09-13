@@ -15,10 +15,13 @@ async function checkDatabase(): Promise<void> {
       entryCount,
       expressionCount,
       senseCount,
+      synsetCount,
       definitionCount,
-      relationCount,
+      senseRelationCount,
+      synsetRelationCount,
       narrativeCount,
-      exampleCount,
+      senseExampleCount,
+      synsetExampleCount,
       formCount,
       entryLanguages,
       definitionLanguages,
@@ -29,16 +32,19 @@ async function checkDatabase(): Promise<void> {
       prisma.dictionaryEntry.count(),
       prisma.dictionaryEntry.count({ where: { kind: "EXPRESSION" } }),
       prisma.dictionarySense.count(),
-      prisma.dictionarySenseDefinition.count(),
+      prisma.dictionarySynset.count(),
+      prisma.dictionarySynsetDefinition.count(),
       prisma.dictionarySenseRelation.count(),
+      prisma.dictionarySynsetRelation.count(),
       prisma.dictionarySenseNarrative.count(),
-      prisma.dictionaryExample.count(),
+      prisma.dictionarySenseExample.count(),
+      prisma.dictionarySynsetExample.count(),
       prisma.dictionaryForm.count(),
       prisma.dictionaryEntry.findMany({
         distinct: ["languageTag"],
         select: { languageTag: true },
       }),
-      prisma.dictionarySenseDefinition.findMany({
+      prisma.dictionarySynsetDefinition.findMany({
         distinct: ["languageTag"],
         select: { languageTag: true },
       }),
@@ -53,14 +59,26 @@ async function checkDatabase(): Promise<void> {
         "Database connected.",
         `Users: ${userCount} (${usersWithNativeLanguageCount} with a native language).`,
         `Dictionary entries: ${entryCount} (${expressionCount} expressions).`,
-        `Entry languages: ${entryLanguages.map(({ languageTag }) => languageTag).sort().join(", ")}.`,
-        `Senses: ${senseCount} with ${definitionCount} localized definitions.`,
-        `Definition languages: ${definitionLanguages.map(({ languageTag }) => languageTag).sort().join(", ")}.`,
+        `Entry languages: ${entryLanguages
+          .map(({ languageTag }) => languageTag)
+          .sort()
+          .join(", ")}.`,
+        `Senses: ${senseCount}.`,
+        `Synsets: ${synsetCount} with ${definitionCount} localized definitions.`,
+        `Definition languages: ${definitionLanguages
+          .map(({ languageTag }) => languageTag)
+          .sort()
+          .join(", ")}.`,
         `Sense narratives: ${narrativeCount}.`,
-        `Narrative languages: ${narrativeLanguages.map(({ languageTag }) => languageTag).sort().join(", ")}.`,
-        `Examples: ${exampleCount}.`,
+        `Narrative languages: ${narrativeLanguages
+          .map(({ languageTag }) => languageTag)
+          .sort()
+          .join(", ")}.`,
+        `Sense examples: ${senseExampleCount}.`,
+        `Synset examples: ${synsetExampleCount}.`,
         `Sense forms: ${formCount}.`,
-        `Sense relations: ${relationCount}.`,
+        `Sense relations: ${senseRelationCount}.`,
+        `Synset relations: ${synsetRelationCount}.`,
         "",
       ].join("\n"),
     );

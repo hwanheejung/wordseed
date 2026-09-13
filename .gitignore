@@ -8,3 +8,4 @@ work/npm-cache
 .vercel
 .turbo
 apps/api/src/generated/
+apps/api/.cache/dictionary-import/

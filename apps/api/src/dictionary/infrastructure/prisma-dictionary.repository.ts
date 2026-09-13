@@ -11,7 +11,15 @@ import {
 const dictionaryEntryInclude = {
   senses: {
     include: {
-      definitions: { orderBy: { languageTag: "asc" } },
+      synset: {
+        include: {
+          definitions: { orderBy: { languageTag: "asc" } },
+          examples: {
+            include: { translations: { orderBy: { languageTag: "asc" } } },
+            orderBy: { id: "asc" },
+          },
+        },
+      },
       narratives: { orderBy: [{ kind: "asc" }, { languageTag: "asc" }] },
       examples: {
         include: { translations: { orderBy: { languageTag: "asc" } } },
@@ -37,19 +45,28 @@ function toDictionaryEntry(record: DictionaryEntryRecord): DictionaryEntry {
     languageTag: record.languageTag,
     kind: record.kind,
     senses: record.senses.map((sense) => ({
-        id: sense.id,
-        partOfSpeech: sense.partOfSpeech,
-        commonnessScore: sense.commonnessScore,
-        definitions: sense.definitions,
-        narratives: sense.narratives,
-        examples: sense.examples.map((example) => ({
+      id: sense.id,
+      commonnessScore: sense.commonnessScore,
+      synset: {
+        id: sense.synset.id,
+        partOfSpeech: sense.synset.partOfSpeech,
+        definitions: sense.synset.definitions,
+        examples: sense.synset.examples.map((example) => ({
           id: example.id,
           sourceLanguageTag: example.sourceLanguageTag,
           sourceText: example.sourceText,
           translations: example.translations,
         })),
-        forms: sense.forms,
+      },
+      narratives: sense.narratives,
+      examples: sense.examples.map((example) => ({
+        id: example.id,
+        sourceLanguageTag: example.sourceLanguageTag,
+        sourceText: example.sourceText,
+        translations: example.translations,
       })),
+      forms: sense.forms,
+    })),
   };
 }
 

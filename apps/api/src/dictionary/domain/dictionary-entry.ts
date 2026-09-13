@@ -29,17 +29,23 @@ export const DictionaryPartOfSpeech = {
 export type DictionaryPartOfSpeech =
   (typeof DictionaryPartOfSpeech)[keyof typeof DictionaryPartOfSpeech];
 
-export interface DictionarySenseDefinition {
+export interface DictionarySynsetDefinition {
   id: string;
   languageTag: string;
   text: string;
 }
 
-export interface DictionarySense {
+export interface DictionarySynset {
   id: string;
   partOfSpeech: DictionaryPartOfSpeech | null;
+  definitions: readonly DictionarySynsetDefinition[];
+  examples: readonly DictionaryExample[];
+}
+
+export interface DictionarySense {
+  id: string;
   commonnessScore: number | null;
-  definitions: readonly DictionarySenseDefinition[];
+  synset: DictionarySynset;
   narratives: readonly DictionarySenseNarrative[];
   examples: readonly DictionaryExample[];
   forms: readonly DictionaryForm[];

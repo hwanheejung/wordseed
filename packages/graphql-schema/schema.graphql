@@ -59,7 +59,7 @@ enum DictionaryFormKind {
   THIRD_PERSON_SINGULAR
 }
 
-"""The grammatical role of one dictionary sense."""
+"""The grammatical role shared by one dictionary concept."""
 enum DictionaryPartOfSpeech {
   ADJECTIVE
   ADVERB
@@ -76,18 +76,11 @@ enum DictionaryPartOfSpeech {
 
 type DictionarySense {
   commonnessScore: Float
-  definitions: [DictionarySenseDefinition!]!
   examples: [DictionaryExample!]!
   forms: [DictionaryForm!]!
   id: ID!
   narratives: [DictionarySenseNarrative!]!
-  partOfSpeech: DictionaryPartOfSpeech
-}
-
-type DictionarySenseDefinition {
-  id: ID!
-  languageTag: String!
-  text: String!
+  synset: DictionarySynset!
 }
 
 type DictionarySenseNarrative {
@@ -96,12 +89,26 @@ type DictionarySenseNarrative {
   kind: DictionarySenseNarrativeKind!
   languageTag: String!
   markdown: String!
+  promptVersion: String
 }
 
 enum DictionarySenseNarrativeKind {
   ORIGIN
   STORY
   USAGE_GUIDE
+}
+
+type DictionarySynset {
+  definitions: [DictionarySynsetDefinition!]!
+  examples: [DictionaryExample!]!
+  id: ID!
+  partOfSpeech: DictionaryPartOfSpeech
+}
+
+type DictionarySynsetDefinition {
+  id: ID!
+  languageTag: String!
+  text: String!
 }
 
 """Current operational status of the Wordseed API."""

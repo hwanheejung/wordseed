@@ -29,11 +29,14 @@ enum DictionaryPartOfSpeech {
 }
 
 enum DictionarySenseRelationKind {
-  RELATED
   DERIVED_FROM
-  SYNONYM
   ANTONYM
   CONFUSABLE
+}
+
+enum DictionarySynsetRelationKind {
+  HYPERNYM
+  RELATED
 }
 
 enum DictionarySenseNarrativeKind {
@@ -79,74 +82,117 @@ model DictionaryEntry {
 }
 
 model DictionarySense {
-  id                String                      @id @default(uuid()) @db.Uuid
-  entryId           String                      @map("entry_id") @db.Uuid
-  entry             DictionaryEntry             @relation(fields: [entryId], references: [id], onDelete: Cascade)
-  partOfSpeech      DictionaryPartOfSpeech?     @map("part_of_speech")
-  commonnessScore   Float?                      @map("commonness_score")
-  createdAt         DateTime                    @default(now()) @map("created_at")
-  updatedAt         DateTime                    @updatedAt @map("updated_at")
-  definitions       DictionarySenseDefinition[]
+  id                String                     @id @default(uuid()) @db.Uuid
+  entryId           String                     @map("entry_id") @db.Uuid
+  synsetId          String                     @map("synset_id") @db.Uuid
+  entry             DictionaryEntry            @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  synset            DictionarySynset           @relation(fields: [synsetId], references: [id], onDelete: Restrict)
+  commonnessScore   Float?                     @map("commonness_score")
+  createdAt         DateTime                   @default(now()) @map("created_at")
+  updatedAt         DateTime                   @updatedAt @map("updated_at")
   narratives        DictionarySenseNarrative[]
-  examples          DictionaryExample[]
+  examples          DictionarySenseExample[]
   forms             DictionaryForm[]
-  outgoingRelations DictionarySenseRelation[]   @relation("DictionarySenseRelationSource")
-  incomingRelations DictionarySenseRelation[]   @relation("DictionarySenseRelationTarget")
+  outgoingRelations DictionarySenseRelation[]  @relation("DictionarySenseRelationSource")
+  incomingRelations DictionarySenseRelation[]  @relation("DictionarySenseRelationTarget")
 
+  @@unique([entryId, synsetId])
   @@index([entryId, commonnessScore])
+  @@index([synsetId])
   @@map("dictionary_senses")
 }
 
-model DictionarySenseDefinition {
-  id          String          @id @default(uuid()) @db.Uuid
-  senseId     String          @map("sense_id") @db.Uuid
-  sense       DictionarySense @relation(fields: [senseId], references: [id], onDelete: Cascade)
-  languageTag String          @map("language_tag") @db.VarChar(35)
-  text        String          @db.Text
+model DictionarySynset {
+  id                String                       @id @default(uuid()) @db.Uuid
+  partOfSpeech      DictionaryPartOfSpeech?      @map("part_of_speech")
+  createdAt         DateTime                     @default(now()) @map("created_at")
+  updatedAt         DateTime                     @updatedAt @map("updated_at")
+  senses            DictionarySense[]
+  definitions       DictionarySynsetDefinition[]
+  examples          DictionarySynsetExample[]
+  outgoingRelations DictionarySynsetRelation[]   @relation("DictionarySynsetRelationSource")
+  incomingRelations DictionarySynsetRelation[]   @relation("DictionarySynsetRelationTarget")
 
-  @@unique([senseId, languageTag])
-  @@map("dictionary_sense_definitions")
+  @@map("dictionary_synsets")
+}
+
+model DictionarySynsetDefinition {
+  id          String           @id @default(uuid()) @db.Uuid
+  synsetId    String           @map("synset_id") @db.Uuid
+  synset      DictionarySynset @relation(fields: [synsetId], references: [id], onDelete: Cascade)
+  languageTag String           @map("language_tag") @db.VarChar(35)
+  text        String           @db.Text
+
+  @@unique([synsetId, languageTag])
+  @@map("dictionary_synset_definitions")
 }
 
 model DictionarySenseNarrative {
-  id          String                       @id @default(uuid()) @db.Uuid
-  senseId     String                       @map("sense_id") @db.Uuid
-  sense       DictionarySense              @relation(fields: [senseId], references: [id], onDelete: Cascade)
-  kind        DictionarySenseNarrativeKind
-  languageTag String                       @map("language_tag") @db.VarChar(35)
-  markdown    String                       @db.Text
-  generatedBy String?                      @map("generated_by") @db.VarChar(100)
-  createdAt   DateTime                     @default(now()) @map("created_at")
-  updatedAt   DateTime                     @updatedAt @map("updated_at")
+  id            String                       @id @default(uuid()) @db.Uuid
+  senseId       String                       @map("sense_id") @db.Uuid
+  sense         DictionarySense              @relation(fields: [senseId], references: [id], onDelete: Cascade)
+  kind          DictionarySenseNarrativeKind
+  languageTag   String                       @map("language_tag") @db.VarChar(35)
+  markdown      String                       @db.Text
+  generatedBy   String?                      @map("generated_by") @db.VarChar(100)
+  promptVersion String?                      @map("prompt_version") @db.VarChar(100)
+  createdAt     DateTime                     @default(now()) @map("created_at")
+  updatedAt     DateTime                     @updatedAt @map("updated_at")
 
   @@unique([senseId, kind, languageTag])
   @@map("dictionary_sense_narratives")
 }
 
-model DictionaryExample {
-  id                String                         @id @default(uuid()) @db.Uuid
-  senseId           String                         @map("sense_id") @db.Uuid
-  sense             DictionarySense                @relation(fields: [senseId], references: [id], onDelete: Cascade)
-  sourceLanguageTag String                         @map("source_language_tag") @db.VarChar(35)
-  sourceText        String                         @map("source_text") @db.Text
-  translations      DictionaryExampleTranslation[]
-  createdAt         DateTime                       @default(now()) @map("created_at")
-  updatedAt         DateTime                       @updatedAt @map("updated_at")
+model DictionarySenseExample {
+  id                String                              @id @default(uuid()) @db.Uuid
+  senseId           String                              @map("sense_id") @db.Uuid
+  sense             DictionarySense                     @relation(fields: [senseId], references: [id], onDelete: Cascade)
+  sourceLanguageTag String                              @map("source_language_tag") @db.VarChar(35)
+  sourceText        String                              @map("source_text") @db.Text
+  translations      DictionarySenseExampleTranslation[]
+  createdAt         DateTime                            @default(now()) @map("created_at")
+  updatedAt         DateTime                            @updatedAt @map("updated_at")
 
   @@unique([senseId, sourceLanguageTag, sourceText])
-  @@map("dictionary_examples")
+  @@map("dictionary_sense_examples")
 }
 
-model DictionaryExampleTranslation {
-  id          String            @id @default(uuid()) @db.Uuid
-  exampleId   String            @map("example_id") @db.Uuid
-  example     DictionaryExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
-  languageTag String            @map("language_tag") @db.VarChar(35)
-  text        String            @db.Text
-  generatedBy String?           @map("generated_by") @db.VarChar(100)
+model DictionarySenseExampleTranslation {
+  id          String                 @id @default(uuid()) @db.Uuid
+  exampleId   String                 @map("example_id") @db.Uuid
+  example     DictionarySenseExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
+  languageTag String                 @map("language_tag") @db.VarChar(35)
+  text        String                 @db.Text
+  generatedBy String?                @map("generated_by") @db.VarChar(100)
 
   @@unique([exampleId, languageTag])
-  @@map("dictionary_example_translations")
+  @@map("dictionary_sense_example_translations")
+}
+
+model DictionarySynsetExample {
+  id                String                               @id @default(uuid()) @db.Uuid
+  synsetId          String                               @map("synset_id") @db.Uuid
+  synset            DictionarySynset                     @relation(fields: [synsetId], references: [id], onDelete: Cascade)
+  sourceLanguageTag String                               @map("source_language_tag") @db.VarChar(35)
+  sourceText        String                               @map("source_text") @db.Text
+  translations      DictionarySynsetExampleTranslation[]
+  createdAt         DateTime                             @default(now()) @map("created_at")
+  updatedAt         DateTime                             @updatedAt @map("updated_at")
+
+  @@unique([synsetId, sourceLanguageTag, sourceText])
+  @@map("dictionary_synset_examples")
+}
+
+model DictionarySynsetExampleTranslation {
+  id          String                  @id @default(uuid()) @db.Uuid
+  exampleId   String                  @map("example_id") @db.Uuid
+  example     DictionarySynsetExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
+  languageTag String                  @map("language_tag") @db.VarChar(35)
+  text        String                  @db.Text
+  generatedBy String?                 @map("generated_by") @db.VarChar(100)
+
+  @@unique([exampleId, languageTag])
+  @@map("dictionary_synset_example_translations")
 }
 
 model DictionaryForm {
@@ -171,4 +217,17 @@ model DictionarySenseRelation {
   @@unique([sourceSenseId, targetSenseId, kind])
   @@index([targetSenseId])
   @@map("dictionary_sense_relations")
+}
+
+model DictionarySynsetRelation {
+  id             String                       @id @default(uuid()) @db.Uuid
+  sourceSynsetId String                       @map("source_synset_id") @db.Uuid
+  targetSynsetId String                       @map("target_synset_id") @db.Uuid
+  kind           DictionarySynsetRelationKind
+  sourceSynset   DictionarySynset             @relation("DictionarySynsetRelationSource", fields: [sourceSynsetId], references: [id], onDelete: Cascade)
+  targetSynset   DictionarySynset             @relation("DictionarySynsetRelationTarget", fields: [targetSynsetId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceSynsetId, targetSynsetId, kind])
+  @@index([targetSynsetId])
+  @@map("dictionary_synset_relations")
 }

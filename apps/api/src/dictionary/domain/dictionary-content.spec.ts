@@ -9,6 +9,7 @@ describe("DictionarySenseNarrative", () => {
       languageTag: "ko",
       markdown: "**grind**의 마찰감을 떠올려 보세요.",
       generatedBy: null,
+      promptVersion: null,
     } satisfies DictionarySenseNarrative;
 
     expect(story.languageTag).toBe("ko");
