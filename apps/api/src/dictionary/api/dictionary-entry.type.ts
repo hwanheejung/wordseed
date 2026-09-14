@@ -16,6 +16,8 @@ import {
 import {
   DictionaryEntryKind,
   type DictionaryEntryKind as DictionaryEntryKindValue,
+  DictionarySenseRecommendationReason,
+  type DictionarySenseRecommendationReason as DictionarySenseRecommendationReasonValue,
   DictionaryPartOfSpeech,
   type DictionaryPartOfSpeech as DictionaryPartOfSpeechValue,
 } from "../domain/dictionary-entry";
@@ -23,6 +25,11 @@ import {
 registerEnumType(DictionaryEntryKind, {
   name: "DictionaryEntryKind",
   description: "Whether a dictionary entry is a word or a multiword expression.",
+});
+
+registerEnumType(DictionarySenseRecommendationReason, {
+  name: "DictionarySenseRecommendationReason",
+  description: "Why another sense is recommended from this sense's lexical relationships.",
 });
 
 registerEnumType(DictionaryPartOfSpeech, {
@@ -165,6 +172,18 @@ export class DictionaryEntryObject {
 
   @Field(() => [DictionarySenseObject])
   senses!: readonly DictionarySenseObject[];
+}
+
+@ObjectType("DictionarySenseRecommendation")
+export class DictionarySenseRecommendationObject {
+  @Field(() => DictionaryEntryObject)
+  targetEntry!: DictionaryEntryObject;
+
+  @Field(() => DictionarySenseObject)
+  targetSense!: DictionarySenseObject;
+
+  @Field(() => DictionarySenseRecommendationReason)
+  reason!: DictionarySenseRecommendationReasonValue;
 }
 
 @ObjectType("DictionaryEntryEdge")

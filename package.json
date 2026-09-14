@@ -7,6 +7,7 @@
     "dev:web": "vercel dev --listen 5173",
     "dev:web:ui": "turbo run dev --filter=@wordseed/web",
     "dev:api": "turbo run dev --filter=@wordseed/api",
+    "dev:mobile": "turbo run dev --filter=@wordseed/mobile",
     "build": "turbo run build",
     "build:web": "turbo run build --filter=@wordseed/web",
     "build:api": "turbo run build --filter=@wordseed/api",

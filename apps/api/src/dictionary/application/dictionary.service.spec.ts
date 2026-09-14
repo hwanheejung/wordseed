@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   DictionaryEntryKind,
   type DictionaryEntry,
+  type DictionarySenseRecommendation,
 } from "../domain/dictionary-entry";
 import {
   DictionaryRepository,
@@ -55,6 +56,15 @@ class TestDictionaryRepository extends DictionaryRepository {
       totalCount: matchedEntries.length,
     });
   }
+
+  findSenseRecommendations(
+    senseId: string,
+    limit: number,
+  ): Promise<readonly DictionarySenseRecommendation[]> {
+    void senseId;
+    void limit;
+    return Promise.resolve([]);
+  }
 }
 
 describe("DictionaryService", () => {
@@ -105,5 +115,14 @@ describe("DictionaryService", () => {
     await expect(
       service.search({ languageTag: "not_a_language" }),
     ).rejects.toBeInstanceOf(InvalidDictionaryQueryError);
+  });
+
+  it("validates recommendation limits before querying the repository", () => {
+    expect(() => service.senseRecommendations("sense:grind", 0)).toThrow(
+      InvalidDictionaryQueryError,
+    );
+    expect(() => service.senseRecommendations("sense:grind", 6)).toThrow(
+      InvalidDictionaryQueryError,
+    );
   });
 });

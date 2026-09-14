@@ -1,0 +1,31 @@
+{
+  "name": "@wordseed/mobile",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "expo": "~57.0.22",
+    "expo-status-bar": "~57.0.1",
+    "graphql": "16.14.2",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-relay": "^21.0.1",
+    "relay-runtime": "^21.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "babel-plugin-relay": "^21.0.1",
+    "relay-compiler": "^21.0.1",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "dev": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "relay": "relay-compiler --noWatchman",
+    "relay:watch": "relay-compiler --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "private": true
+}

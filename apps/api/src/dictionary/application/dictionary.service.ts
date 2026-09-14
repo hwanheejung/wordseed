@@ -1,5 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import type { DictionaryEntry } from "../domain/dictionary-entry";
+import type {
+  DictionaryEntry,
+  DictionarySenseRecommendation,
+} from "../domain/dictionary-entry";
 import {
   normalizeDictionaryLanguageTag,
   normalizeDictionarySearchQuery,
@@ -8,6 +11,7 @@ import { DictionaryRepository } from "../domain/dictionary.repository";
 
 const DEFAULT_PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 50;
+const MAX_RECOMMENDATIONS = 5;
 const CURSOR_PREFIX = "dictionary-entry:";
 
 export interface SearchDictionaryEntriesInput {
@@ -61,6 +65,19 @@ export class DictionaryService {
 
   findById(id: string): Promise<DictionaryEntry | null> {
     return this.repository.findById(id);
+  }
+
+  senseRecommendations(
+    senseId: string,
+    first: number = 3,
+  ): Promise<readonly DictionarySenseRecommendation[]> {
+    if (!Number.isInteger(first) || first < 1 || first > MAX_RECOMMENDATIONS) {
+      throw new InvalidDictionaryQueryError(
+        `first must be between 1 and ${MAX_RECOMMENDATIONS}.`,
+      );
+    }
+
+    return this.repository.findSenseRecommendations(senseId, first);
   }
 
   async search(

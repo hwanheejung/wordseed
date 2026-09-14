@@ -1,4 +1,7 @@
-import type { DictionaryEntry } from "./dictionary-entry";
+import type {
+  DictionaryEntry,
+  DictionarySenseRecommendation,
+} from "./dictionary-entry";
 
 export interface SearchDictionaryEntriesCriteria {
   languageTag: string;
@@ -18,4 +21,9 @@ export abstract class DictionaryRepository {
   abstract search(
     criteria: SearchDictionaryEntriesCriteria,
   ): Promise<SearchDictionaryEntriesResult>;
+
+  abstract findSenseRecommendations(
+    senseId: string,
+    limit: number,
+  ): Promise<readonly DictionarySenseRecommendation[]>;
 }

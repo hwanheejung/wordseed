@@ -59,6 +59,26 @@ export interface DictionaryEntry {
   senses: readonly DictionarySense[];
 }
 
+export const DictionarySenseRecommendationReason = {
+  SAME_SYNSET: "SAME_SYNSET",
+  DERIVED_FROM: "DERIVED_FROM",
+  DERIVATIVE: "DERIVATIVE",
+  CONFUSABLE: "CONFUSABLE",
+  ANTONYM: "ANTONYM",
+  RELATED: "RELATED",
+  HYPERNYM: "HYPERNYM",
+  HYPONYM: "HYPONYM",
+} as const;
+
+export type DictionarySenseRecommendationReason =
+  (typeof DictionarySenseRecommendationReason)[keyof typeof DictionarySenseRecommendationReason];
+
+export interface DictionarySenseRecommendation {
+  reason: DictionarySenseRecommendationReason;
+  targetEntry: DictionaryEntry;
+  targetSense: DictionarySense;
+}
+
 export function normalizeDictionaryLanguageTag(languageTag: string): string {
   const normalizedLanguageTag = Intl.getCanonicalLocales(languageTag.trim())[0];
 

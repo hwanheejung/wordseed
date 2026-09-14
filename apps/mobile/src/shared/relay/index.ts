@@ -1,0 +1,1 @@
+export { relayEnvironment } from "./relayEnvironment";

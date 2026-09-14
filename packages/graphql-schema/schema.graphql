@@ -80,6 +80,9 @@ type DictionarySense {
   forms: [DictionaryForm!]!
   id: ID!
   narratives: [DictionarySenseNarrative!]!
+
+  """Returns ranked one-hop lexical recommendations for this sense."""
+  recommendations(first: Int! = 3): [DictionarySenseRecommendation!]!
   synset: DictionarySynset!
 }
 
@@ -96,6 +99,26 @@ enum DictionarySenseNarrativeKind {
   ORIGIN
   STORY
   USAGE_GUIDE
+}
+
+type DictionarySenseRecommendation {
+  reason: DictionarySenseRecommendationReason!
+  targetEntry: DictionaryEntry!
+  targetSense: DictionarySense!
+}
+
+"""
+Why another sense is recommended from this sense's lexical relationships.
+"""
+enum DictionarySenseRecommendationReason {
+  ANTONYM
+  CONFUSABLE
+  DERIVATIVE
+  DERIVED_FROM
+  HYPERNYM
+  HYPONYM
+  RELATED
+  SAME_SYNSET
 }
 
 type DictionarySynset {
