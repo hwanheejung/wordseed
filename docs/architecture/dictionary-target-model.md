@@ -1,9 +1,9 @@
 # Dictionary target data model
 
-Status: **Proposed — no production code or database migration has been changed yet.**
+Status: **Accepted target model — implementation is in progress; database application remains unverified.**
 
-This document fixes the target model before implementation. “Wikipedia model” in the
-product discussion is interpreted as **Wikidata's WikibaseLexeme model**, because
+This document records the accepted target model and its implementation contract.
+“Wikipedia model” in the product discussion is interpreted as **Wikidata's WikibaseLexeme model**, because
 Wikipedia articles do not define a lexicographical data model.
 
 ## Annotation legend

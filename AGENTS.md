@@ -1,5 +1,12 @@
 # Engineering Principles
 
+## Product Context
+
+- Read `docs/context/README.md` before planning or changing product behavior, user flows, screens, learning policy, notifications, dictionary behavior, or MVP scope.
+- Treat the documents routed from that index as the product source of truth. Distinguish recorded decisions from hypotheses that still require validation.
+- Do not silently replace a recorded product decision. Surface conflicting evidence and update the relevant context document in the same change when the decision is intentionally revised.
+- Keep implementation plans and temporary task status out of `docs/context/`; context documents describe durable product direction and constraints.
+
 ## Project Skills
 
 - Load `clean-structure` before adding, moving, splitting, or reviewing modules, imports, FSD layers, route composition, Relay ownership, or slice public APIs.
