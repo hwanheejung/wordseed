@@ -24,7 +24,7 @@ export class AppErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
-    console.error("Dictionary screen failed to render.", error, info);
+    console.error("Unable to render content.", error, info);
   }
 
   private handleRetry = (): void => {
