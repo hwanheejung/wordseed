@@ -1,70 +1,27 @@
-import { Suspense, useState } from "react";
-import { RelayEnvironmentProvider } from "react-relay";
-import { Button, StyleSheet, Text, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
-
-import { DictionaryDetailPage } from "@/routes/DictionaryDetailPage";
-import { DictionaryListPage } from "@/routes/DictionaryListPage";
-import { AppErrorBoundary } from "@/shared/error-boundary";
-import { relayEnvironment } from "@/shared/relay";
+import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
+import { StatusBar, useColorScheme } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useUITheme } from "@/shared/ui";
+import { AppTabs } from "./navigation/AppTabs";
 
 export function App() {
-  const [selectedLexemeId, setSelectedLexemeId] = useState<string | null>(null);
-  const [retryKey, setRetryKey] = useState(0);
+  const scheme = useColorScheme();
+  const { colors } = useUITheme();
+  const baseTheme = scheme === "dark" ? DarkTheme : DefaultTheme;
 
   return (
-    <RelayEnvironmentProvider environment={relayEnvironment}>
-      <AppErrorBoundary
-        key={`${selectedLexemeId ?? "list"}-${retryKey}`}
-        fallback={({ retry }) => (
-          <View style={styles.feedback}>
-            <Text style={styles.feedbackText}>
-              데이터를 불러오지 못했습니다.
-            </Text>
-            <Button
-              title="다시 시도"
-              onPress={() => {
-                setRetryKey((currentKey) => currentKey + 1);
-                retry();
-              }}
-            />
-          </View>
-        )}
-      >
-        <Suspense
-          fallback={
-            <View style={styles.feedback}>
-              <Text style={styles.feedbackText}>불러오는 중...</Text>
-            </View>
-          }
-        >
-          {selectedLexemeId === null ? (
-            <DictionaryListPage onSelect={setSelectedLexemeId} />
-          ) : (
-            <DictionaryDetailPage
-              lexemeId={selectedLexemeId}
-              onBack={() => setSelectedLexemeId(null)}
-              onSelectRecommendation={setSelectedLexemeId}
-            />
-          )}
-        </Suspense>
-      </AppErrorBoundary>
-      <StatusBar style="dark" />
-    </RelayEnvironmentProvider>
+    <SafeAreaProvider>
+      <NavigationContainer theme={{ ...baseTheme, colors: {
+        ...baseTheme.colors,
+        primary: colors.accent,
+        background: colors.background,
+        card: colors.surface,
+        text: colors.text,
+        border: colors.separator,
+      } }}>
+        <StatusBar barStyle={scheme === "dark" ? "light-content" : "dark-content"} />
+        <AppTabs />
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  feedback: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 12,
-    padding: 24,
-    backgroundColor: "#ffffff",
-  },
-  feedbackText: {
-    color: "#374151",
-    fontSize: 16,
-  },
-});
