@@ -1,120 +1,49 @@
 # MVP roadmap
 
-## Roadmap rule
+## MVP 1: Dictionary-backed collection and revisiting
 
-Each MVP must close a usable collect-to-resurface loop. An MVP is not complete merely because one technical layer or dictionary model is complete.
+Outcome: conveniently save supported meanings and return to view them.
 
-## MVP 1: Fast personal collection and one-card review
+### Scope
 
-### Outcome
+- Home / Library / Search; direct Dictionary lookup and save.
+- Pending addition requests and proposed post-publication automatic saving.
+- Addition-only AI generation under the architecture validation contract; Report for existing errors.
+- Optional wordbooks and unassigned items; Apple Music-inspired browsing.
+- Expression and meaning visible together; detail Master/Unmaster.
+- Newest-added default and all five Library sort options.
+- Detail-open counts, foreground duration, and last-view timestamps.
 
-A user can create a personal vocabulary collection from text, revisit one expression with minimal friction, and explicitly remove mastered items from future review.
+Behavior is defined in [Product model](./product-model.md). Resolve asynchronous fulfillment rules before shipping auto-save. Public publishing remains gated by architecture quality and operational criteria.
 
-### In scope
+### Validation and metrics
 
-- dictionary search and detail sufficient to select an expression;
-- direct text entry and save;
-- original context entry when available;
-- immediate saving without mandatory Sense confirmation;
-- provisional Sense suggestion;
-- a minimal personal Library;
-- a one-expression review card;
-- immediate display of the expression, meaning, and saved context;
-- one `Master` action and a reversible unmaster action;
-- at least one later resurfacing of a non-mastered item;
-- a notification deep link to one expression, with user-controlled permission, timing, and frequency;
-- collection, card-view, Master, and notification instrumentation.
+| Area | Questions | Evidence |
+| --- | --- | --- |
+| Existing content | Is saving easier than the user's current method? Do users return? | Search-to-save conversion/time; later visits; saved-item detail opens/duration. |
+| Missing content | Does coverage block saving? Are requests understood and useful after fulfillment? | Miss/submission rates; pending age; fulfillment time; fulfilled/rejected/canceled/pending outcomes; automatic saves; subsequent detail visits. |
+| Fulfillment accuracy | Is the intended meaning saved once? | Duplicate, wrong-meaning, and report rates. |
+| Master | Do users understand mastery and its reversal? | Master/Unmaster events and user feedback. |
+| Telemetry | Are detail counts and durations consistent? | Event-definition and measurement checks. |
+| Dictionary quality | Can AI add accurate content without modifying existing entries? | Validation rejection, human-sampled errors, quarantine, rollback, and mutation-boundary checks. |
 
-### Validation questions
+Measure existing saves and requests separately. Include pending and failed outcomes when assessing save performance. Engagement and Master events do not prove learning efficacy.
 
-- Can users save an expression without feeling that they are authoring a flashcard?
-- How long does a successful save take?
-- Do users revisit collected expressions rather than only accumulating them?
-- Does one-card entry reduce the friction of starting a review?
-- When and why do users press Master?
-- Do users understand that Master removes an item from normal review?
-- Are notifications opened, ignored, or disabled at different frequencies?
-- Can view count and foreground time be collected reliably without being mistaken for correctness?
+## MVP 2 candidates
 
-### Failure conditions
+- Chatbot/conversational Search.
+- Pasted lists and bulk confirmation.
+- Sharing and photo OCR.
+- Recommended wordbook discovery and independent copying.
+- Notification entry and user-controlled timing.
+- Initial review policy using detail-view history.
 
-- collection is not meaningfully easier than existing notes or flashcard tools;
-- the Library grows while review-card opens remain rare;
-- Sense resolution repeatedly blocks saving or first review;
-- notifications are disabled before they create repeat value;
-- users use Master only to clear the queue rather than to represent their intent.
+Prioritize these explicitly; the list does not authorize implementing every candidate.
 
-## MVP 2: Faster import and lightweight personalization
+## Later candidates
 
-### Outcome
+Continuous camera scanning; semantic search and nuance comparisons; optional productive recall; widgets and contextual recommendations.
 
-Users can build a useful personal collection from more of the material they already use without entering every expression individually.
+## Release boundaries
 
-### Candidate scope
-
-- pasted multi-line lists or passages;
-- candidate-expression extraction and bulk confirmation;
-- operating-system share flow;
-- photo OCR with review before import;
-- duplicate and already-mastered detection;
-- basic notification-frequency adaptation from user behavior;
-- a first review-prioritization policy using clean interaction history.
-
-### Validation questions
-
-- Does faster import increase reviewed expressions or only create a larger backlog?
-- Which import source produces the highest collect-to-review conversion?
-- Can users correct extraction and Sense mistakes faster than entering items manually?
-- Does behavior-based notification adjustment reduce opt-outs?
-
-## MVP 3: Continuous capture and contextual learning
-
-### Outcome
-
-Wordseed can transform larger real-world sources into a personal learning collection and connect related expressions without increasing management burden.
-
-### Candidate scope
-
-- continuous camera scanning for printed books and vocabulary lists;
-- richer contextual and semantic search;
-- confusion and nuance comparisons;
-- topic-based and situation-based collections;
-- new-context resurfacing;
-- limited productive recall through writing or speaking;
-- user-approved contextual recommendations such as calendar-related themes.
-
-### Validation questions
-
-- Is continuous scanning materially faster and more accurate than photo import?
-- Do semantic relationships improve retrieval rather than distract from it?
-- Do new-context prompts help users use expressions outside the original source?
-- Are contextual recommendations useful enough to justify access to personal context?
-
-## Product metrics
-
-Do not use total saves as the primary success metric.
-
-The core funnel is:
-
-```text
-collect started
-  -> collect completed
-  -> first card view
-  -> later resurfacing
-  -> repeat card view or Master
-```
-
-Track at minimum:
-
-- median collection time;
-- collect completion rate;
-- collected-item to first-view conversion;
-- time from collection to first view;
-- later-resurfacing open rate;
-- valid views per active item;
-- proportion and timing of Master actions;
-- unmaster rate;
-- notification open, dismissal, and opt-out behavior;
-- growth of collected-but-never-viewed items.
-
-These metrics describe product behavior. They do not independently prove long-term learning efficacy.
+Chatbot and notifications are outside MVP 1. Pending requests must never appear as completed saves or validated cards. No private Dictionary fallback or AI edits to existing content are allowed.

@@ -1,26 +1,19 @@
 # Wordseed product context
 
-This directory is the durable product context for harness-driven engineering. It exists to keep planning, design, implementation, and verification aligned when work moves between agents and sessions.
+Durable product constraints for agents; implementation status and transcripts belong elsewhere.
 
-## Required reading order
+## Reading order and ownership
 
-1. [Product context](./product-context.md)
-2. [Product model](./product-model.md)
-3. [MVP roadmap](./mvp-roadmap.md)
+1. [Product context](./product-context.md): goal, audience, governing decisions, hypotheses.
+2. [Product model](./product-model.md): behavior, data ownership, unresolved interaction rules.
+3. [MVP roadmap](./mvp-roadmap.md): release scope and validation.
 
-Read the relevant architecture documents after these files when a task changes data ownership or system boundaries.
+Read these for product work. Read [Dictionary architecture](../architecture/dictionary-target-model.md) only for Dictionary schema, publishing, validation, or data-ownership work; it is not required for routine UI tasks.
 
-## Authority
+## Authority and maintenance
 
-- Statements under **Decisions** are current product constraints.
-- Statements under **Hypotheses** require evidence and must not be presented as validated facts.
-- Items under **Deferred** are intentionally outside the current scope.
-- Code describes current implementation; these documents describe intended product behavior. A mismatch must be surfaced rather than silently resolved in either direction.
-- Temporary implementation status, agent transcripts, and task checklists do not belong in this directory.
-
-## Change policy
-
-- Update these documents when a product decision changes.
-- Record why a decision changed and which evidence caused the change.
-- Do not expand MVP scope merely because the architecture can support it.
-- Preserve the distinction between the public dictionary and a user's private learning data.
+- Decisions constrain implementation; hypotheses remain unvalidated; candidates are not commitments.
+- Documents describe intent; code describes implementation. Surface mismatches.
+- Update the owning document when a decision changes, with its reason. Link rather than duplicate detailed rules.
+- Do not expand scope because the architecture supports it.
+- Preserve public Dictionary/private learning boundaries.

@@ -1,90 +1,39 @@
 # Product context
 
-## Product goal
+## Goal and audience
 
-Wordseed aims to be a vocabulary product that is substantially easier and more useful than existing vocabulary apps.
+Make personal vocabulary collection convenient and encourage users to revisit saved expressions. These are the MVP success claims; improved recall, fluency, and long-term learning remain unproven.
 
-It should help users build a personal vocabulary collection with minimal effort and turn collected expressions into retrievable language without requiring a dedicated study block.
+Initial users are Korean-speaking intermediate English learners collecting expressions from study, work, and daily life. Short visits should be useful without card authoring, timed sessions, or quizzes.
 
-## Initial target user
+## Governing decisions
 
-The initial user is a Korean-speaking intermediate English learner who frequently encounters useful words and expressions but cannot reliably retrieve them when writing or speaking.
+- Every saved item references the shared Wordseed Dictionary. There is no private Dictionary or unvalidated fallback.
+- Existing meanings can be saved without choosing a wordbook. Missing or delayed/failed AI-validated content becomes an addition request, not a completed save. Automatic saving after publication is proposed; fulfillment details remain open.
+- AI may create Lexemes or add missing Senses, never edit existing content. Report submits errors for separate correction.
+- Master declares mastery and excludes an item from normal review; Unmaster reverses it. It is not dismissal or loss of interest.
+- Library and details show expression and meaning together. No required recall, Reveal, or confidence rating.
+- Only explicitly opened card details contribute learning-view telemetry. Duration indicates viewing, not correctness; scheduling is deferred.
+- Navigation is Home / Library / Search. Apple Music guides browsing: expressions resemble songs, wordbooks resemble albums. Do not infer playback behavior or single ownership from this analogy.
+- Wordbooks are optional groupings; an item may belong to none or several.
+- Chatbot Search moves to MVP 2; notification-driven delivery and interruption timing are deferred.
 
-This includes people who:
+## Principles and ownership
 
-- study expressions by chapter or topic;
-- encounter expressions in videos, documents, conversations, or work;
-- remember a Korean meaning but cannot retrieve the English expression;
-- repeatedly confuse similar expressions;
-- want to revisit a semantic group such as decoration, negotiation, or fitness.
+Keep existing-content saves fast, distinguish requests from saves, and preserve Dictionary quality when generation fails. Public additions must not expose private request context.
 
-Wordseed is not initially optimized for absolute beginners, classroom administration, real-time AI conversation, or simultaneous study of multiple languages.
-
-## Job to be done
-
-> When I encounter or decide to learn an English expression, I want to add it to my own vocabulary collection immediately and revisit it in spare moments, so that I can retrieve and use it later without organizing a study system myself.
-
-## Value proposition
-
-> Build a personal vocabulary collection from the English that matters to you, then learn one expression at a time in the moments you already have.
-
-The value is the combination of:
-
-- fast personal collection building;
-- preservation of the user's original context;
-- dictionary-backed meaning accuracy;
-- one-expression micro-learning;
-- resurfacing without manual review planning.
-
-Dictionary depth, Sense matching, scheduling, and AI are enabling systems. They are not the primary user-facing promise.
-
-## Decisions
-
-- The product's basic learning unit is one expression, not a timed study session.
-- Wordseed should fit into short breaks rather than require users to reserve a continuous study period.
-- Thirty seconds is an interaction budget, not a visible countdown or a completion requirement.
-- Collection must not require card editing, tagging, folder selection, or Sense confirmation before saving.
-- Original text and source context should be retained whenever available.
-- A suggested Sense may remain provisional until the expression is revisited.
-- Saving many expressions is not success by itself. Collected expressions must convert into actual review interactions.
-- Notifications must be user-controlled entry points, not punishment, streak pressure, or proof of memory.
-- The public dictionary and private learning state are separate domains. Personal memory state must not be stored in dictionary relation tables.
-
-## Product principles
-
-### Capture first, resolve later
-
-Do not interrupt the user's original activity to demand dictionary precision. Save first; resolve ambiguous meaning when the expression is next shown.
-
-### One useful action per micro-moment
-
-A user must be able to open one expression, see its meaning and context, and leave. Continuing to another expression is optional. Recall prompts may exist as an optional future mode, but they are not part of the default review experience.
-
-### Earn interruption rights
-
-Notifications and future widgets must respect user-selected timing and frequency. Ignoring an interruption is not a learning failure.
-
-### Prefer evidence over declared confidence
-
-Do not ask users to repeatedly classify themselves as knowing, confused, or not knowing. Record observable interaction data and require an explicit decision only when it changes product behavior.
-
-### Do not turn collection into administration
-
-Organization features must not make Wordseed feel like a spreadsheet, note system, or flashcard authoring tool.
+The Dictionary owns shared lexical content. Users own collection membership, context, Master status, and viewing history. Detailed behavior belongs in [Product model](./product-model.md).
 
 ## Hypotheses
 
-- Extremely fast personal collection building is a stronger initial differentiator than a large catalog of prepared courses.
-- One-expression interactions are more likely to fit real behavior than time-boxed study sessions.
-- Original context improves later retrieval and makes a personal collection more valuable than a generic word list.
-- Card view count and meaningful foreground viewing time may help prioritize future reviews.
-- A user-controlled notification can create useful micro-moments without creating notification fatigue.
+- Fast personal collection differentiates Wordseed.
+- Users return to their saved expressions.
+- Users accept pending requests for missing coverage.
+- Detail-view history can improve future review policies.
+- Short visits fit user behavior better than required study sessions.
 
-These hypotheses require product evidence. They must not be described as established learning science or validated retention behavior.
+Competitor reviews and agent agreement do not establish these claims.
 
-## Competitive constraints
+## Latest decision rationale
 
-- Do not compete with Duolingo primarily on streaks, leagues, or generalized gamification.
-- Do not depend on entertainment-platform integration before the core collect-to-review loop works.
-- Do not use low-quality AI images, pronunciation judgments, or generated explanations as a substitute for trustworthy dictionary content.
-- Do not let a growing collection become a visible backlog that creates guilt or avoidance.
+The product review narrowed initial value to convenient saving and revisiting. It deferred chatbot and notification delivery, disallowed provisional private saves, restricted AI to additions, adopted Apple Music as a UI reference, and scoped telemetry to detail visits.

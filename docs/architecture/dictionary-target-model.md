@@ -35,14 +35,17 @@ DictionarySynset
 ├── DictionarySynsetDefinition[]           [WORDSEED / WordNet]
 └── DictionarySynsetRelation[]             [WORDSEED / WordNet]
 
-Every imported assertion ── DictionarySource [WORDSEED]
+Every imported or generated assertion ── DictionarySource [WORDSEED]
+AI-generated changes ── DictionaryChangeSet ── DictionaryChangeOperation[] [WORDSEED]
 ```
 
-## Target Prisma shape
+## Core dictionary target Prisma shape
 
-The following is the implementation contract. Names may receive mechanical Prisma
-relation annotations during implementation, but ownership and cardinality must not
-change without updating this decision first.
+The following is the implementation contract for the core typed dictionary. Names may
+receive mechanical Prisma relation annotations during implementation, but ownership and
+cardinality must not change without updating this decision first. The later AI publishing
+section defines required lifecycle and transactional semantics; its audit-store
+pseudoshape is not yet a mechanical Prisma contract.
 
 ```prisma
 enum DictionarySenseRelationKind {
@@ -427,6 +430,143 @@ is only the learner-facing explanation.
 - `DictionarySenseUsage`: region/register/corpus-scoped ranking for learning order.
 - `DictionarySource`: provenance for imported and generated claims.
 
+## AI publishing contract
+
+AI may expand the serving dictionary from real user Search demand. This is an automatic publishing system, not a requirement that every change wait for manual editorial review.
+
+The serving database remains the source of truth, but generated mutations must be applied through an append-only revision boundary:
+
+```text
+user Search miss
+  -> existing-candidate and duplicate search
+  -> structured DictionaryChangeSet proposal
+  -> schema, invariant, content, privacy, and independent-validator checks
+  -> risk classification
+  -> low-risk automatic activation or quarantine/rejection
+  -> serving view reads the materialized active value
+  -> post-publication measurement and possible rollback
+```
+
+### Initial automatic-publication scope
+
+The latest product policy restricts AI to additions: creating a new Lexeme with its initial Sense, or adding a missing Sense to an existing Lexeme. Glosses, examples, and translations below belong to the newly created content. AI must not edit or supplement an existing Sense/card through an update disguised as an addition. Reported errors require a separately authorized correction process. Operational quarantine and rollback remain available; they are not permission for AI editorial rewrites.
+
+The first production policy may automatically publish:
+
+- a new Lexeme with exactly one primary Lemma, created atomically with at least one Sense and a Gloss in the supported fallback chain;
+- supported-language Sense glosses;
+- examples and translations that pass Sense-consistency checks;
+- a distinct, initially Synset-unlinked Sense on an existing Lexeme when duplicate and identity checks pass.
+
+The first policy must not automatically activate:
+
+- overwrites that silently remove an existing assertion;
+- Lexeme or Sense merge/split/delete operations;
+- lexical-category changes on an existing Lexeme;
+- changes to an existing Sense's identity;
+- Synset creation, merge, split, or membership changes;
+- semantic relation graph mutations;
+- AI content represented as `WORDSEED_EDITORIAL` or another non-AI source.
+
+### Change and revision records
+
+The implementation must introduce an equivalent of:
+
+```text
+DictionaryChangeSet
+  id
+  trigger                   USER_QUERY | BACKFILL | REPAIR
+  actorType                 AI | EDITOR | IMPORTER
+  requestedByUserId?
+  modelProvider
+  modelName
+  modelVersion
+  promptTemplateVersion
+  policyVersion
+  inputHash
+  retrievalEvidence
+  outputHash
+  riskLevel
+  status
+  startedAt
+  completedAt
+
+DictionaryChangeOperation
+  id
+  changeSetId
+  operationKind             CREATE_LEXEME | CREATE_SENSE | ADD_GLOSS | ADD_EXAMPLE | ...
+  payloadSchemaVersion
+  typedPayload
+  resultingEntityId?
+  previousOperationId?
+  status
+  riskLevel
+  createdAt
+  activatedAt?
+  supersededAt?
+```
+
+`typedPayload` above means an operation-specific validated payload or typed child table, not an arbitrary statement engine. Each operation kind defines exact endpoint types, required fields, source references, and schema validation. The implementation must preserve the typed Dictionary tables and their foreign-key invariants.
+
+Required lifecycle states are `PROPOSED`, `VALIDATED`, `ACTIVE`, `QUARANTINED`, `REJECTED`, `SUPERSEDED`, and `ROLLED_BACK`. A ChangeSet activates and rolls back atomically so that partially formed Lexemes or Senses cannot become visible.
+
+The immutable ChangeSet and operations are the audit source of truth for generated mutations. Activation materializes their typed result into the existing serving tables within the same database transaction; normal dictionary reads do not interpret generic revision values at runtime. Search indexes, caches, and embeddings update through an idempotent transactional-outbox event. Until that event is processed, the database serving view is authoritative.
+
+Lexeme, Sense, and Synset IDs remain stable identities. Automatically generated Lexemes and Senses require an active/retired lifecycle marker. Rollback restores a previous materialized value or retires a newly created identity; it does not delete audit history or reuse an ID for another meaning. A create operation may reserve its resulting UUID inside the typed proposal before activation, but foreign-key-visible serving rows are created only during activation.
+
+### Automated validation
+
+Automatic publication requires all applicable checks:
+
+- existing Dictionary lookup before generation;
+- an explicit decision among `CREATE_NEW_LEXEME`, `ADD_SENSE_TO_EXISTING_LEXEME`, and `USE_EXISTING_SENSE`;
+- normalized Lemma, lexical-category, spelling-variant, gloss, and recent-proposal duplicate checks;
+- every invariant in this document;
+- language-direction, gloss, and example-Sense consistency checks;
+- privacy, unsafe-content, and non-reusable user-text checks; raw private conversational context is not stored as public provenance by default;
+- an independent validator path separated from generation;
+- idempotency and concurrency protection for equivalent proposals;
+- evidence retention sufficient to reproduce or investigate the decision.
+
+Validator agreement is not proof of truth. Licensed dictionary or corpus evidence receives greater authority than model agreement when the sources conflict.
+
+### Serving and conflict policy
+
+- Multiple sources or revisions may assert competing content; the activation policy selects the materialized serving value according to a versioned policy.
+- A generated proposal that conflicts with an active verified assertion does not overwrite it in place.
+- Default authority is `WORDSEED_EDITORIAL`, then verified licensed dictionary/corpus sources, then validated `AI_GENERATED` content, subject to field- and language-specific policy.
+- Users see a compact `AI added` provenance label and can report a problem. Model confidence must not be displayed as objective accuracy.
+- A global, model-version, prompt-version, policy-version, content-type, and ChangeSet-level kill switch and rollback path must exist before automatic publication is enabled.
+
+### Learning-item continuity
+
+A later correction, quarantine, retirement, or rollback must not delete a user's saved expression, original context, Master history, or review events. A learning item should retain the Dictionary revision observed at save time or an equivalent display snapshot, and may later receive a replacement Sense suggestion without silently changing the user's stored context.
+
+### Quality measurement
+
+Track publication value and quality separately:
+
+- exact-search misses resolved by generation;
+- later queries served by an already generated entry;
+- AI-generated card save and first-review conversion;
+- validation failure and quarantine rates;
+- duplicate, user-report, correction, retirement, and rollback rates;
+- human-sampled accuracy by model, prompt, policy, language, and content type;
+- post-save Sense changes and rapid deletion/undo signals.
+
+Low report volume is not sufficient evidence of accuracy. Automatic publishing must pause for the affected generator or content class when predefined quality or safety thresholds are exceeded.
+
+Before automatic publication is enabled, the owning implementation decision must define:
+
+- exact benchmark sets and minimum pass thresholds for each automatically published content type;
+- sampling frequency and maximum tolerated human-reviewed semantic-error rate;
+- duplicate, privacy, unsafe-content, correction, and rollback stop thresholds;
+- the distinction between temporary `QUARANTINED` content and permanently `REJECTED` or retired content;
+- the concrete typed operation schemas, foreign keys, unique/idempotency constraints, lifecycle fields, materialization transaction, and outbox contract;
+- whether importer and editorial mutations use the same ChangeSet/operation provenance boundary or a source-equivalent immutable batch contract.
+
+These values are versioned publishing policy, not permanent constants in this target-model document. A policy without declared thresholds cannot activate automatic public publishing.
+
 ## Required invariants
 
 1. A Lexeme has at least one Lemma and exactly one primary Lemma.
@@ -439,6 +579,9 @@ is only the learner-facing explanation.
    an imported source asserts a sense relation without a shared Wordseed Synset.
 7. Relation endpoints cannot be identical; hypernym relations must be acyclic.
 8. A generated narrative or translation records generator and prompt/model provenance.
+9. Every AI-generated core Dictionary assertion belongs to one source, ChangeSet, and immutable operation history.
+10. No automatic revision may reuse an existing Sense ID for a materially different meaning.
+11. Automatic publication and rollback operate atomically at the ChangeSet boundary.
 
 ## Migration boundary
 

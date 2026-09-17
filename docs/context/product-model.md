@@ -1,135 +1,59 @@
 # Product model
 
-## Core loop
+## Dictionary and saving
 
-```text
-Encounter or choose an expression
-  -> collect it immediately
-  -> preserve text and source context
-  -> attach a provisional Sense when possible
-  -> place it in the personal collection
-  -> resurface one expression in a micro-moment
-  -> show the expression, meaning, and useful context
-  -> record the interaction
-  -> resurface it again until the user explicitly marks it Mastered
-```
+A saved learning item references a published Wordseed Dictionary Sense. Personal collections contain membership and user state, not private lexical definitions.
 
-## Capability model
+Save existing results directly. For a missing meaning, submit an addition request; pending content is neither saved nor a validated review card. AI may create a Lexeme with its initial Sense or add a missing Sense, but cannot edit existing definitions, examples, cards, or identities. Report routes errors to separate correction, not automatic AI rewriting.
 
-### F0: Dictionary
+## Addition requests
 
-The dictionary identifies lexical meaning and supports search, Sense selection, examples, pronunciation, related expressions, and future semantic discovery.
+Proposed flow: request an expression/meaning with identifying context → record pending request and save intent → generate/validate asynchronously → resolve published content to the requested Sense → save once.
 
-The dictionary is a shared knowledge system. It does not own an individual user's memory state.
+Validation failure or timeout cannot create a private entry. Distinguish pending, processing, rejected, canceled, and fulfilled outcomes; do not promise unsupported completion times.
 
-### F1: Collect
+Before implementation, resolve these proposed safeguards:
 
-Collect turns an encountered expression into a private learning item with minimal interruption.
+- Clarify ambiguous meanings instead of auto-saving an arbitrary Sense.
+- Allow cancellation; canceled requests must not later save.
+- Deduplicate requests resolving to the same Sense and preserve existing Master state.
+- Define retries, rejection, and ownership of unresolved requests.
+- Define the destination if the selected wordbook is removed.
+- Show fulfillment in-app; push is deferred.
 
-The progression is:
+These are design proposals, not claims of operational support.
 
-1. direct text search and save;
-2. pasted text or lists;
-3. operating-system sharing and photo recognition;
-4. continuous camera scanning for books or printed vocabulary lists.
+## Master
 
-Collection should retain the expression, original context, source when available, and a provisional Sense candidate. The user may correct the Sense later.
+Master declares mastery and removes the item from normal review without deleting history or membership. Mastered cards expose Unmaster. Never infer mastery from views or treat Master as dismissal. Removing wordbook membership does not change Master status.
 
-### F2: Review one expression
+## Library and wordbooks
 
-The default review interaction is intentionally small:
+Show expressions and meanings together. Default: recently added first.
 
-1. show the expression and its intended meaning immediately;
-2. include the saved context and concise usage evidence;
-3. allow the user to mark the item as Mastered;
-4. allow the user to leave immediately or continue to another expression.
+Sort options: recently added first; oldest added first; recently studied first; least recently studied first; alphabetical.
 
-There is no required recall delay, answer reveal, or `Did not know / Unsure / Knew` assessment. Recall prompts may be explored later as an optional mode without changing how the Library presents vocabulary.
+Sorting differs from active/mastered or membership filters. “Studied” means an explicit detail visit, not demonstrated learning. Define never-viewed placement, tie-breaking, and collation consistently.
 
-### F3: Resurface
+Wordbooks are optional many-to-many groupings. Removing membership does not delete the personal item. Apple Music guides collection browsing, artwork/layout, lists, and detail navigation; it does not justify playback controls or a player layer.
 
-Wordseed brings expressions back during user-approved micro-moments. A learning item remains eligible for review until the user explicitly marks it as mastered.
+## Detail measurement
 
-The future review algorithm may use:
+Opening a card detail immediately shows expression, meaning, and context, without recall delay, Reveal, or confidence ratings.
 
-- valid card view count;
-- meaningful foreground viewing time;
-- time since the previous view;
-- whether the interaction used saved or new context;
-- the item's age and review history.
+Record explicit opens, detail-view count, visible foreground duration, last-view time, and Master/Unmaster events. Exclude list exposure, Home previews, prefetching, and background time. Pause timing when the detail is hidden or the app leaves foreground. Define session deduplication and idle handling before instrumentation.
 
-The algorithm is intentionally deferred. Current implementation must collect clean events without pretending that view time alone proves recall accuracy.
+Events demonstrate viewing, not attention, correct recall, or mastery. Review-interval personalization remains deferred.
 
-## Master decision
+## Navigation
 
-`Master` is the only explicit learning-state decision required from the user.
+- Home: saved content and Quick Review, without a scheduling dependency.
+- Library: expressions, wordbooks, sorting, and detail entry.
+- Search: Dictionary lookup, save supported meanings, request additions.
+- Detail: expression, meaning, examples/context, Master/Unmaster, Report.
 
-- Pressing `Master` removes the item from the normal review queue.
-- Mastery is user-declared; Wordseed does not infer it automatically from viewing time.
-- The user must be able to reverse Master and return the item to review.
-- Mastering an item does not delete its history or dictionary link.
-- The UI must prevent accidental mastery and make the consequence clear without adding a confirmation dialog to every use.
+Quick Review displays meaning immediately. Library ordering is separate from future review scheduling.
 
-## Measurement model
+## Exclusions and later work
 
-### Record now
-
-- collection entry and completion;
-- collection duration;
-- source type;
-- provisional Sense assignment and later correction;
-- card impression with foreground start and end;
-- valid foreground viewing duration;
-- continuation to another expression;
-- Master and unmaster events;
-- notification delivery, open, dismissal when available, and notification setting changes.
-
-### Do not infer yet
-
-- that a fast reveal means the user knew the answer;
-- that a long view means deeper learning;
-- that an ignored notification means forgetting;
-- that repeated views equal mastery;
-- that a Master action is an objective measurement of language ability.
-
-## Information architecture
-
-### Quick Collect
-
-- search or enter an expression;
-- paste original context;
-- save immediately;
-- support batch input as the product evolves.
-
-### Quick Review
-
-- open directly to one reviewable expression;
-- show the expression, meaning, and context immediately;
-- optionally Master the expression;
-- exit or continue.
-
-### Library
-
-- browse and search the personal collection;
-- inspect original context and dictionary meaning;
-- correct the Sense;
-- see whether an item is active or mastered;
-- restore a mastered item to review.
-
-Dictionary detail and expression detail are subordinate flows, not primary navigation destinations.
-
-## Deferred
-
-- a production review-spacing algorithm;
-- confidence-rating buttons;
-- mandatory recall and answer-reveal interactions;
-- timed study plans and required session lengths;
-- complex folders, tags, and collection administration;
-- AI-generated memory images;
-- open-ended AI conversation;
-- pronunciation scoring;
-- XP, leagues, punitive streaks, and social competition;
-- direct YouTube or Netflix dependency;
-- calendar-driven vocabulary recommendations;
-- full interactive widgets;
-- multi-language product expansion.
+Chatbot, notifications, widgets, spare-moment targeting, and personalization follow the [roadmap](./mvp-roadmap.md). Required recall/tests, confidence ratings, timed sessions, pronunciation scoring, leagues, and punitive streaks are outside current scope. AI edits to existing Dictionary content are prohibited, not merely postponed.
