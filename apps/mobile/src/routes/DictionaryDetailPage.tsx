@@ -1,83 +1,44 @@
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { graphql, useLazyLoadQuery } from "react-relay";
-
-import {
-  DictionaryLexemeDetail,
-} from "@/entities/dictionary-lexeme";
+import { SaveDictionarySenseButton } from "@/features/save-dictionary-sense";
+import { Surface, Text } from "@/shared/ui";
 import type { DictionaryDetailPageQuery } from "./__generated__/DictionaryDetailPageQuery.graphql";
 
-interface DictionaryDetailPageProps {
-  lexemeId: string;
-  onBack: () => void;
-  onSelectRecommendation: (lexemeId: string) => void;
-}
+interface DictionaryDetailPageProps { fetchKey?: number; lexemeId: string; selectedSenseId?: string }
 
-export function DictionaryDetailPage({
-  lexemeId,
-  onBack,
-  onSelectRecommendation,
-}: DictionaryDetailPageProps) {
-  const data = useLazyLoadQuery<DictionaryDetailPageQuery>(
-    graphql`
-      query DictionaryDetailPageQuery($lexemeId: ID!) {
-        dictionaryLexeme(id: $lexemeId) {
-          ...DictionaryLexemeDetail_lexeme
-        }
+export function DictionaryDetailPage({ lexemeId, selectedSenseId, fetchKey }: DictionaryDetailPageProps) {
+  const data = useLazyLoadQuery<DictionaryDetailPageQuery>(graphql`
+    query DictionaryDetailPageQuery($lexemeId: ID!) {
+      dictionaryLexeme(id: $lexemeId) {
+        canonicalLemma lexicalCategory { displayName }
+        senses { id order glosses { id languageTag text } examples { id text translations { id text } } }
       }
-    `,
-    { lexemeId },
-  );
-  const selectedLexeme = data.dictionaryLexeme;
+    }
+  `, { lexemeId }, { fetchKey });
+  const lexeme = data.dictionaryLexeme;
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={styles.content}
-    >
-      <Pressable onPress={onBack} style={styles.backButton}>
-        <Text style={styles.backLabel}>← 목록으로</Text>
-      </Pressable>
-
-      {selectedLexeme === null || selectedLexeme === undefined ? (
-        <Text style={styles.empty}>해당 표현을 찾을 수 없습니다.</Text>
-      ) : (
-        <DictionaryLexemeDetail
-          lexeme={selectedLexeme}
-          onSelectRecommendation={onSelectRecommendation}
-        />
-      )}
-    </ScrollView>
+    <Surface tone="background" style={styles.page}>
+      <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content}>
+        {!lexeme ? <Text>해당 표현을 찾을 수 없어요.</Text> : <>
+          <Text variant="title">{lexeme.canonicalLemma}</Text>
+          <Text tone="secondary">{lexeme.lexicalCategory.displayName}</Text>
+          {[...lexeme.senses].sort((left, right) => Number(right.id === selectedSenseId) - Number(left.id === selectedSenseId)).map((sense) => (
+            <Surface key={sense.id} style={styles.card}>
+              <Text variant="heading">{lexeme.canonicalLemma}</Text>
+              {sense.id === selectedSenseId && <Text variant="caption" tone="secondary">저장한 뜻</Text>}
+              {sense.glosses.map((gloss) => <Text key={gloss.id}>{gloss.text}</Text>)}
+              {sense.examples.map((example) => <View key={example.id} style={styles.example}>
+                <Text>{example.text}</Text>
+                {example.translations.map((translation) => <Text key={translation.id} tone="secondary">{translation.text}</Text>)}
+              </View>)}
+              <SaveDictionarySenseButton senseId={sense.id} />
+            </Surface>
+          ))}
+        </>}
+      </ScrollView>
+    </Surface>
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: "#f9fafb",
-  },
-  content: {
-    gap: 24,
-    paddingHorizontal: 20,
-    paddingTop: 56,
-    paddingBottom: 40,
-  },
-  backButton: {
-    alignSelf: "flex-start",
-    paddingVertical: 8,
-  },
-  backLabel: {
-    color: "#2563eb",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  empty: {
-    color: "#6b7280",
-    fontSize: 16,
-  },
-});
+const styles = StyleSheet.create({ page: { flex: 1 }, content: { padding: 20, gap: 16, paddingBottom: 40 }, card: { padding: 18, borderRadius: 16, gap: 12 }, example: { gap: 4 } });

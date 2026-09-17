@@ -1,1 +1,1 @@
-export { relayEnvironment } from "./relayEnvironment";
+export { createRelayEnvironment } from "./relayEnvironment";

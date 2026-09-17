@@ -15,12 +15,13 @@ const accessTokenClaimsSchema = z.object({
   role: z.literal("authenticated"),
   is_anonymous: z.literal(false),
   app_metadata: z.object({
-    providers: z.array(z.enum(["apple", "google"])).min(1),
+    providers: z.array(z.enum(["apple", "google", "email"])).min(1),
   }),
 });
 
 @Injectable()
 export class SupabaseAccessTokenVerifier extends AccessTokenVerifier {
+  private readonly allowEmailTestLogin: boolean;
   private readonly audience: string;
   private readonly issuer: string;
   private readonly jwks: ReturnType<typeof createRemoteJWKSet>;
@@ -32,6 +33,8 @@ export class SupabaseAccessTokenVerifier extends AccessTokenVerifier {
       .get("SUPABASE_URL", { infer: true })
       .replace(/\/$/, "");
 
+    this.allowEmailTestLogin = configService.get("NODE_ENV", { infer: true }) !== "production" &&
+      configService.get("ALLOW_EMAIL_TEST_LOGIN", { infer: true }) === true;
     this.audience = configService.get("SUPABASE_JWT_AUDIENCE", {
       infer: true,
     });
@@ -48,6 +51,9 @@ export class SupabaseAccessTokenVerifier extends AccessTokenVerifier {
         issuer: this.issuer,
       });
       const claims = accessTokenClaimsSchema.parse(payload);
+      if (!this.allowEmailTestLogin && claims.app_metadata.providers.includes("email")) {
+        throw new Error("Email test login is disabled.");
+      }
 
       return {
         subject: claims.sub,

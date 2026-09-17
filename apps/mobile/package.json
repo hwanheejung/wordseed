@@ -6,13 +6,16 @@
     "@react-navigation/bottom-tabs": "^7.19.1",
     "@react-navigation/native": "^7.4.1",
     "@react-navigation/native-stack": "^7.19.1",
+    "@supabase/supabase-js": "^2.116.0",
     "expo": "~57.0.22",
     "expo-status-bar": "~57.0.1",
     "graphql": "16.14.2",
     "react": "19.2.3",
     "react-native": "0.86.3",
+    "react-native-keychain": "^10.0.0",
     "react-native-safe-area-context": "^5.7.0",
     "react-native-screens": "^4.26.2",
+    "react-native-url-polyfill": "^4.0.0",
     "react-relay": "^21.0.1",
     "relay-runtime": "^21.0.1"
   },
@@ -20,17 +23,21 @@
     "@types/react": "~19.2.2",
     "babel-plugin-relay": "^21.0.1",
     "relay-compiler": "^21.0.1",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "4.1.10"
   },
   "scripts": {
     "start": "expo start",
     "dev": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "relay": "relay-compiler --noWatchman",
     "relay:watch": "relay-compiler --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "ios:native": "expo run:ios",
+    "android:native": "expo run:android"
   },
   "private": true
 }

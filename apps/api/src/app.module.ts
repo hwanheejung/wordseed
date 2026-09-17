@@ -7,6 +7,7 @@ import {
   validateEnvironment,
 } from "./config/environment";
 import { DictionaryModule } from "./dictionary/dictionary.module";
+import { LearningModule } from "./learning/learning.module";
 import { HealthModule } from "./health/health.module";
 import { UserModule } from "./user/user.module";
 
@@ -33,6 +34,7 @@ import { UserModule } from "./user/user.module";
       }),
     }),
     DictionaryModule,
+    LearningModule,
     HealthModule,
     UserModule,
   ],

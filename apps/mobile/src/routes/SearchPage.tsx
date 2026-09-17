@@ -1,75 +1,78 @@
-import { useLayoutEffect, useState } from "react";
+import { startTransition, useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
-import { Separator, Surface, Text, useUITheme } from "@/shared/ui";
+import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
+import { Button, Surface, Text, useUITheme } from "@/shared/ui";
+import type { SearchPageQuery } from "./__generated__/SearchPageQuery.graphql";
+import type { SearchPage_lexemes$key } from "./__generated__/SearchPage_lexemes.graphql";
+import type { SearchPagePaginationQuery } from "./__generated__/SearchPagePaginationQuery.graphql";
 
-const expressions = [
-  { expression: "take your time", meaning: "서두르지 않고 천천히 하다" },
-  { expression: "make it happen", meaning: "실현하다" },
-  { expression: "a fresh start", meaning: "새로운 시작" },
-];
+interface SearchPageProps { fetchKey?: number; onOpenDetail: (lexemeId: string) => void }
 
-interface SearchPageProps {
-  onOpenDetail: (title: string) => void;
-}
-
-export function SearchPage({ onOpenDetail }: SearchPageProps) {
+export function SearchPage({ onOpenDetail, fetchKey }: SearchPageProps) {
+  const [search, setSearch] = useState("");
+  const query = useLazyLoadQuery<SearchPageQuery>(graphql`
+    query SearchPageQuery($query: String!) { ...SearchPage_lexemes @arguments(query: $query) }
+  `, { query: search }, { fetchKey });
+  const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment<SearchPagePaginationQuery, SearchPage_lexemes$key>(graphql`
+    fragment SearchPage_lexemes on Query
+    @argumentDefinitions(query: { type: "String!" }, count: { type: "Int", defaultValue: 20 }, cursor: { type: "String" })
+    @refetchable(queryName: "SearchPagePaginationQuery") {
+      dictionaryLexemes(languageTag: "en", query: $query, first: $count, after: $cursor) @connection(key: "SearchPage_dictionaryLexemes", filters: ["languageTag", "query"]) {
+        totalCount
+        edges { node { id canonicalLemma lexicalCategory { displayName } senses { glosses { languageTag text } } } }
+      }
+    }
+  `, query);
   const { colors } = useUITheme();
   const navigation = useNavigation();
-  const [query, setQuery] = useState("");
-  const searchText = query.trim().toLowerCase();
-  const results = searchText === "" ? [] : expressions.filter((item) =>
-    item.expression.toLowerCase().includes(searchText) || item.meaning.includes(searchText),
-  );
+  const [draft, setDraft] = useState("");
+  const [paginationFailed, setPaginationFailed] = useState(false);
 
-  // Connect the native navigation search bar to this screen's query state.
+  function handleSearch() {
+    setPaginationFailed(false);
+    startTransition(() => setSearch(draft.trim()));
+  }
+  function handleLoadMore() {
+    setPaginationFailed(false);
+    loadNext(20, { onComplete: (error) => setPaginationFailed(error != null) });
+  }
+
+  // Synchronize the iOS navigation search bar with submitted Dictionary searches.
   useLayoutEffect(() => {
     if (Platform.OS !== "ios") return;
-    navigation.setOptions({
-      headerSearchBarOptions: {
-        placeholder: "단어 또는 표현 검색",
-        autoCapitalize: "none",
-        hideWhenScrolling: false,
-        placement: "automatic",
-        onChangeText: (event) => setQuery(event.nativeEvent.text),
-        onCancelButtonPress: () => setQuery(""),
+    navigation.setOptions({ headerSearchBarOptions: {
+      placeholder: "영어 단어 또는 표현 검색", autoCapitalize: "none", hideWhenScrolling: false,
+      onSearchButtonPress: (event) => {
+        setPaginationFailed(false);
+        startTransition(() => setSearch(event.nativeEvent.text.trim()));
       },
-    } satisfies NativeStackNavigationOptions);
+      onCancelButtonPress: () => { setPaginationFailed(false); startTransition(() => setSearch("")); },
+    } } satisfies NativeStackNavigationOptions);
   }, [navigation]);
 
-  return (
-    <Surface tone="background" style={styles.page}>
-      <ScrollView contentInsetAdjustmentBehavior="automatic" keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
-        <View style={styles.section}>
-          {Platform.OS !== "ios" && (
-            <TextInput accessibilityLabel="Dictionary 검색" placeholder="단어 또는 표현 검색" placeholderTextColor={colors.secondaryText} value={query} onChangeText={setQuery} autoCapitalize="none" autoCorrect={false} returnKeyType="search" style={[styles.input, { color: colors.text, backgroundColor: colors.surface }]} />
-          )}
-          {results.length > 0 && (
-          <Surface style={styles.list}>
-            {results.map((item, index) => (
-              <View key={item.expression}>
-                {index > 0 && <Separator />}
-                <Pressable accessibilityRole="button" onPress={() => onOpenDetail(item.expression)} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}>
-                  <View style={styles.rowText}><Text>{item.expression}</Text><Text variant="caption" tone="secondary">{item.meaning}</Text></View>
-                  <Text tone="secondary">›</Text>
-                </Pressable>
-              </View>
-            ))}
-          </Surface>
-          )}
-        </View>
-      </ScrollView>
-    </Surface>
-  );
+  return <Surface tone="background" style={styles.page}>
+    <ScrollView contentInsetAdjustmentBehavior="automatic" keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
+      {Platform.OS !== "ios" && <View style={styles.search}>
+        <TextInput accessibilityLabel="영어 단어 또는 표현 검색" placeholder="영어 단어 또는 표현 검색" placeholderTextColor={colors.secondaryText} value={draft} onChangeText={setDraft} onSubmitEditing={handleSearch} autoCapitalize="none" autoCorrect={false} returnKeyType="search" style={[styles.input, { color: colors.text, backgroundColor: colors.surface }]} />
+        <Button label="검색" variant="plain" onPress={handleSearch} />
+      </View>}
+      <Text variant="caption" tone="secondary">{search ? `“${search}” 검색 결과` : "사전 둘러보기"} · {data.dictionaryLexemes.totalCount}개</Text>
+      {data.dictionaryLexemes.edges.length === 0 && <Text>검색 결과가 없어요. 다른 영어 단어나 표현으로 검색해 보세요.</Text>}
+      {data.dictionaryLexemes.edges.map((edge) => edge?.node && <Pressable key={edge.node.id} accessibilityRole="button" onPress={() => onOpenDetail(edge.node.id)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+        <Surface style={styles.row}>
+          <View style={styles.rowText}><Text>{edge.node.canonicalLemma}</Text><Text variant="caption" tone="secondary">{edge.node.lexicalCategory.displayName}</Text><Text tone="secondary">{preferredGloss(edge.node.senses.flatMap((sense) => sense.glosses))}</Text></View>
+          <Text tone="secondary">›</Text>
+        </Surface>
+      </Pressable>)}
+      {paginationFailed && <Text accessibilityRole="alert">다음 결과를 불러오지 못했어요. 다시 시도해 주세요.</Text>}
+      {hasNext && <Button label={paginationFailed ? "다시 불러오기" : "더 보기"} variant="plain" loading={isLoadingNext} onPress={handleLoadMore} />}
+    </ScrollView>
+  </Surface>;
 }
 
-const styles = StyleSheet.create({
-  page: { flex: 1 },
-  content: { paddingTop: 12, paddingBottom: 32 },
-  section: { paddingHorizontal: 20, gap: 18 },
-  input: { minHeight: 52, borderRadius: 14, paddingHorizontal: 16, paddingVertical: 12, fontSize: 17 },
-  list: { borderRadius: 16, overflow: "hidden" },
-  row: { minHeight: 82, padding: 16, flexDirection: "row", alignItems: "center", gap: 12 },
-  rowText: { flex: 1, gap: 4 },
-});
+function preferredGloss(glosses: readonly { languageTag: string; text: string }[]): string {
+  return glosses.find((gloss) => gloss.languageTag === "ko")?.text ?? glosses.find((gloss) => gloss.languageTag === "en")?.text ?? glosses[0]?.text ?? "뜻이 없어요";
+}
+const styles = StyleSheet.create({ page: { flex: 1 }, content: { padding: 20, paddingBottom: 40, gap: 16 }, search: { gap: 8 }, input: { minHeight: 52, borderRadius: 14, paddingHorizontal: 16, paddingVertical: 12, fontSize: 17 }, row: { borderRadius: 16, padding: 16, flexDirection: "row", alignItems: "center", gap: 12 }, rowText: { flex: 1, gap: 4 } });

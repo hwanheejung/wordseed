@@ -21,9 +21,18 @@ const environmentSchema = z
       ),
     DATABASE_URL: z.url().optional(),
     SUPABASE_URL: z.url().optional(),
+    ALLOW_EMAIL_TEST_LOGIN: z.enum(["true", "false"]).default("false").transform((value) => value === "true"),
     SUPABASE_JWT_AUDIENCE: z.string().trim().min(1).default("authenticated"),
   })
   .superRefine((configuration, context) => {
+    if (configuration.NODE_ENV === "production" && configuration.ALLOW_EMAIL_TEST_LOGIN) {
+      context.addIssue({
+        code: "custom",
+        message: "ALLOW_EMAIL_TEST_LOGIN must be false in production.",
+        path: ["ALLOW_EMAIL_TEST_LOGIN"],
+      });
+    }
+
     if (
       configuration.NODE_ENV === "production" &&
       configuration.DATABASE_URL === undefined

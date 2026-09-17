@@ -12,6 +12,7 @@ export const DICTIONARY_GRAPHQL_RESOLVERS = [
 
 @Module({
   imports: [DatabaseModule],
+  exports: [DictionaryService],
   providers: [
     ...DICTIONARY_GRAPHQL_RESOLVERS,
     DictionaryService,

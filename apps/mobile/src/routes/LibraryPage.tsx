@@ -1,75 +1,51 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { Button, Separator, Surface, Text, useUITheme } from "@/shared/ui";
+import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
+import { Button, Surface, Text } from "@/shared/ui";
+import type { LibraryPageQuery } from "./__generated__/LibraryPageQuery.graphql";
+import type { LibraryPage_items$key } from "./__generated__/LibraryPage_items.graphql";
+import type { LibraryPagePaginationQuery } from "./__generated__/LibraryPagePaginationQuery.graphql";
 
-interface LibraryPageProps {
-  onOpenDetail: (title: string) => void;
+interface LibraryPageProps { fetchKey?: number; onOpenDetail: (lexemeId: string, senseId: string) => void }
+
+export function LibraryPage({ onOpenDetail, fetchKey }: LibraryPageProps) {
+  const query = useLazyLoadQuery<LibraryPageQuery>(graphql`
+    query LibraryPageQuery { ...LibraryPage_items }
+  `, {}, { fetchPolicy: "store-or-network", fetchKey });
+  const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment<LibraryPagePaginationQuery, LibraryPage_items$key>(graphql`
+    fragment LibraryPage_items on Query
+    @argumentDefinitions(count: { type: "Int", defaultValue: 20 }, cursor: { type: "String" })
+    @refetchable(queryName: "LibraryPagePaginationQuery") {
+      mySavedLearningItems(first: $count, after: $cursor) @connection(key: "LibraryPage_mySavedLearningItems") {
+        totalCount
+        edges { node { id lexeme { id canonicalLemma } sense { id glosses { languageTag text } } } }
+      }
+    }
+  `, query);
+  const [paginationFailed, setPaginationFailed] = useState(false);
+
+  function handleLoadMore() {
+    setPaginationFailed(false);
+    loadNext(20, { onComplete: (error) => setPaginationFailed(error != null) });
+  }
+
+  return <Surface tone="background" style={styles.page}>
+    <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content}>
+      <Text variant="caption" tone="secondary">최근 추가한 순 · {data.mySavedLearningItems.totalCount}개</Text>
+      {data.mySavedLearningItems.edges.length === 0 && <Text>아직 저장한 표현이 없어요. Search에서 뜻을 골라 저장해 보세요.</Text>}
+      {data.mySavedLearningItems.edges.map((edge) => edge?.node && <Pressable key={edge.node.id} accessibilityRole="button" onPress={() => onOpenDetail(edge.node.lexeme.id, edge.node.sense.id)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+        <Surface style={styles.row}>
+          <View style={styles.rowText}><Text>{edge.node.lexeme.canonicalLemma}</Text><Text tone="secondary">{preferredGloss(edge.node.sense.glosses)}</Text></View>
+          <Text tone="secondary">›</Text>
+        </Surface>
+      </Pressable>)}
+      {paginationFailed && <Text accessibilityRole="alert">다음 표현을 불러오지 못했어요. 다시 시도해 주세요.</Text>}
+      {hasNext && <Button label={paginationFailed ? "다시 불러오기" : "더 보기"} variant="plain" loading={isLoadingNext} onPress={handleLoadMore} />}
+    </ScrollView>
+  </Surface>;
 }
 
-export function LibraryPage({ onOpenDetail }: LibraryPageProps) {
-  const { colors } = useUITheme();
-  const [section, setSection] = useState<"expressions" | "wordbooks">("expressions");
-
-  return (
-    <Surface tone="background" style={styles.page}>
-      <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content}>
-        <View style={styles.section}>
-          <View style={styles.tabs}>
-            {[
-              { value: "expressions", label: "표현" },
-              { value: "wordbooks", label: "단어장" },
-            ].map((item) => (
-              <Pressable key={item.value} accessibilityRole="tab" accessibilityState={{ selected: section === item.value }} onPress={() => setSection(item.value === "expressions" ? "expressions" : "wordbooks")} style={[styles.tab, { backgroundColor: section === item.value ? colors.surface : "transparent" }]}>
-                <Text>{item.label}</Text>
-              </Pressable>
-            ))}
-          </View>
-          {section === "expressions" ? (
-            <>
-              <View style={styles.toolbar}><Text variant="caption" tone="secondary">최근 추가한 순</Text><Button variant="plain" label="정렬" disabled /></View>
-              <Surface style={styles.list}>
-                {[
-                  { expression: "make it happen", meaning: "실현하다" },
-                  { expression: "a fresh start", meaning: "새로운 시작" },
-                  { expression: "take your time", meaning: "서두르지 않고 천천히 하다" },
-                ].map((item, index) => (
-                  <View key={item.expression}>
-                    {index > 0 && <Separator />}
-                    <Pressable accessibilityRole="button" onPress={() => onOpenDetail(item.expression)} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}>
-                      <View style={styles.rowText}><Text>{item.expression}</Text><Text variant="caption" tone="secondary">{item.meaning}</Text></View>
-                      <Text tone="secondary">›</Text>
-                    </Pressable>
-                  </View>
-                ))}
-              </Surface>
-            </>
-          ) : (
-            <>
-              <View style={styles.toolbar}><Text variant="caption" tone="secondary">내 단어장</Text><Button variant="plain" label="새 단어장" disabled /></View>
-              <Pressable accessibilityRole="button" onPress={() => onOpenDetail("일상 속 표현")} style={({ pressed }) => [styles.wordbook, { opacity: pressed ? 0.6 : 1 }]}>
-                <View style={styles.artwork}><Text style={styles.artworkText}>Everyday</Text></View>
-                <Text>일상 속 표현</Text><Text variant="caption" tone="secondary">3개 표현</Text>
-              </Pressable>
-            </>
-          )}
-          <Text variant="caption" tone="secondary">미리보기 · 샘플 콘텐츠</Text>
-        </View>
-      </ScrollView>
-    </Surface>
-  );
+function preferredGloss(glosses: readonly { languageTag: string; text: string }[]): string {
+  return glosses.find((gloss) => gloss.languageTag === "ko")?.text ?? glosses.find((gloss) => gloss.languageTag === "en")?.text ?? glosses[0]?.text ?? "뜻이 없어요";
 }
-
-const styles = StyleSheet.create({
-  page: { flex: 1 },
-  content: { paddingTop: 12, paddingBottom: 32 },
-  section: { paddingHorizontal: 20, gap: 16 },
-  tabs: { flexDirection: "row", gap: 4 },
-  tab: { flex: 1, minHeight: 48, alignItems: "center", justifyContent: "center", borderRadius: 12 },
-  toolbar: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  list: { borderRadius: 16, overflow: "hidden" },
-  row: { minHeight: 80, padding: 16, flexDirection: "row", alignItems: "center", gap: 12 },
-  rowText: { flex: 1, gap: 4 },
-  wordbook: { width: "48%", gap: 5 },
-  artwork: { aspectRatio: 1, borderRadius: 14, backgroundColor: "#235A4B", alignItems: "center", justifyContent: "center", marginBottom: 6 },
-  artworkText: { color: "#FFFFFF", fontSize: 22, fontWeight: "700" },
-});
+const styles = StyleSheet.create({ page: { flex: 1 }, content: { padding: 20, paddingBottom: 40, gap: 16 }, row: { borderRadius: 16, padding: 16, flexDirection: "row", alignItems: "center", gap: 12 }, rowText: { flex: 1, gap: 4 } });

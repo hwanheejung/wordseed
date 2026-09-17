@@ -6,25 +6,39 @@ import {
   type FetchFunction,
 } from "relay-runtime";
 
-const apiUrl =
-  process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4000/graphql";
+interface RelayEnvironmentOptions {
+  apiUrl: string;
+  getAccessToken: () => Promise<string | null>;
+}
 
-const fetchGraphQL: FetchFunction = async (request, variables) => {
-  const response = await fetch(apiUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: request.text,
-      variables,
-    }),
+// Each signed-in session owns a separate store; refreshed tokens are read per request.
+export function createRelayEnvironment(
+  { apiUrl, getAccessToken }: RelayEnvironmentOptions,
+): Environment {
+  const fetchGraphQL: FetchFunction = async (request, variables) => {
+    const accessToken = await getAccessToken();
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+      body: JSON.stringify({ query: request.text, variables }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`GraphQL request failed with status ${response.status}.`);
+    }
+
+    return response.json();
+  };
+
+  return new Environment({
+    getDataID,
+    network: Network.create(fetchGraphQL),
+    store: new Store(new RecordSource()),
   });
-
-  if (!response.ok) {
-    throw new Error(`GraphQL request failed with status ${response.status}.`);
-  }
-
-  return response.json();
-};
+}
 
 function getDataID(
   fieldValue: Record<string, unknown>,
@@ -34,9 +48,3 @@ function getDataID(
     ? `${typeName}:${fieldValue.id}`
     : null;
 }
-
-export const relayEnvironment = new Environment({
-  getDataID,
-  network: Network.create(fetchGraphQL),
-  store: new Store(new RecordSource()),
-});

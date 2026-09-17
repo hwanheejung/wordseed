@@ -10,6 +10,7 @@ export const USER_GRAPHQL_RESOLVERS = [UserResolver] satisfies Type<unknown>[];
 
 @Module({
   imports: [AuthenticationModule, DatabaseModule],
+  exports: [UserService],
   providers: [
     ...USER_GRAPHQL_RESOLVERS,
     UserService,

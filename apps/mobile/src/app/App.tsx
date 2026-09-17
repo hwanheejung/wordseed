@@ -2,9 +2,11 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/
 import { StatusBar, useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useUITheme } from "@/shared/ui";
+import type { MobileConfiguration } from "./mobile-configuration";
+import { SessionGate } from "./providers/SessionGate";
 import { AppTabs } from "./navigation/AppTabs";
 
-export function App() {
+export function App({ configuration }: { configuration: MobileConfiguration }) {
   const scheme = useColorScheme();
   const { colors } = useUITheme();
   const baseTheme = scheme === "dark" ? DarkTheme : DefaultTheme;
@@ -20,7 +22,7 @@ export function App() {
         border: colors.separator,
       } }}>
         <StatusBar barStyle={scheme === "dark" ? "light-content" : "dark-content"} />
-        <AppTabs />
+        <SessionGate configuration={configuration}><AppTabs /></SessionGate>
       </NavigationContainer>
     </SafeAreaProvider>
   );

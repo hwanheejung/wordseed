@@ -56,6 +56,8 @@ model User {
   createdAt             DateTime  @default(now()) @map("created_at")
   updatedAt             DateTime  @updatedAt @map("updated_at")
 
+  savedLearningItems SavedLearningItem[]
+
   @@map("users")
 }
 
@@ -163,6 +165,7 @@ model DictionaryFormFeature {
 }
 
 model DictionarySense {
+  savedLearningItems SavedLearningItem[]
   id                String                         @id @default(uuid()) @db.Uuid
   lexemeId          String                         @map("lexeme_id") @db.Uuid
   lexeme            DictionaryLexeme               @relation(fields: [lexemeId], references: [id], onDelete: Cascade)
@@ -413,4 +416,17 @@ model DictionarySynsetRelation {
   @@unique([sourceSynsetId, targetSynsetId, kind])
   @@index([targetSynsetId])
   @@map("dictionary_synset_relations")
+}
+
+model SavedLearningItem {
+  id      String   @id @default(uuid()) @db.Uuid
+  userId  String   @map("user_id") @db.Uuid
+  senseId String   @map("sense_id") @db.Uuid
+  addedAt DateTime @default(now()) @map("added_at") @db.Timestamp(3)
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sense   DictionarySense @relation(fields: [senseId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, senseId])
+  @@index([userId, addedAt(sort: Desc), id(sort: Desc)])
+  @@map("saved_learning_items")
 }
