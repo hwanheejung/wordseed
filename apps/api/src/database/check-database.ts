@@ -5,92 +5,23 @@ import { PrismaClient } from "../generated/prisma/client";
 
 async function checkDatabase(): Promise<void> {
   const { DATABASE_URL: connectionString } = validateEnvironment(process.env);
-  const adapter = new PrismaPg({ connectionString });
-  const prisma = new PrismaClient({ adapter });
-
+  const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
   try {
-    const [
-      userCount,
-      usersWithNativeLanguageCount,
-      entryCount,
-      expressionCount,
-      senseCount,
-      synsetCount,
-      definitionCount,
-      senseRelationCount,
-      synsetRelationCount,
-      narrativeCount,
-      senseExampleCount,
-      synsetExampleCount,
-      formCount,
-      entryLanguages,
-      definitionLanguages,
-      narrativeLanguages,
-    ] = await Promise.all([
-      prisma.user.count(),
-      prisma.user.count({ where: { nativeLanguageTag: { not: null } } }),
-      prisma.dictionaryEntry.count(),
-      prisma.dictionaryEntry.count({ where: { kind: "EXPRESSION" } }),
-      prisma.dictionarySense.count(),
-      prisma.dictionarySynset.count(),
-      prisma.dictionarySynsetDefinition.count(),
-      prisma.dictionarySenseRelation.count(),
-      prisma.dictionarySynsetRelation.count(),
-      prisma.dictionarySenseNarrative.count(),
-      prisma.dictionarySenseExample.count(),
-      prisma.dictionarySynsetExample.count(),
-      prisma.dictionaryForm.count(),
-      prisma.dictionaryEntry.findMany({
-        distinct: ["languageTag"],
-        select: { languageTag: true },
-      }),
-      prisma.dictionarySynsetDefinition.findMany({
-        distinct: ["languageTag"],
-        select: { languageTag: true },
-      }),
-      prisma.dictionarySenseNarrative.findMany({
-        distinct: ["languageTag"],
-        select: { languageTag: true },
-      }),
+    const [users, languages, categories, lexemes, lemmas, forms, representations, features, pronunciations, senses, glosses, synsets, examples, usages, senseRelations, synsetRelations] = await Promise.all([
+      prisma.user.count(), prisma.dictionaryLanguage.count(), prisma.dictionaryLexicalCategory.count(),
+      prisma.dictionaryLexeme.count(), prisma.dictionaryLemma.count(), prisma.dictionaryForm.count(),
+      prisma.dictionaryFormRepresentation.count(), prisma.dictionaryGrammaticalFeature.count(),
+      prisma.dictionaryPronunciation.count(), prisma.dictionarySense.count(), prisma.dictionarySenseGloss.count(),
+      prisma.dictionarySynset.count(), prisma.dictionaryExample.count(), prisma.dictionarySenseUsage.count(),
+      prisma.dictionarySenseRelation.count(), prisma.dictionarySynsetRelation.count(),
     ]);
-
-    process.stdout.write(
-      [
-        "Database connected.",
-        `Users: ${userCount} (${usersWithNativeLanguageCount} with a native language).`,
-        `Dictionary entries: ${entryCount} (${expressionCount} expressions).`,
-        `Entry languages: ${entryLanguages
-          .map(({ languageTag }) => languageTag)
-          .sort()
-          .join(", ")}.`,
-        `Senses: ${senseCount}.`,
-        `Synsets: ${synsetCount} with ${definitionCount} localized definitions.`,
-        `Definition languages: ${definitionLanguages
-          .map(({ languageTag }) => languageTag)
-          .sort()
-          .join(", ")}.`,
-        `Sense narratives: ${narrativeCount}.`,
-        `Narrative languages: ${narrativeLanguages
-          .map(({ languageTag }) => languageTag)
-          .sort()
-          .join(", ")}.`,
-        `Sense examples: ${senseExampleCount}.`,
-        `Synset examples: ${synsetExampleCount}.`,
-        `Sense forms: ${formCount}.`,
-        `Sense relations: ${senseRelationCount}.`,
-        `Synset relations: ${synsetRelationCount}.`,
-        "",
-      ].join("\n"),
-    );
-  } finally {
-    await prisma.$disconnect();
-  }
+    process.stdout.write([
+      "Database connected.", `Users: ${users}.`, `Languages: ${languages}; lexical categories: ${categories}.`,
+      `Lexemes: ${lexemes}; lemmas: ${lemmas}; senses: ${senses}; glosses: ${glosses}.`,
+      `Forms: ${forms}; representations: ${representations}; features: ${features}; pronunciations: ${pronunciations}.`,
+      `Synsets: ${synsets}; examples: ${examples}; usages: ${usages}.`,
+      `Sense relations: ${senseRelations}; synset relations: ${synsetRelations}.\n`,
+    ].join("\n"));
+  } finally { await prisma.$disconnect(); }
 }
-
-checkDatabase().catch((error: unknown) => {
-  const message =
-    error instanceof Error ? (error.stack ?? error.message) : String(error);
-
-  process.stderr.write(`${message}\n`);
-  process.exitCode = 1;
-});
+checkDatabase().catch((error: unknown) => { process.stderr.write(`${error instanceof Error ? error.stack ?? error.message : String(error)}\n`); process.exitCode = 1; });

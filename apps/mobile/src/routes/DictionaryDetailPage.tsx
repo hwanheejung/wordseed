@@ -8,32 +8,32 @@ import {
 import { graphql, useLazyLoadQuery } from "react-relay";
 
 import {
-  DictionaryEntryDetail,
-} from "@/entities/dictionary-entry";
+  DictionaryLexemeDetail,
+} from "@/entities/dictionary-lexeme";
 import type { DictionaryDetailPageQuery } from "./__generated__/DictionaryDetailPageQuery.graphql";
 
 interface DictionaryDetailPageProps {
-  entryId: string;
+  lexemeId: string;
   onBack: () => void;
-  onSelectRecommendation: (entryId: string) => void;
+  onSelectRecommendation: (lexemeId: string) => void;
 }
 
 export function DictionaryDetailPage({
-  entryId,
+  lexemeId,
   onBack,
   onSelectRecommendation,
 }: DictionaryDetailPageProps) {
   const data = useLazyLoadQuery<DictionaryDetailPageQuery>(
     graphql`
-      query DictionaryDetailPageQuery($entryId: ID!) {
-        dictionaryEntry(id: $entryId) {
-          ...DictionaryEntryDetail_entry
+      query DictionaryDetailPageQuery($lexemeId: ID!) {
+        dictionaryLexeme(id: $lexemeId) {
+          ...DictionaryLexemeDetail_lexeme
         }
       }
     `,
-    { entryId },
+    { lexemeId },
   );
-  const selectedEntry = data.dictionaryEntry;
+  const selectedLexeme = data.dictionaryLexeme;
 
   return (
     <ScrollView
@@ -44,11 +44,11 @@ export function DictionaryDetailPage({
         <Text style={styles.backLabel}>← 목록으로</Text>
       </Pressable>
 
-      {selectedEntry === null || selectedEntry === undefined ? (
+      {selectedLexeme === null || selectedLexeme === undefined ? (
         <Text style={styles.empty}>해당 표현을 찾을 수 없습니다.</Text>
       ) : (
-        <DictionaryEntryDetail
-          entry={selectedEntry}
+        <DictionaryLexemeDetail
+          lexeme={selectedLexeme}
           onSelectRecommendation={onSelectRecommendation}
         />
       )}

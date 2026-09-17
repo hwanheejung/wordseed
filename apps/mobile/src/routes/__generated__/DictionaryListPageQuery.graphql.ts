@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<07647ff986ff765e414ff80ba029d5d0>>
+ * @generated SignedSource<<63a810f5c2f77bc3be20b4453c485d6d>>
  * @lightSyntaxTransform
  */
 
@@ -11,13 +11,14 @@ import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type DictionaryListPageQuery$variables = Record<PropertyKey, never>;
 export type DictionaryListPageQuery$data = {
-  readonly dictionaryEntries: {
+  readonly dictionaryLexemes: {
     readonly edges: ReadonlyArray<{
       readonly node: {
         readonly id: string;
-        readonly " $fragmentSpreads": FragmentRefs<"DictionaryEntrySummary_entry">;
+        readonly " $fragmentSpreads": FragmentRefs<"DictionaryLexemeSummary_lexeme">;
       };
     }>;
+    readonly totalCount: number;
   };
 };
 export type DictionaryListPageQuery = {
@@ -30,10 +31,17 @@ var v0 = [
   {
     "kind": "Literal",
     "name": "first",
-    "value": 50
+    "value": 100
   }
 ],
 v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "totalCount",
+  "storageKey": null
+},
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -50,15 +58,16 @@ return {
       {
         "alias": null,
         "args": (v0/*:: as any*/),
-        "concreteType": "DictionaryEntryConnection",
+        "concreteType": "DictionaryLexemeConnection",
         "kind": "LinkedField",
-        "name": "dictionaryEntries",
+        "name": "dictionaryLexemes",
         "plural": false,
         "selections": [
+          (v1/*:: as any*/),
           {
             "alias": null,
             "args": null,
-            "concreteType": "DictionaryEntryEdge",
+            "concreteType": "DictionaryLexemeEdge",
             "kind": "LinkedField",
             "name": "edges",
             "plural": true,
@@ -66,16 +75,16 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "concreteType": "DictionaryEntry",
+                "concreteType": "DictionaryLexeme",
                 "kind": "LinkedField",
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*:: as any*/),
+                  (v2/*:: as any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
-                    "name": "DictionaryEntrySummary_entry"
+                    "name": "DictionaryLexemeSummary_lexeme"
                   }
                 ],
                 "storageKey": null
@@ -84,7 +93,7 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": "dictionaryEntries(first:50)"
+        "storageKey": "dictionaryLexemes(first:100)"
       }
     ],
     "type": "Query",
@@ -99,15 +108,16 @@ return {
       {
         "alias": null,
         "args": (v0/*:: as any*/),
-        "concreteType": "DictionaryEntryConnection",
+        "concreteType": "DictionaryLexemeConnection",
         "kind": "LinkedField",
-        "name": "dictionaryEntries",
+        "name": "dictionaryLexemes",
         "plural": false,
         "selections": [
+          (v1/*:: as any*/),
           {
             "alias": null,
             "args": null,
-            "concreteType": "DictionaryEntryEdge",
+            "concreteType": "DictionaryLexemeEdge",
             "kind": "LinkedField",
             "name": "edges",
             "plural": true,
@@ -115,24 +125,36 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "concreteType": "DictionaryEntry",
+                "concreteType": "DictionaryLexeme",
                 "kind": "LinkedField",
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*:: as any*/),
+                  (v2/*:: as any*/),
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "headword",
+                    "name": "canonicalLemma",
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
-                    "kind": "ScalarField",
-                    "name": "kind",
+                    "concreteType": "DictionaryLexicalCategory",
+                    "kind": "LinkedField",
+                    "name": "lexicalCategory",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "displayName",
+                        "storageKey": null
+                      },
+                      (v2/*:: as any*/)
+                    ],
                     "storageKey": null
                   },
                   {
@@ -143,45 +165,33 @@ return {
                     "name": "senses",
                     "plural": true,
                     "selections": [
+                      (v2/*:: as any*/),
                       {
                         "alias": null,
                         "args": null,
-                        "concreteType": "DictionarySynset",
+                        "concreteType": "DictionarySenseGloss",
                         "kind": "LinkedField",
-                        "name": "synset",
-                        "plural": false,
+                        "name": "glosses",
+                        "plural": true,
                         "selections": [
                           {
                             "alias": null,
                             "args": null,
-                            "concreteType": "DictionarySynsetDefinition",
-                            "kind": "LinkedField",
-                            "name": "definitions",
-                            "plural": true,
-                            "selections": [
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "languageTag",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "text",
-                                "storageKey": null
-                              },
-                              (v1/*:: as any*/)
-                            ],
+                            "kind": "ScalarField",
+                            "name": "languageTag",
                             "storageKey": null
                           },
-                          (v1/*:: as any*/)
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "text",
+                            "storageKey": null
+                          },
+                          (v2/*:: as any*/)
                         ],
                         "storageKey": null
-                      },
-                      (v1/*:: as any*/)
+                      }
                     ],
                     "storageKey": null
                   }
@@ -192,21 +202,21 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": "dictionaryEntries(first:50)"
+        "storageKey": "dictionaryLexemes(first:100)"
       }
     ]
   },
   "params": {
-    "cacheID": "c530437720b72a51082233ae58609018",
+    "cacheID": "9a776a007c9593d4a4ff4e343657b84a",
     "id": null,
     "metadata": {},
     "name": "DictionaryListPageQuery",
     "operationKind": "query",
-    "text": "query DictionaryListPageQuery {\n  dictionaryEntries(first: 50) {\n    edges {\n      node {\n        id\n        ...DictionaryEntrySummary_entry\n      }\n    }\n  }\n}\n\nfragment DictionaryEntrySummary_entry on DictionaryEntry {\n  headword\n  kind\n  senses {\n    synset {\n      definitions {\n        languageTag\n        text\n        id\n      }\n      id\n    }\n    id\n  }\n}\n"
+    "text": "query DictionaryListPageQuery {\n  dictionaryLexemes(first: 100) {\n    totalCount\n    edges {\n      node {\n        id\n        ...DictionaryLexemeSummary_lexeme\n      }\n    }\n  }\n}\n\nfragment DictionaryLexemeSummary_lexeme on DictionaryLexeme {\n  canonicalLemma\n  lexicalCategory {\n    displayName\n    id\n  }\n  senses {\n    id\n    glosses {\n      languageTag\n      text\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "ca17b89b6d96f5e062012af7796a5653";
+(node as any).hash = "d9d32703d6c29e4b3280d0915505286b";
 
 export default node;

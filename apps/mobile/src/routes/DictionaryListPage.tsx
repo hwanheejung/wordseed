@@ -1,22 +1,23 @@
 import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
 import { graphql, useLazyLoadQuery } from "react-relay";
 
-import { DictionaryEntrySummary } from "@/entities/dictionary-entry";
+import { DictionaryLexemeSummary } from "@/entities/dictionary-lexeme";
 import type { DictionaryListPageQuery } from "./__generated__/DictionaryListPageQuery.graphql";
 
 interface DictionaryListPageProps {
-  onSelect: (entryId: string) => void;
+  onSelect: (lexemeId: string) => void;
 }
 
 export function DictionaryListPage({ onSelect }: DictionaryListPageProps) {
   const data = useLazyLoadQuery<DictionaryListPageQuery>(
     graphql`
       query DictionaryListPageQuery {
-        dictionaryEntries(first: 50) {
+        dictionaryLexemes(first: 100) {
+          totalCount
           edges {
             node {
               id
-              ...DictionaryEntrySummary_entry
+              ...DictionaryLexemeSummary_lexeme
             }
           }
         }
@@ -24,7 +25,7 @@ export function DictionaryListPage({ onSelect }: DictionaryListPageProps) {
     `,
     {},
   );
-  const entries = data.dictionaryEntries.edges;
+  const lexemes = data.dictionaryLexemes.edges;
 
   return (
     <ScrollView
@@ -32,11 +33,11 @@ export function DictionaryListPage({ onSelect }: DictionaryListPageProps) {
       contentContainerStyle={styles.content}
     >
       <Text style={styles.title}>Dictionary</Text>
-      <Text style={styles.count}>전체 {entries.length}개</Text>
-      {entries.length === 0 ? (
+      <Text style={styles.count}>전체 {data.dictionaryLexemes.totalCount}개</Text>
+      {lexemes.length === 0 ? (
         <Text style={styles.empty}>사전 데이터가 없습니다.</Text>
       ) : (
-        entries.map(({ node }) => (
+        lexemes.map(({ node }) => (
           <Pressable
             key={node.id}
             onPress={() => onSelect(node.id)}
@@ -45,7 +46,7 @@ export function DictionaryListPage({ onSelect }: DictionaryListPageProps) {
               pressed && styles.itemPressed,
             ]}
           >
-            <DictionaryEntrySummary entry={node} />
+            <DictionaryLexemeSummary lexeme={node} />
           </Pressable>
         ))
       )}

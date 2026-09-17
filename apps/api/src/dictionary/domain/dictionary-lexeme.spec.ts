@@ -1,17 +1,17 @@
 import { describe, expect, it } from "vitest";
 import {
-  canonicalizeDictionaryHeadword,
+  canonicalizeDictionaryLemma,
   normalizeDictionarySearchQuery,
-} from "./dictionary-entry";
+} from "./dictionary-lexeme";
 
-describe("canonicalizeDictionaryHeadword", () => {
+describe("canonicalizeDictionaryLemma", () => {
   it("stores one display-safe canonical form", () => {
-    expect(canonicalizeDictionaryHeadword("  I’M   DOWN  ")).toBe("I'M DOWN");
-    expect(canonicalizeDictionaryHeadword("up–to–speed")).toBe("up-to-speed");
+    expect(canonicalizeDictionaryLemma("  I’M   DOWN  ")).toBe("I'M DOWN");
+    expect(canonicalizeDictionaryLemma("up–to–speed")).toBe("up-to-speed");
   });
 
   it("rejects an empty headword", () => {
-    expect(() => canonicalizeDictionaryHeadword("   ")).toThrow(RangeError);
+    expect(() => canonicalizeDictionaryLemma("   ")).toThrow(RangeError);
   });
 });
 

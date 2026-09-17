@@ -9,13 +9,13 @@ import { AppErrorBoundary } from "@/shared/error-boundary";
 import { relayEnvironment } from "@/shared/relay";
 
 export function App() {
-  const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
+  const [selectedLexemeId, setSelectedLexemeId] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
 
   return (
     <RelayEnvironmentProvider environment={relayEnvironment}>
       <AppErrorBoundary
-        key={`${selectedEntryId ?? "list"}-${retryKey}`}
+        key={`${selectedLexemeId ?? "list"}-${retryKey}`}
         fallback={({ retry }) => (
           <View style={styles.feedback}>
             <Text style={styles.feedbackText}>
@@ -38,13 +38,13 @@ export function App() {
             </View>
           }
         >
-          {selectedEntryId === null ? (
-            <DictionaryListPage onSelect={setSelectedEntryId} />
+          {selectedLexemeId === null ? (
+            <DictionaryListPage onSelect={setSelectedLexemeId} />
           ) : (
             <DictionaryDetailPage
-              entryId={selectedEntryId}
-              onBack={() => setSelectedEntryId(null)}
-              onSelectRecommendation={setSelectedEntryId}
+              lexemeId={selectedLexemeId}
+              onBack={() => setSelectedLexemeId(null)}
+              onSelectRecommendation={setSelectedLexemeId}
             />
           )}
         </Suspense>

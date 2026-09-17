@@ -1,26 +1,23 @@
-import type {
-  DictionaryEntry,
-  DictionarySenseRecommendation,
-} from "./dictionary-entry";
+import type { DictionaryLexeme, DictionarySenseRecommendation } from "./dictionary-lexeme";
 
-export interface SearchDictionaryEntriesCriteria {
+export interface SearchDictionaryLexemesCriteria {
   languageTag: string;
   normalizedQuery: string | null;
   offset: number;
   limit: number;
 }
 
-export interface SearchDictionaryEntriesResult {
-  entries: readonly DictionaryEntry[];
+export interface SearchDictionaryLexemesResult {
+  lexemes: readonly DictionaryLexeme[];
   totalCount: number;
 }
 
 export abstract class DictionaryRepository {
-  abstract findById(id: string): Promise<DictionaryEntry | null>;
+  abstract findById(id: string): Promise<DictionaryLexeme | null>;
 
   abstract search(
-    criteria: SearchDictionaryEntriesCriteria,
-  ): Promise<SearchDictionaryEntriesResult>;
+    criteria: SearchDictionaryLexemesCriteria,
+  ): Promise<SearchDictionaryLexemesResult>;
 
   abstract findSenseRecommendations(
     senseId: string,

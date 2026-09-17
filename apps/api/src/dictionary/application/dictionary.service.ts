@@ -1,33 +1,33 @@
 import { Injectable } from "@nestjs/common";
 import type {
-  DictionaryEntry,
+  DictionaryLexeme,
   DictionarySenseRecommendation,
-} from "../domain/dictionary-entry";
+} from "../domain/dictionary-lexeme";
 import {
   normalizeDictionaryLanguageTag,
   normalizeDictionarySearchQuery,
-} from "../domain/dictionary-entry";
+} from "../domain/dictionary-lexeme";
 import { DictionaryRepository } from "../domain/dictionary.repository";
 
 const DEFAULT_PAGE_SIZE = 20;
-const MAX_PAGE_SIZE = 50;
+const MAX_PAGE_SIZE = 100;
 const MAX_RECOMMENDATIONS = 5;
-const CURSOR_PREFIX = "dictionary-entry:";
+const CURSOR_PREFIX = "dictionary-lexeme:";
 
-export interface SearchDictionaryEntriesInput {
+export interface SearchDictionaryLexemesInput {
   languageTag?: string;
   query?: string;
   first?: number;
   after?: string;
 }
 
-export interface DictionaryEntryEdge {
+export interface DictionaryLexemeEdge {
   cursor: string;
-  node: DictionaryEntry;
+  node: DictionaryLexeme;
 }
 
-export interface DictionaryEntryPage {
-  edges: readonly DictionaryEntryEdge[];
+export interface DictionaryLexemePage {
+  edges: readonly DictionaryLexemeEdge[];
   totalCount: number;
   pageInfo: {
     startCursor: string | null;
@@ -63,7 +63,7 @@ function decodeCursor(cursor: string): number {
 export class DictionaryService {
   constructor(private readonly repository: DictionaryRepository) {}
 
-  findById(id: string): Promise<DictionaryEntry | null> {
+  findById(id: string): Promise<DictionaryLexeme | null> {
     return this.repository.findById(id);
   }
 
@@ -81,8 +81,8 @@ export class DictionaryService {
   }
 
   async search(
-    input: SearchDictionaryEntriesInput,
-  ): Promise<DictionaryEntryPage> {
+    input: SearchDictionaryLexemesInput,
+  ): Promise<DictionaryLexemePage> {
     const first = input.first ?? DEFAULT_PAGE_SIZE;
 
     if (!Number.isInteger(first) || first < 1 || first > MAX_PAGE_SIZE) {
@@ -109,9 +109,9 @@ export class DictionaryService {
       offset,
       limit: first,
     });
-    const edges = result.entries.map((entry, index) => ({
+    const edges = result.lexemes.map((lexeme, index) => ({
       cursor: encodeCursor(offset + index),
-      node: entry,
+      node: lexeme,
     }));
 
     return {

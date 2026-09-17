@@ -6,12 +6,7 @@ import { createGunzip } from "node:zlib";
 import { SaxesParser, type SaxesTagPlain } from "saxes";
 import { stringify } from "yaml";
 import { z } from "zod";
-import {
-  canonicalizeDictionaryHeadword,
-  DictionaryEntryKind,
-  DictionaryPartOfSpeech,
-  type DictionaryPartOfSpeech as DictionaryPartOfSpeechValue,
-} from "../../../domain/dictionary-entry";
+import { canonicalizeDictionaryLemma } from "../../../domain/dictionary-lexeme";
 
 const sourcePartOfSpeechSchema = z.enum(["n", "v", "a", "s", "r"]);
 const lexiconAttributesSchema = z.object({
@@ -47,7 +42,7 @@ interface SelectedLexicalSense {
   sourceSenseId: string;
   sourceSynsetId: string;
   headword: string;
-  partOfSpeech: DictionaryPartOfSpeechValue;
+  partOfSpeech: string;
 }
 
 interface SelectedSynset {
@@ -105,7 +100,7 @@ interface OewnStagingSense {
 
 interface OewnStagingSynset {
   sourceSynsetId: string;
-  partOfSpeech: DictionaryPartOfSpeechValue;
+  partOfSpeech: string;
   definitions: readonly {
     languageTag: "en";
     text: string;
@@ -139,7 +134,7 @@ interface ParseState {
   currentLexicalEntry: {
     selectedLemma: {
       headword: string;
-      partOfSpeech: DictionaryPartOfSpeechValue;
+      partOfSpeech: string;
     } | null;
   } | null;
   currentSynset: {
@@ -160,7 +155,7 @@ export async function parseOewnGzip(
   }
 
   const normalizedTargetToOriginal = new Map(
-    targets.map((target) => [normalizeHeadwordKey(target), canonicalizeDictionaryHeadword(target)]),
+    targets.map((target) => [normalizeHeadwordKey(target), canonicalizeDictionaryLemma(target)]),
   );
   const selectedLexicalSenses: SelectedLexicalSense[] = [];
   const selectedSynsets = new Map<string, SelectedSynset>();
@@ -400,7 +395,7 @@ export function parseSourceManifest(value: unknown): OewnSourceManifest {
 }
 
 export function parseTargets(value: unknown): readonly string[] {
-  const targets = targetsSchema.parse(value).map(canonicalizeDictionaryHeadword);
+  const targets = targetsSchema.parse(value).map(canonicalizeDictionaryLemma);
   if (new Set(targets.map(normalizeHeadwordKey)).size !== targets.length) {
     throw new Error("Dictionary import targets must be unique after normalization.");
   }
@@ -434,9 +429,7 @@ function buildStagingEntry(
   return {
     headword: firstCandidate.headword,
     languageTag: "en",
-    kind: firstCandidate.headword.includes(" ")
-      ? DictionaryEntryKind.EXPRESSION
-      : DictionaryEntryKind.WORD,
+    kind: firstCandidate.headword.includes(" ") ? "EXPRESSION" : "WORD",
     senses,
   };
 }
@@ -545,22 +538,22 @@ function sourceIdShardKey(sourceId: string): string {
   return createHash("sha256").update(sourceId).digest("hex").slice(0, 2);
 }
 
-function mapPartOfSpeech(source: z.infer<typeof sourcePartOfSpeechSchema>): DictionaryPartOfSpeechValue {
+function mapPartOfSpeech(source: z.infer<typeof sourcePartOfSpeechSchema>): string {
   switch (source) {
     case "n":
-      return DictionaryPartOfSpeech.NOUN;
+      return "NOUN";
     case "v":
-      return DictionaryPartOfSpeech.VERB;
+      return "VERB";
     case "a":
     case "s":
-      return DictionaryPartOfSpeech.ADJECTIVE;
+      return "ADJECTIVE";
     case "r":
-      return DictionaryPartOfSpeech.ADVERB;
+      return "ADVERB";
   }
 }
 
 function normalizeHeadwordKey(headword: string): string {
-  return canonicalizeDictionaryHeadword(headword).toLocaleLowerCase("en");
+  return canonicalizeDictionaryLemma(headword).toLocaleLowerCase("en");
 }
 
 function normalizeContentText(text: string): string {

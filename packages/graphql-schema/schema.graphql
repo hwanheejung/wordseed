@@ -3,35 +3,10 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type DictionaryEntry {
-  headword: String!
-  id: ID!
-  kind: DictionaryEntryKind!
-  languageTag: String!
-  senses: [DictionarySense!]!
-}
-
-type DictionaryEntryConnection {
-  edges: [DictionaryEntryEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-type DictionaryEntryEdge {
-  cursor: String!
-  node: DictionaryEntry!
-}
-
-"""Whether a dictionary entry is a word or a multiword expression."""
-enum DictionaryEntryKind {
-  EXPRESSION
-  WORD
-}
-
 type DictionaryExample {
   id: ID!
-  sourceLanguageTag: String!
-  sourceText: String!
+  languageTag: String!
+  text: String!
   translations: [DictionaryExampleTranslation!]!
 }
 
@@ -43,47 +18,90 @@ type DictionaryExampleTranslation {
 }
 
 type DictionaryForm {
+  features: [DictionaryGrammaticalFeature!]!
   id: ID!
-  kind: DictionaryFormKind!
-  surface: String!
+  pronunciations: [DictionaryPronunciation!]!
+  representations: [DictionaryFormRepresentation!]!
 }
 
-enum DictionaryFormKind {
-  COMPARATIVE
-  OTHER
-  PAST
-  PAST_PARTICIPLE
-  PLURAL
-  PRESENT_PARTICIPLE
-  SUPERLATIVE
-  THIRD_PERSON_SINGULAR
+type DictionaryFormRepresentation {
+  id: ID!
+  languageTag: String!
+  value: String!
 }
 
-"""The grammatical role shared by one dictionary concept."""
-enum DictionaryPartOfSpeech {
-  ADJECTIVE
-  ADVERB
-  AUXILIARY
-  CONJUNCTION
-  DETERMINER
-  INTERJECTION
-  NOUN
-  PARTICLE
-  PREPOSITION
-  PRONOUN
-  VERB
+type DictionaryGrammaticalFeature {
+  id: ID!
+  key: String!
+  label: String!
+}
+
+type DictionaryLanguage {
+  code: String!
+  defaultScriptCode: String
+  id: ID!
+  name: String!
+}
+
+type DictionaryLemma {
+  id: ID!
+  isPrimary: Boolean!
+  languageTag: String!
+  value: String!
+}
+
+type DictionaryLexeme {
+  canonicalLemma: String!
+  forms: [DictionaryForm!]!
+  id: ID!
+  language: DictionaryLanguage!
+  lemmas: [DictionaryLemma!]!
+  lexicalCategory: DictionaryLexicalCategory!
+  senses: [DictionarySense!]!
+}
+
+type DictionaryLexemeConnection {
+  edges: [DictionaryLexemeEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type DictionaryLexemeEdge {
+  cursor: String!
+  node: DictionaryLexeme!
+}
+
+type DictionaryLexicalCategory {
+  code: String!
+  displayName: String!
+  id: ID!
+}
+
+type DictionaryPronunciation {
+  audioUrl: String
+  dialectTag: String
+  id: ID!
+  ipa: String
+  syllabification: String
 }
 
 type DictionarySense {
-  commonnessScore: Float
   examples: [DictionaryExample!]!
-  forms: [DictionaryForm!]!
+  glosses: [DictionarySenseGloss!]!
   id: ID!
   narratives: [DictionarySenseNarrative!]!
+  order: Int!
 
   """Returns ranked one-hop lexical recommendations for this sense."""
   recommendations(first: Int! = 3): [DictionarySenseRecommendation!]!
-  synset: DictionarySynset!
+  synset: DictionarySynset
+  usages: [DictionarySenseUsage!]!
+}
+
+type DictionarySenseGloss {
+  id: ID!
+  languageTag: String!
+  text: String!
 }
 
 type DictionarySenseNarrative {
@@ -103,29 +121,37 @@ enum DictionarySenseNarrativeKind {
 
 type DictionarySenseRecommendation {
   reason: DictionarySenseRecommendationReason!
-  targetEntry: DictionaryEntry!
+  targetLexeme: DictionaryLexeme!
   targetSense: DictionarySense!
 }
 
-"""
-Why another sense is recommended from this sense's lexical relationships.
-"""
 enum DictionarySenseRecommendationReason {
   ANTONYM
   CONFUSABLE
   DERIVATIVE
   DERIVED_FROM
+  HOLONYM
   HYPERNYM
   HYPONYM
+  MERONYM
   RELATED
   SAME_SYNSET
+  SYNONYM
+  TRANSLATION
+}
+
+type DictionarySenseUsage {
+  corpus: String
+  id: ID!
+  rank: Int
+  regionTag: String
+  register: String
+  score: Float
 }
 
 type DictionarySynset {
   definitions: [DictionarySynsetDefinition!]!
-  examples: [DictionaryExample!]!
   id: ID!
-  partOfSpeech: DictionaryPartOfSpeech
 }
 
 type DictionarySynsetDefinition {
@@ -159,11 +185,11 @@ type PageInfo {
 }
 
 type Query {
-  """Searches dictionary entries using forward cursor pagination."""
-  dictionaryEntries(after: String, first: Int! = 20, languageTag: String! = "en", query: String): DictionaryEntryConnection!
+  """Returns one dictionary lexeme by its stable ID."""
+  dictionaryLexeme(id: ID!): DictionaryLexeme
 
-  """Returns one dictionary entry by its stable ID."""
-  dictionaryEntry(id: ID!): DictionaryEntry
+  """Searches dictionary lexemes using forward cursor pagination."""
+  dictionaryLexemes(after: String, first: Int! = 20, languageTag: String! = "en", query: String): DictionaryLexemeConnection!
 
   """Checks whether the Wordseed API is available."""
   health: HealthStatus!

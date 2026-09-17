@@ -1,11 +1,4 @@
-import type {
-  DictionaryFormKind,
-  DictionarySenseNarrativeKind,
-} from "../../domain/dictionary-content";
-import type {
-  DictionaryEntryKind,
-  DictionaryPartOfSpeech,
-} from "../../domain/dictionary-entry";
+import type { DictionarySenseNarrativeKind } from "../../domain/dictionary-lexeme";
 
 export interface DictionarySeedDefinition {
   languageTag: string;
@@ -26,9 +19,7 @@ export interface DictionarySeedExample {
 
 export interface DictionarySeedSynset {
   id: string;
-  partOfSpeech: DictionaryPartOfSpeech | null;
   definitions: readonly DictionarySeedDefinition[];
-  examples: readonly DictionarySeedExample[];
 }
 
 export interface DictionarySeedNarrative {
@@ -43,23 +34,23 @@ export interface DictionarySeedNarrative {
 export interface DictionarySeedForm {
   id: string;
   surface: string;
-  kind: DictionaryFormKind;
+  featureKey: string;
 }
 
 export interface DictionarySeedSense {
   id: string;
   synsetId: string;
-  commonnessScore: number;
+  usageScore: number;
   narratives?: readonly DictionarySeedNarrative[];
   examples?: readonly DictionarySeedExample[];
-  forms?: readonly DictionarySeedForm[];
 }
 
-export interface DictionarySeedEntry {
+export interface DictionarySeedLexeme {
   id: string;
-  headword: string;
+  canonicalLemma: string;
   languageTag: string;
-  kind: DictionaryEntryKind;
+  lexicalCategoryCode: string;
+  forms?: readonly DictionarySeedForm[];
   senses: readonly DictionarySeedSense[];
 }
 
@@ -78,7 +69,6 @@ export interface DictionarySeedSynsetRelation {
 export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
   {
     "id": "20000000-0000-4000-8000-000000000101",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -88,12 +78,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To crush or reduce something into small particles."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000102",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -103,12 +91,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To keep working steadily at something difficult."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000103",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -118,12 +104,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A difficult, repetitive routine or workload."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000104",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -133,12 +117,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To move slowly or laboriously with friction or resistance."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000201",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -148,25 +130,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To slow down and stop moving or operating completely."
       }
-    ],
-    "examples": [
-      {
-        "id": "50000000-0000-4000-8000-000000000004",
-        "sourceLanguageTag": "en",
-        "sourceText": "Traffic ground to a halt after the accident.",
-        "translations": [
-          {
-            "id": "60000000-0000-4000-8000-000000000004",
-            "languageTag": "ko",
-            "text": "사고 뒤 교통이 완전히 멈췄다."
-          }
-        ]
-      }
     ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000301",
-    "partOfSpeech": "ADJECTIVE",
     "definitions": [
       {
         "languageTag": "ko",
@@ -176,12 +143,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Fully informed about the current situation."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000302",
-    "partOfSpeech": "ADJECTIVE",
     "definitions": [
       {
         "languageTag": "ko",
@@ -191,12 +156,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Operating or performing at the expected level."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000401",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -206,12 +169,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To cause serious harm or strain over time."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000601",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -221,12 +182,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To make more effort than is expected or required."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000701",
-    "partOfSpeech": "ADJECTIVE",
     "definitions": [
       {
         "languageTag": "ko",
@@ -236,12 +195,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To be willing to join or agree to a suggestion."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000801",
-    "partOfSpeech": "ADVERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -251,12 +208,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "In full daylight, where an action can easily be seen."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000901",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -266,12 +221,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A road or passage with no exit."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000000902",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -281,12 +234,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A situation with no prospect of progress."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001001",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -296,12 +247,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To return to a topic or person later for further discussion."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001101",
-    "partOfSpeech": null,
     "definitions": [
       {
         "languageTag": "ko",
@@ -311,12 +260,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Used to ask for permission politely."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001201",
-    "partOfSpeech": null,
     "definitions": [
       {
         "languageTag": "ko",
@@ -326,12 +273,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "What people do reveals more than what they say."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001301",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -341,12 +286,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "The advantages and disadvantages of something."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001401",
-    "partOfSpeech": "ADVERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -356,12 +299,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Used to introduce a contrast or qualification to what was just said."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001501",
-    "partOfSpeech": "ADJECTIVE",
     "definitions": [
       {
         "languageTag": "ko",
@@ -371,12 +312,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Not likely to change, fail, or become unsafe."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001502",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -386,12 +325,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A building in which horses are kept."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001601",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -401,12 +338,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "The state of being steady and unlikely to change or fail."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001701",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -416,12 +351,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To make something steady or prevent it from changing further."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001801",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -431,25 +364,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To speak with someone in conversation."
       }
-    ],
-    "examples": [
-      {
-        "id": "50000000-0000-4000-8000-000000000001",
-        "sourceLanguageTag": "en",
-        "sourceText": "We talked for an hour after lunch.",
-        "translations": [
-          {
-            "id": "60000000-0000-4000-8000-000000000001",
-            "languageTag": "ko",
-            "text": "우리는 점심 뒤 한 시간 동안 대화했다."
-          }
-        ]
-      }
     ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001802",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -459,12 +377,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Archaic: to have acquaintance or familiarity with something."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001803",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -474,12 +390,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Something reversed in order, relation, or action."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001804",
-    "partOfSpeech": "ADJECTIVE",
     "definitions": [
       {
         "languageTag": "ko",
@@ -489,12 +403,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Reversed in order, relation, or action."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000001901",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -504,25 +416,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "An informal exchange of ideas or information through speech."
       }
-    ],
-    "examples": [
-      {
-        "id": "50000000-0000-4000-8000-000000000002",
-        "sourceLanguageTag": "en",
-        "sourceText": "Their conversation continued over coffee.",
-        "translations": [
-          {
-            "id": "60000000-0000-4000-8000-000000000002",
-            "languageTag": "ko",
-            "text": "그들의 대화는 커피를 마시는 동안 계속됐다."
-          }
-        ]
-      }
     ]
   },
   {
     "id": "20000000-0000-4000-8000-000000002001",
-    "partOfSpeech": "ADVERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -532,12 +429,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "In an opposite or reversed way."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000002101",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -547,12 +442,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To draw attention to an error or problem."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "20000000-0000-4000-8000-000000002201",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -562,25 +455,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To express strong disapproval of someone for wrongdoing."
       }
-    ],
-    "examples": [
-      {
-        "id": "50000000-0000-4000-8000-000000000003",
-        "sourceLanguageTag": "en",
-        "sourceText": "The coach scolded the player for ignoring the rules.",
-        "translations": [
-          {
-            "id": "60000000-0000-4000-8000-000000000003",
-            "languageTag": "ko",
-            "text": "코치는 규칙을 무시한 선수를 꾸짖었다."
-          }
-        ]
-      }
     ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000001",
-    "partOfSpeech": "ADJECTIVE",
     "definitions": [
       {
         "languageTag": "ko",
@@ -590,25 +468,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Firmly fixed or balanced and not likely to move."
       }
-    ],
-    "examples": [
-      {
-        "id": "50000000-0000-4000-8000-000000000005",
-        "sourceLanguageTag": "en",
-        "sourceText": "Keep the ladder steady while I climb.",
-        "translations": [
-          {
-            "id": "60000000-0000-4000-8000-000000000005",
-            "languageTag": "ko",
-            "text": "내가 올라가는 동안 사다리를 단단히 잡아 줘."
-          }
-        ]
-      }
     ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000002",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -618,25 +481,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A road vehicle with four wheels, usually powered by an engine."
       }
-    ],
-    "examples": [
-      {
-        "id": "50000000-0000-4000-8000-000000000006",
-        "sourceLanguageTag": "en",
-        "sourceText": "They bought a small car for commuting.",
-        "translations": [
-          {
-            "id": "60000000-0000-4000-8000-000000000006",
-            "languageTag": "ko",
-            "text": "그들은 통근용 소형 자동차를 샀다."
-          }
-        ]
-      }
     ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000003",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -646,25 +494,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "An action, judgment, or result that is incorrect."
       }
-    ],
-    "examples": [
-      {
-        "id": "50000000-0000-4000-8000-000000000007",
-        "sourceLanguageTag": "en",
-        "sourceText": "I made a mistake in the final calculation.",
-        "translations": [
-          {
-            "id": "60000000-0000-4000-8000-000000000007",
-            "languageTag": "ko",
-            "text": "나는 최종 계산에서 실수했다."
-          }
-        ]
-      }
     ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000004",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -674,25 +507,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To stop an activity or condition from continuing."
       }
-    ],
-    "examples": [
-      {
-        "id": "50000000-0000-4000-8000-000000000008",
-        "sourceLanguageTag": "en",
-        "sourceText": "The noise finally ceased at midnight.",
-        "translations": [
-          {
-            "id": "60000000-0000-4000-8000-000000000008",
-            "languageTag": "ko",
-            "text": "소음은 자정에 마침내 멈췄다."
-          }
-        ]
-      }
     ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000005",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -702,25 +520,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "An act or instance of stopping."
       }
-    ],
-    "examples": [
-      {
-        "id": "50000000-0000-4000-8000-000000000009",
-        "sourceLanguageTag": "en",
-        "sourceText": "The bus came to a sudden stop.",
-        "translations": [
-          {
-            "id": "60000000-0000-4000-8000-000000000009",
-            "languageTag": "ko",
-            "text": "버스가 갑자기 멈췄다."
-          }
-        ]
-      }
     ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000006",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -730,25 +533,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A feature or condition that makes success more difficult."
       }
-    ],
-    "examples": [
-      {
-        "id": "50000000-0000-4000-8000-000000000010",
-        "sourceLanguageTag": "en",
-        "sourceText": "The long commute is a major drawback.",
-        "translations": [
-          {
-            "id": "60000000-0000-4000-8000-000000000010",
-            "languageTag": "ko",
-            "text": "긴 통근 시간은 큰 단점이다."
-          }
-        ]
-      }
     ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000007",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -758,25 +546,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A serious or organized discussion between people or groups."
       }
-    ],
-    "examples": [
-      {
-        "id": "50000000-0000-4000-8000-000000000011",
-        "sourceLanguageTag": "en",
-        "sourceText": "The two teams held talks about the launch.",
-        "translations": [
-          {
-            "id": "60000000-0000-4000-8000-000000000011",
-            "languageTag": "ko",
-            "text": "두 팀은 출시를 두고 논의했다."
-          }
-        ]
-      }
     ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000008",
-    "partOfSpeech": "ADJECTIVE",
     "definitions": [
       {
         "languageTag": "ko",
@@ -786,12 +559,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Continuing at a regular and consistent rate."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000009",
-    "partOfSpeech": "ADJECTIVE",
     "definitions": [
       {
         "languageTag": "ko",
@@ -801,12 +572,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Calm, controlled, and dependable under pressure."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000010",
-    "partOfSpeech": "ADJECTIVE",
     "definitions": [
       {
         "languageTag": "ko",
@@ -816,12 +585,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Likely to change, fail, or become unsafe unexpectedly."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000011",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -831,12 +598,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "The state of being unstable or likely to change suddenly."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000012",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -846,12 +611,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To make a system or situation less stable."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000013",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -861,12 +624,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "The exchange of information, ideas, or feelings."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000014",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -876,12 +637,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Detailed consideration of a subject by a group."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000015",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -891,12 +650,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "An official or serious expression of disapproval."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000016",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -906,12 +663,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To express approval or admiration for someone or something."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000017",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -921,12 +676,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "An expression of approval or admiration."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000018",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -936,12 +689,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A machine used to transport people or goods."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000019",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -951,12 +702,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A railway carriage for passengers or freight."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000020",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -966,12 +715,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A two-wheeled vehicle moved by pedals."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000021",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -981,12 +728,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A large road vehicle used to carry goods."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000022",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -996,12 +741,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A small wheeled frame used to move heavy objects by hand."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000023",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -1011,12 +754,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To cause an action or event not to happen."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000024",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -1026,12 +767,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A favorable condition that improves the chance of success."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000025",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -1041,12 +780,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A helpful or positive result obtained from something."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000026",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -1056,12 +793,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To receive help or an advantage from something."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000027",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -1071,12 +806,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To influence or cause a change in something."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000028",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -1086,12 +819,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "The observable expression of emotion, especially in psychology."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000029",
-    "partOfSpeech": "NOUN",
     "definitions": [
       {
         "languageTag": "ko",
@@ -1101,12 +832,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "A change or result caused by an action or event."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000030",
-    "partOfSpeech": "VERB",
     "definitions": [
       {
         "languageTag": "ko",
@@ -1116,12 +845,10 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "To cause something to happen or bring it about."
       }
-    ],
-    "examples": []
+    ]
   },
   {
     "id": "40000000-0000-4000-8000-000000000031",
-    "partOfSpeech": "ADJECTIVE",
     "definitions": [
       {
         "languageTag": "ko",
@@ -1131,116 +858,79 @@ export const dictionarySeedSynsets: readonly DictionarySeedSynset[] = [
         "languageTag": "en",
         "text": "Successful in producing the intended result."
       }
-    ],
-    "examples": []
+    ]
   }
 ];
 
-export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
+export const dictionarySeedLexemes: readonly DictionarySeedLexeme[] = [
   {
     "id": "00000000-0000-4000-8000-000000000001",
-    "headword": "grind",
+    "canonicalLemma": "grind",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000000101",
         "synsetId": "20000000-0000-4000-8000-000000000101",
-        "commonnessScore": 0.96,
-        "forms": [
-          {
-            "id": "41000000-0000-4000-8000-000000000101",
-            "surface": "grinds",
-            "kind": "THIRD_PERSON_SINGULAR"
-          },
-          {
-            "id": "42000000-0000-4000-8000-000000000101",
-            "surface": "ground",
-            "kind": "PAST"
-          },
-          {
-            "id": "43000000-0000-4000-8000-000000000101",
-            "surface": "ground",
-            "kind": "PAST_PARTICIPLE"
-          },
-          {
-            "id": "44000000-0000-4000-8000-000000000101",
-            "surface": "grinding",
-            "kind": "PRESENT_PARTICIPLE"
-          }
-        ]
+        "usageScore": 0.96
       },
       {
         "id": "10000000-0000-4000-8000-000000000102",
         "synsetId": "20000000-0000-4000-8000-000000000102",
-        "commonnessScore": 0.72,
-        "forms": [
-          {
-            "id": "41000000-0000-4000-8000-000000000102",
-            "surface": "grinds",
-            "kind": "THIRD_PERSON_SINGULAR"
-          },
-          {
-            "id": "42000000-0000-4000-8000-000000000102",
-            "surface": "ground",
-            "kind": "PAST"
-          },
-          {
-            "id": "43000000-0000-4000-8000-000000000102",
-            "surface": "ground",
-            "kind": "PAST_PARTICIPLE"
-          },
-          {
-            "id": "44000000-0000-4000-8000-000000000102",
-            "surface": "grinding",
-            "kind": "PRESENT_PARTICIPLE"
-          }
-        ]
-      },
-      {
-        "id": "10000000-0000-4000-8000-000000000103",
-        "synsetId": "20000000-0000-4000-8000-000000000103",
-        "commonnessScore": 0.68
+        "usageScore": 0.72
       },
       {
         "id": "10000000-0000-4000-8000-000000000104",
         "synsetId": "20000000-0000-4000-8000-000000000104",
-        "commonnessScore": 0.35,
-        "forms": [
-          {
-            "id": "41000000-0000-4000-8000-000000000104",
-            "surface": "grinds",
-            "kind": "THIRD_PERSON_SINGULAR"
-          },
-          {
-            "id": "42000000-0000-4000-8000-000000000104",
-            "surface": "ground",
-            "kind": "PAST"
-          },
-          {
-            "id": "43000000-0000-4000-8000-000000000104",
-            "surface": "ground",
-            "kind": "PAST_PARTICIPLE"
-          },
-          {
-            "id": "44000000-0000-4000-8000-000000000104",
-            "surface": "grinding",
-            "kind": "PRESENT_PARTICIPLE"
-          }
-        ]
+        "usageScore": 0.35
+      }
+    ],
+    "forms": [
+      {
+        "id": "41000000-0000-4000-8000-000000000101",
+        "surface": "grinds",
+        "featureKey": "form:THIRD_PERSON_SINGULAR"
+      },
+      {
+        "id": "42000000-0000-4000-8000-000000000101",
+        "surface": "ground",
+        "featureKey": "form:PAST"
+      },
+      {
+        "id": "43000000-0000-4000-8000-000000000101",
+        "surface": "ground",
+        "featureKey": "form:PAST_PARTICIPLE"
+      },
+      {
+        "id": "44000000-0000-4000-8000-000000000101",
+        "surface": "grinding",
+        "featureKey": "form:PRESENT_PARTICIPLE"
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000001",
+    "canonicalLemma": "grind",
+    "languageTag": "en",
+    "lexicalCategoryCode": "NOUN",
+    "senses": [
+      {
+        "id": "10000000-0000-4000-8000-000000000103",
+        "synsetId": "20000000-0000-4000-8000-000000000103",
+        "usageScore": 0.68
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000002",
-    "headword": "grind to a halt",
+    "canonicalLemma": "grind to a halt",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000000201",
         "synsetId": "20000000-0000-4000-8000-000000000201",
-        "commonnessScore": 0.74,
+        "usageScore": 0.74,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000000201",
@@ -1261,38 +951,50 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
                 "text": "분쟁 이후 협상이 완전히 중단됐다."
               }
             ]
-          }
-        ],
-        "forms": [
-          {
-            "id": "41000000-0000-4000-8000-000000000201",
-            "surface": "ground to a halt",
-            "kind": "PAST"
           },
           {
-            "id": "42000000-0000-4000-8000-000000000201",
-            "surface": "ground to a halt",
-            "kind": "PAST_PARTICIPLE"
-          },
-          {
-            "id": "43000000-0000-4000-8000-000000000201",
-            "surface": "grinding to a halt",
-            "kind": "PRESENT_PARTICIPLE"
+            "id": "50000000-0000-4000-8000-000000000004",
+            "sourceLanguageTag": "en",
+            "sourceText": "Traffic ground to a halt after the accident.",
+            "translations": [
+              {
+                "id": "60000000-0000-4000-8000-000000000004",
+                "languageTag": "ko",
+                "text": "사고 뒤 교통이 완전히 멈췄다."
+              }
+            ]
           }
         ]
+      }
+    ],
+    "forms": [
+      {
+        "id": "41000000-0000-4000-8000-000000000201",
+        "surface": "ground to a halt",
+        "featureKey": "form:PAST"
+      },
+      {
+        "id": "42000000-0000-4000-8000-000000000201",
+        "surface": "ground to a halt",
+        "featureKey": "form:PAST_PARTICIPLE"
+      },
+      {
+        "id": "43000000-0000-4000-8000-000000000201",
+        "surface": "grinding to a halt",
+        "featureKey": "form:PRESENT_PARTICIPLE"
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000003",
-    "headword": "up to speed",
+    "canonicalLemma": "up to speed",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "ADJECTIVE",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000000301",
         "synsetId": "20000000-0000-4000-8000-000000000301",
-        "commonnessScore": 0.89,
+        "usageScore": 0.89,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000000301",
@@ -1331,20 +1033,20 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
       {
         "id": "10000000-0000-4000-8000-000000000302",
         "synsetId": "20000000-0000-4000-8000-000000000302",
-        "commonnessScore": 0.55
+        "usageScore": 0.55
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000004",
-    "headword": "take a toll on",
+    "canonicalLemma": "take a toll on",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000000401",
         "synsetId": "20000000-0000-4000-8000-000000000401",
-        "commonnessScore": 0.86,
+        "usageScore": 0.86,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000000401",
@@ -1378,14 +1080,14 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
   },
   {
     "id": "00000000-0000-4000-8000-000000000005",
-    "headword": "rip someone a new one",
+    "canonicalLemma": "rip someone a new one",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000000501",
         "synsetId": "20000000-0000-4000-8000-000000002201",
-        "commonnessScore": 0.42,
+        "usageScore": 0.42,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000000501",
@@ -1406,6 +1108,18 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
                 "text": "상사는 마감일을 놓친 나를 아주 심하게 질책했다."
               }
             ]
+          },
+          {
+            "id": "50000000-0000-4000-8000-000000000003",
+            "sourceLanguageTag": "en",
+            "sourceText": "The coach scolded the player for ignoring the rules.",
+            "translations": [
+              {
+                "id": "60000000-0000-4000-8000-000000000003",
+                "languageTag": "ko",
+                "text": "코치는 규칙을 무시한 선수를 꾸짖었다."
+              }
+            ]
           }
         ]
       }
@@ -1413,14 +1127,14 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
   },
   {
     "id": "00000000-0000-4000-8000-000000000006",
-    "headword": "go the extra mile",
+    "canonicalLemma": "go the extra mile",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000000601",
         "synsetId": "20000000-0000-4000-8000-000000000601",
-        "commonnessScore": 0.84,
+        "usageScore": 0.84,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000000601",
@@ -1448,14 +1162,14 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
   },
   {
     "id": "00000000-0000-4000-8000-000000000007",
-    "headword": "I'm down",
+    "canonicalLemma": "I'm down",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "ADJECTIVE",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000000701",
         "synsetId": "20000000-0000-4000-8000-000000000701",
-        "commonnessScore": 0.88,
+        "usageScore": 0.88,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000000701",
@@ -1495,14 +1209,14 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
   },
   {
     "id": "00000000-0000-4000-8000-000000000008",
-    "headword": "in broad daylight",
+    "canonicalLemma": "in broad daylight",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "ADVERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000000801",
         "synsetId": "20000000-0000-4000-8000-000000000801",
-        "commonnessScore": 0.76,
+        "usageScore": 0.76,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000000801",
@@ -1530,19 +1244,19 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
   },
   {
     "id": "00000000-0000-4000-8000-000000000009",
-    "headword": "dead end",
+    "canonicalLemma": "dead end",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000000901",
         "synsetId": "20000000-0000-4000-8000-000000000901",
-        "commonnessScore": 0.82
+        "usageScore": 0.82
       },
       {
         "id": "10000000-0000-4000-8000-000000000902",
         "synsetId": "20000000-0000-4000-8000-000000000902",
-        "commonnessScore": 0.91,
+        "usageScore": 0.91,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000000902",
@@ -1576,14 +1290,14 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
   },
   {
     "id": "00000000-0000-4000-8000-000000000010",
-    "headword": "circle back",
+    "canonicalLemma": "circle back",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001001",
         "synsetId": "20000000-0000-4000-8000-000000001001",
-        "commonnessScore": 0.8,
+        "usageScore": 0.8,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000001001",
@@ -1611,14 +1325,14 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
   },
   {
     "id": "00000000-0000-4000-8000-000000000011",
-    "headword": "Would you mind if …?",
+    "canonicalLemma": "Would you mind if …?",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "PHRASE",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001101",
         "synsetId": "20000000-0000-4000-8000-000000001101",
-        "commonnessScore": 0.9,
+        "usageScore": 0.9,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000001101",
@@ -1646,14 +1360,14 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
   },
   {
     "id": "00000000-0000-4000-8000-000000000012",
-    "headword": "Actions speak louder than words",
+    "canonicalLemma": "Actions speak louder than words",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "PHRASE",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001201",
         "synsetId": "20000000-0000-4000-8000-000000001201",
-        "commonnessScore": 0.79,
+        "usageScore": 0.79,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000001201",
@@ -1681,14 +1395,14 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
   },
   {
     "id": "00000000-0000-4000-8000-000000000013",
-    "headword": "pros and cons",
+    "canonicalLemma": "pros and cons",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001301",
         "synsetId": "20000000-0000-4000-8000-000000001301",
-        "commonnessScore": 0.88,
+        "usageScore": 0.88,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000001301",
@@ -1716,14 +1430,14 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
   },
   {
     "id": "00000000-0000-4000-8000-000000000014",
-    "headword": "that said",
+    "canonicalLemma": "that said",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "ADVERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001401",
         "synsetId": "20000000-0000-4000-8000-000000001401",
-        "commonnessScore": 0.86,
+        "usageScore": 0.86,
         "narratives": [
           {
             "id": "20000000-0000-4000-8000-000000001401",
@@ -1751,117 +1465,183 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
   },
   {
     "id": "00000000-0000-4000-8000-000000000015",
-    "headword": "stable",
+    "canonicalLemma": "stable",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "ADJECTIVE",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001501",
         "synsetId": "20000000-0000-4000-8000-000000001501",
-        "commonnessScore": 0.96
-      },
-      {
-        "id": "10000000-0000-4000-8000-000000001502",
-        "synsetId": "20000000-0000-4000-8000-000000001502",
-        "commonnessScore": 0.55
+        "usageScore": 0.96
       },
       {
         "id": "30000000-0000-4000-8000-000000000001",
         "synsetId": "40000000-0000-4000-8000-000000000001",
-        "commonnessScore": 0.62
+        "usageScore": 0.62,
+        "examples": [
+          {
+            "id": "50000000-0000-4000-8000-000000000005",
+            "sourceLanguageTag": "en",
+            "sourceText": "Keep the ladder steady while I climb.",
+            "translations": [
+              {
+                "id": "60000000-0000-4000-8000-000000000005",
+                "languageTag": "ko",
+                "text": "내가 올라가는 동안 사다리를 단단히 잡아 줘."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000015",
+    "canonicalLemma": "stable",
+    "languageTag": "en",
+    "lexicalCategoryCode": "NOUN",
+    "senses": [
+      {
+        "id": "10000000-0000-4000-8000-000000001502",
+        "synsetId": "20000000-0000-4000-8000-000000001502",
+        "usageScore": 0.55
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000016",
-    "headword": "stability",
+    "canonicalLemma": "stability",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001601",
         "synsetId": "20000000-0000-4000-8000-000000001601",
-        "commonnessScore": 0.88
+        "usageScore": 0.88
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000017",
-    "headword": "stabilize",
+    "canonicalLemma": "stabilize",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001701",
         "synsetId": "20000000-0000-4000-8000-000000001701",
-        "commonnessScore": 0.84
+        "usageScore": 0.84
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000018",
-    "headword": "converse",
+    "canonicalLemma": "converse",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001801",
         "synsetId": "20000000-0000-4000-8000-000000001801",
-        "commonnessScore": 0.48
+        "usageScore": 0.48,
+        "examples": [
+          {
+            "id": "50000000-0000-4000-8000-000000000001",
+            "sourceLanguageTag": "en",
+            "sourceText": "We talked for an hour after lunch.",
+            "translations": [
+              {
+                "id": "60000000-0000-4000-8000-000000000001",
+                "languageTag": "ko",
+                "text": "우리는 점심 뒤 한 시간 동안 대화했다."
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "10000000-0000-4000-8000-000000001802",
         "synsetId": "20000000-0000-4000-8000-000000001802",
-        "commonnessScore": 0.04
-      },
+        "usageScore": 0.04
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000018",
+    "canonicalLemma": "converse",
+    "languageTag": "en",
+    "lexicalCategoryCode": "NOUN",
+    "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001803",
         "synsetId": "20000000-0000-4000-8000-000000001803",
-        "commonnessScore": 0.36
-      },
+        "usageScore": 0.36
+      }
+    ]
+  },
+  {
+    "id": "00000002-0000-4000-8000-000000000018",
+    "canonicalLemma": "converse",
+    "languageTag": "en",
+    "lexicalCategoryCode": "ADJECTIVE",
+    "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001804",
         "synsetId": "20000000-0000-4000-8000-000000001804",
-        "commonnessScore": 0.3
+        "usageScore": 0.3
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000019",
-    "headword": "conversation",
+    "canonicalLemma": "conversation",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000001901",
         "synsetId": "20000000-0000-4000-8000-000000001901",
-        "commonnessScore": 0.98
+        "usageScore": 0.98,
+        "examples": [
+          {
+            "id": "50000000-0000-4000-8000-000000000002",
+            "sourceLanguageTag": "en",
+            "sourceText": "Their conversation continued over coffee.",
+            "translations": [
+              {
+                "id": "60000000-0000-4000-8000-000000000002",
+                "languageTag": "ko",
+                "text": "그들의 대화는 커피를 마시는 동안 계속됐다."
+              }
+            ]
+          }
+        ]
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000020",
-    "headword": "conversely",
+    "canonicalLemma": "conversely",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "ADVERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000002001",
         "synsetId": "20000000-0000-4000-8000-000000002001",
-        "commonnessScore": 0.58
+        "usageScore": 0.58
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000021",
-    "headword": "point out a mistake",
+    "canonicalLemma": "point out a mistake",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000002101",
         "synsetId": "20000000-0000-4000-8000-000000002101",
-        "commonnessScore": 0.82,
+        "usageScore": 0.82,
         "examples": [
           {
             "id": "70000000-0000-4000-8000-000000002101",
@@ -1875,37 +1655,37 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
               }
             ]
           }
-        ],
-        "forms": [
-          {
-            "id": "41000000-0000-4000-8000-000000002101",
-            "surface": "pointed out a mistake",
-            "kind": "PAST"
-          },
-          {
-            "id": "42000000-0000-4000-8000-000000002101",
-            "surface": "pointed out a mistake",
-            "kind": "PAST_PARTICIPLE"
-          },
-          {
-            "id": "43000000-0000-4000-8000-000000002101",
-            "surface": "pointing out a mistake",
-            "kind": "PRESENT_PARTICIPLE"
-          }
         ]
+      }
+    ],
+    "forms": [
+      {
+        "id": "41000000-0000-4000-8000-000000002101",
+        "surface": "pointed out a mistake",
+        "featureKey": "form:PAST"
+      },
+      {
+        "id": "42000000-0000-4000-8000-000000002101",
+        "surface": "pointed out a mistake",
+        "featureKey": "form:PAST_PARTICIPLE"
+      },
+      {
+        "id": "43000000-0000-4000-8000-000000002101",
+        "surface": "pointing out a mistake",
+        "featureKey": "form:PRESENT_PARTICIPLE"
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000022",
-    "headword": "tell someone off",
+    "canonicalLemma": "tell someone off",
     "languageTag": "en",
-    "kind": "EXPRESSION",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "10000000-0000-4000-8000-000000002201",
         "synsetId": "20000000-0000-4000-8000-000000002201",
-        "commonnessScore": 0.71,
+        "usageScore": 0.71,
         "examples": [
           {
             "id": "70000000-0000-4000-8000-000000002201",
@@ -1919,473 +1699,629 @@ export const dictionarySeedEntries: readonly DictionarySeedEntry[] = [
               }
             ]
           }
-        ],
-        "forms": [
+        ]
+      }
+    ],
+    "forms": [
+      {
+        "id": "41000000-0000-4000-8000-000000002201",
+        "surface": "told someone off",
+        "featureKey": "form:PAST"
+      },
+      {
+        "id": "42000000-0000-4000-8000-000000002201",
+        "surface": "told someone off",
+        "featureKey": "form:PAST_PARTICIPLE"
+      },
+      {
+        "id": "43000000-0000-4000-8000-000000002201",
+        "surface": "telling someone off",
+        "featureKey": "form:PRESENT_PARTICIPLE"
+      }
+    ]
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000023",
+    "canonicalLemma": "steady",
+    "languageTag": "en",
+    "lexicalCategoryCode": "ADJECTIVE",
+    "senses": [
+      {
+        "id": "30000000-0000-4000-8000-000000000002",
+        "synsetId": "40000000-0000-4000-8000-000000000001",
+        "usageScore": 0.88
+      },
+      {
+        "id": "30000000-0000-4000-8000-000000000003",
+        "synsetId": "40000000-0000-4000-8000-000000000008",
+        "usageScore": 0.86
+      },
+      {
+        "id": "30000000-0000-4000-8000-000000000004",
+        "synsetId": "40000000-0000-4000-8000-000000000009",
+        "usageScore": 0.65
+      }
+    ]
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000024",
+    "canonicalLemma": "unstable",
+    "languageTag": "en",
+    "lexicalCategoryCode": "ADJECTIVE",
+    "senses": [
+      {
+        "id": "30000000-0000-4000-8000-000000000005",
+        "synsetId": "40000000-0000-4000-8000-000000000010",
+        "usageScore": 0.82
+      }
+    ]
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000025",
+    "canonicalLemma": "instability",
+    "languageTag": "en",
+    "lexicalCategoryCode": "NOUN",
+    "senses": [
+      {
+        "id": "30000000-0000-4000-8000-000000000006",
+        "synsetId": "40000000-0000-4000-8000-000000000011",
+        "usageScore": 0.72
+      }
+    ]
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000026",
+    "canonicalLemma": "destabilize",
+    "languageTag": "en",
+    "lexicalCategoryCode": "VERB",
+    "senses": [
+      {
+        "id": "30000000-0000-4000-8000-000000000007",
+        "synsetId": "40000000-0000-4000-8000-000000000012",
+        "usageScore": 0.62
+      }
+    ]
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000027",
+    "canonicalLemma": "chat",
+    "languageTag": "en",
+    "lexicalCategoryCode": "VERB",
+    "senses": [
+      {
+        "id": "30000000-0000-4000-8000-000000000008",
+        "synsetId": "20000000-0000-4000-8000-000000001801",
+        "usageScore": 0.9
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000027",
+    "canonicalLemma": "chat",
+    "languageTag": "en",
+    "lexicalCategoryCode": "NOUN",
+    "senses": [
+      {
+        "id": "30000000-0000-4000-8000-000000000009",
+        "synsetId": "20000000-0000-4000-8000-000000001901",
+        "usageScore": 0.86
+      }
+    ]
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000028",
+    "canonicalLemma": "talk",
+    "languageTag": "en",
+    "lexicalCategoryCode": "VERB",
+    "senses": [
+      {
+        "id": "30000000-0000-4000-8000-000000000010",
+        "synsetId": "20000000-0000-4000-8000-000000001801",
+        "usageScore": 0.96
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000028",
+    "canonicalLemma": "talk",
+    "languageTag": "en",
+    "lexicalCategoryCode": "NOUN",
+    "senses": [
+      {
+        "id": "30000000-0000-4000-8000-000000000011",
+        "synsetId": "20000000-0000-4000-8000-000000001901",
+        "usageScore": 0.9
+      },
+      {
+        "id": "30000000-0000-4000-8000-000000000012",
+        "synsetId": "40000000-0000-4000-8000-000000000007",
+        "usageScore": 0.78,
+        "examples": [
           {
-            "id": "41000000-0000-4000-8000-000000002201",
-            "surface": "told someone off",
-            "kind": "PAST"
-          },
-          {
-            "id": "42000000-0000-4000-8000-000000002201",
-            "surface": "told someone off",
-            "kind": "PAST_PARTICIPLE"
-          },
-          {
-            "id": "43000000-0000-4000-8000-000000002201",
-            "surface": "telling someone off",
-            "kind": "PRESENT_PARTICIPLE"
+            "id": "50000000-0000-4000-8000-000000000011",
+            "sourceLanguageTag": "en",
+            "sourceText": "The two teams held talks about the launch.",
+            "translations": [
+              {
+                "id": "60000000-0000-4000-8000-000000000011",
+                "languageTag": "ko",
+                "text": "두 팀은 출시를 두고 논의했다."
+              }
+            ]
           }
         ]
       }
     ]
   },
   {
-    "id": "00000000-0000-4000-8000-000000000023",
-    "headword": "steady",
-    "languageTag": "en",
-    "kind": "WORD",
-    "senses": [
-      {
-        "id": "30000000-0000-4000-8000-000000000002",
-        "synsetId": "40000000-0000-4000-8000-000000000001",
-        "commonnessScore": 0.88
-      },
-      {
-        "id": "30000000-0000-4000-8000-000000000003",
-        "synsetId": "40000000-0000-4000-8000-000000000008",
-        "commonnessScore": 0.86
-      },
-      {
-        "id": "30000000-0000-4000-8000-000000000004",
-        "synsetId": "40000000-0000-4000-8000-000000000009",
-        "commonnessScore": 0.65
-      }
-    ]
-  },
-  {
-    "id": "00000000-0000-4000-8000-000000000024",
-    "headword": "unstable",
-    "languageTag": "en",
-    "kind": "WORD",
-    "senses": [
-      {
-        "id": "30000000-0000-4000-8000-000000000005",
-        "synsetId": "40000000-0000-4000-8000-000000000010",
-        "commonnessScore": 0.82
-      }
-    ]
-  },
-  {
-    "id": "00000000-0000-4000-8000-000000000025",
-    "headword": "instability",
-    "languageTag": "en",
-    "kind": "WORD",
-    "senses": [
-      {
-        "id": "30000000-0000-4000-8000-000000000006",
-        "synsetId": "40000000-0000-4000-8000-000000000011",
-        "commonnessScore": 0.72
-      }
-    ]
-  },
-  {
-    "id": "00000000-0000-4000-8000-000000000026",
-    "headword": "destabilize",
-    "languageTag": "en",
-    "kind": "WORD",
-    "senses": [
-      {
-        "id": "30000000-0000-4000-8000-000000000007",
-        "synsetId": "40000000-0000-4000-8000-000000000012",
-        "commonnessScore": 0.62
-      }
-    ]
-  },
-  {
-    "id": "00000000-0000-4000-8000-000000000027",
-    "headword": "chat",
-    "languageTag": "en",
-    "kind": "WORD",
-    "senses": [
-      {
-        "id": "30000000-0000-4000-8000-000000000008",
-        "synsetId": "20000000-0000-4000-8000-000000001801",
-        "commonnessScore": 0.9
-      },
-      {
-        "id": "30000000-0000-4000-8000-000000000009",
-        "synsetId": "20000000-0000-4000-8000-000000001901",
-        "commonnessScore": 0.86
-      }
-    ]
-  },
-  {
-    "id": "00000000-0000-4000-8000-000000000028",
-    "headword": "talk",
-    "languageTag": "en",
-    "kind": "WORD",
-    "senses": [
-      {
-        "id": "30000000-0000-4000-8000-000000000010",
-        "synsetId": "20000000-0000-4000-8000-000000001801",
-        "commonnessScore": 0.96
-      },
-      {
-        "id": "30000000-0000-4000-8000-000000000011",
-        "synsetId": "20000000-0000-4000-8000-000000001901",
-        "commonnessScore": 0.9
-      },
-      {
-        "id": "30000000-0000-4000-8000-000000000012",
-        "synsetId": "40000000-0000-4000-8000-000000000007",
-        "commonnessScore": 0.78
-      }
-    ]
-  },
-  {
     "id": "00000000-0000-4000-8000-000000000029",
-    "headword": "communication",
+    "canonicalLemma": "communication",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000013",
         "synsetId": "40000000-0000-4000-8000-000000000013",
-        "commonnessScore": 0.92
+        "usageScore": 0.92
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000030",
-    "headword": "discussion",
+    "canonicalLemma": "discussion",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000014",
         "synsetId": "40000000-0000-4000-8000-000000000007",
-        "commonnessScore": 0.9
+        "usageScore": 0.9
       },
       {
         "id": "30000000-0000-4000-8000-000000000015",
         "synsetId": "40000000-0000-4000-8000-000000000014",
-        "commonnessScore": 0.84
+        "usageScore": 0.84
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000031",
-    "headword": "reprimand",
+    "canonicalLemma": "reprimand",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000016",
         "synsetId": "20000000-0000-4000-8000-000000002201",
-        "commonnessScore": 0.72
-      },
+        "usageScore": 0.72
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000031",
+    "canonicalLemma": "reprimand",
+    "languageTag": "en",
+    "lexicalCategoryCode": "NOUN",
+    "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000017",
         "synsetId": "40000000-0000-4000-8000-000000000015",
-        "commonnessScore": 0.64
+        "usageScore": 0.64
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000032",
-    "headword": "scold",
+    "canonicalLemma": "scold",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000018",
         "synsetId": "20000000-0000-4000-8000-000000002201",
-        "commonnessScore": 0.8
+        "usageScore": 0.8
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000033",
-    "headword": "praise",
+    "canonicalLemma": "praise",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000019",
         "synsetId": "40000000-0000-4000-8000-000000000016",
-        "commonnessScore": 0.86
-      },
+        "usageScore": 0.86
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000033",
+    "canonicalLemma": "praise",
+    "languageTag": "en",
+    "lexicalCategoryCode": "NOUN",
+    "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000020",
         "synsetId": "40000000-0000-4000-8000-000000000017",
-        "commonnessScore": 0.8
+        "usageScore": 0.8
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000034",
-    "headword": "mistake",
+    "canonicalLemma": "mistake",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000021",
         "synsetId": "40000000-0000-4000-8000-000000000003",
-        "commonnessScore": 0.94
+        "usageScore": 0.94,
+        "examples": [
+          {
+            "id": "50000000-0000-4000-8000-000000000007",
+            "sourceLanguageTag": "en",
+            "sourceText": "I made a mistake in the final calculation.",
+            "translations": [
+              {
+                "id": "60000000-0000-4000-8000-000000000007",
+                "languageTag": "ko",
+                "text": "나는 최종 계산에서 실수했다."
+              }
+            ]
+          }
+        ]
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000035",
-    "headword": "error",
+    "canonicalLemma": "error",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000022",
         "synsetId": "40000000-0000-4000-8000-000000000003",
-        "commonnessScore": 0.94
+        "usageScore": 0.94
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000036",
-    "headword": "vehicle",
+    "canonicalLemma": "vehicle",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000023",
         "synsetId": "40000000-0000-4000-8000-000000000018",
-        "commonnessScore": 0.9
+        "usageScore": 0.9
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000037",
-    "headword": "car",
+    "canonicalLemma": "car",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000024",
         "synsetId": "40000000-0000-4000-8000-000000000002",
-        "commonnessScore": 0.97
+        "usageScore": 0.97,
+        "examples": [
+          {
+            "id": "50000000-0000-4000-8000-000000000006",
+            "sourceLanguageTag": "en",
+            "sourceText": "They bought a small car for commuting.",
+            "translations": [
+              {
+                "id": "60000000-0000-4000-8000-000000000006",
+                "languageTag": "ko",
+                "text": "그들은 통근용 소형 자동차를 샀다."
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "30000000-0000-4000-8000-000000000025",
         "synsetId": "40000000-0000-4000-8000-000000000019",
-        "commonnessScore": 0.55
+        "usageScore": 0.55
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000038",
-    "headword": "automobile",
+    "canonicalLemma": "automobile",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000026",
         "synsetId": "40000000-0000-4000-8000-000000000002",
-        "commonnessScore": 0.8
+        "usageScore": 0.8
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000039",
-    "headword": "bicycle",
+    "canonicalLemma": "bicycle",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000027",
         "synsetId": "40000000-0000-4000-8000-000000000020",
-        "commonnessScore": 0.9
+        "usageScore": 0.9
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000040",
-    "headword": "truck",
+    "canonicalLemma": "truck",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000028",
         "synsetId": "40000000-0000-4000-8000-000000000021",
-        "commonnessScore": 0.92
+        "usageScore": 0.92
       },
       {
         "id": "30000000-0000-4000-8000-000000000029",
         "synsetId": "40000000-0000-4000-8000-000000000022",
-        "commonnessScore": 0.58
+        "usageScore": 0.58
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000041",
-    "headword": "stop",
+    "canonicalLemma": "stop",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000030",
         "synsetId": "40000000-0000-4000-8000-000000000004",
-        "commonnessScore": 0.98
-      },
-      {
-        "id": "30000000-0000-4000-8000-000000000031",
-        "synsetId": "40000000-0000-4000-8000-000000000005",
-        "commonnessScore": 0.92
+        "usageScore": 0.98,
+        "examples": [
+          {
+            "id": "50000000-0000-4000-8000-000000000008",
+            "sourceLanguageTag": "en",
+            "sourceText": "The noise finally ceased at midnight.",
+            "translations": [
+              {
+                "id": "60000000-0000-4000-8000-000000000008",
+                "languageTag": "ko",
+                "text": "소음은 자정에 마침내 멈췄다."
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "30000000-0000-4000-8000-000000000032",
         "synsetId": "40000000-0000-4000-8000-000000000023",
-        "commonnessScore": 0.9
+        "usageScore": 0.9
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000041",
+    "canonicalLemma": "stop",
+    "languageTag": "en",
+    "lexicalCategoryCode": "NOUN",
+    "senses": [
+      {
+        "id": "30000000-0000-4000-8000-000000000031",
+        "synsetId": "40000000-0000-4000-8000-000000000005",
+        "usageScore": 0.92,
+        "examples": [
+          {
+            "id": "50000000-0000-4000-8000-000000000009",
+            "sourceLanguageTag": "en",
+            "sourceText": "The bus came to a sudden stop.",
+            "translations": [
+              {
+                "id": "60000000-0000-4000-8000-000000000009",
+                "languageTag": "ko",
+                "text": "버스가 갑자기 멈췄다."
+              }
+            ]
+          }
+        ]
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000042",
-    "headword": "cease",
+    "canonicalLemma": "cease",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000033",
         "synsetId": "40000000-0000-4000-8000-000000000004",
-        "commonnessScore": 0.72
+        "usageScore": 0.72
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000043",
-    "headword": "halt",
+    "canonicalLemma": "halt",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000034",
         "synsetId": "40000000-0000-4000-8000-000000000004",
-        "commonnessScore": 0.78
-      },
-      {
-        "id": "30000000-0000-4000-8000-000000000035",
-        "synsetId": "40000000-0000-4000-8000-000000000005",
-        "commonnessScore": 0.72
+        "usageScore": 0.78
       },
       {
         "id": "30000000-0000-4000-8000-000000000036",
         "synsetId": "20000000-0000-4000-8000-000000000201",
-        "commonnessScore": 0.7
+        "usageScore": 0.7
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000043",
+    "canonicalLemma": "halt",
+    "languageTag": "en",
+    "lexicalCategoryCode": "NOUN",
+    "senses": [
+      {
+        "id": "30000000-0000-4000-8000-000000000035",
+        "synsetId": "40000000-0000-4000-8000-000000000005",
+        "usageScore": 0.72
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000044",
-    "headword": "advantage",
+    "canonicalLemma": "advantage",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000037",
         "synsetId": "40000000-0000-4000-8000-000000000024",
-        "commonnessScore": 0.9
+        "usageScore": 0.9
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000045",
-    "headword": "benefit",
+    "canonicalLemma": "benefit",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000038",
         "synsetId": "40000000-0000-4000-8000-000000000025",
-        "commonnessScore": 0.92
-      },
+        "usageScore": 0.92
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000045",
+    "canonicalLemma": "benefit",
+    "languageTag": "en",
+    "lexicalCategoryCode": "VERB",
+    "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000039",
         "synsetId": "40000000-0000-4000-8000-000000000026",
-        "commonnessScore": 0.88
+        "usageScore": 0.88
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000046",
-    "headword": "disadvantage",
+    "canonicalLemma": "disadvantage",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000040",
         "synsetId": "40000000-0000-4000-8000-000000000006",
-        "commonnessScore": 0.88
+        "usageScore": 0.88,
+        "examples": [
+          {
+            "id": "50000000-0000-4000-8000-000000000010",
+            "sourceLanguageTag": "en",
+            "sourceText": "The long commute is a major drawback.",
+            "translations": [
+              {
+                "id": "60000000-0000-4000-8000-000000000010",
+                "languageTag": "ko",
+                "text": "긴 통근 시간은 큰 단점이다."
+              }
+            ]
+          }
+        ]
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000047",
-    "headword": "drawback",
+    "canonicalLemma": "drawback",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000041",
         "synsetId": "40000000-0000-4000-8000-000000000006",
-        "commonnessScore": 0.82
+        "usageScore": 0.82
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000048",
-    "headword": "affect",
+    "canonicalLemma": "affect",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "VERB",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000042",
         "synsetId": "40000000-0000-4000-8000-000000000027",
-        "commonnessScore": 0.94
-      },
+        "usageScore": 0.94
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000048",
+    "canonicalLemma": "affect",
+    "languageTag": "en",
+    "lexicalCategoryCode": "NOUN",
+    "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000043",
         "synsetId": "40000000-0000-4000-8000-000000000028",
-        "commonnessScore": 0.35
+        "usageScore": 0.35
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000049",
-    "headword": "effect",
+    "canonicalLemma": "effect",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "NOUN",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000044",
         "synsetId": "40000000-0000-4000-8000-000000000029",
-        "commonnessScore": 0.96
-      },
+        "usageScore": 0.96
+      }
+    ]
+  },
+  {
+    "id": "00000001-0000-4000-8000-000000000049",
+    "canonicalLemma": "effect",
+    "languageTag": "en",
+    "lexicalCategoryCode": "VERB",
+    "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000045",
         "synsetId": "40000000-0000-4000-8000-000000000030",
-        "commonnessScore": 0.52
+        "usageScore": 0.52
       }
     ]
   },
   {
     "id": "00000000-0000-4000-8000-000000000050",
-    "headword": "effective",
+    "canonicalLemma": "effective",
     "languageTag": "en",
-    "kind": "WORD",
+    "lexicalCategoryCode": "ADJECTIVE",
     "senses": [
       {
         "id": "30000000-0000-4000-8000-000000000046",
         "synsetId": "40000000-0000-4000-8000-000000000031",
-        "commonnessScore": 0.9
+        "usageScore": 0.9
       }
     ]
   }

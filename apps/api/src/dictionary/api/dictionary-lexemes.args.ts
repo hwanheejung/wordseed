@@ -1,7 +1,7 @@
 import { ArgsType, Field, Int } from "@nestjs/graphql";
 
 @ArgsType()
-export class DictionaryEntriesArgs {
+export class DictionaryLexemesArgs {
   @Field(() => String, { defaultValue: "en" })
   languageTag: string = "en";
 
