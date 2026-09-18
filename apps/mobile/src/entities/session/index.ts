@@ -1,1 +1,2 @@
-export { SessionContext, useSession } from "./session-context";
+export { SessionContext, useSession, useAuthenticatedSession } from "./session-context";
+export type { SessionContextValue } from "./session-context";

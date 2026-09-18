@@ -37,16 +37,111 @@ function setup(initial: AuthSession | null = session) {
   const getInitialURL = vi.fn(async (): Promise<string | null> => null);
   const connect = vi.fn(async () => environment);
   const onChange = vi.fn();
-  const lifecycle = createSignInSession({ auth, socialSignIn, getInitialURL, connect });
-  return { auth, socialSignIn, getInitialURL, connect, onChange, lifecycle, environment,
+  const stopRefresh = vi.fn();
+  const subscribeToRefresh = vi.fn((_onError: () => void) => stopRefresh);
+  const lifecycle = createSignInSession({ auth, socialSignIn, getInitialURL, connect, subscribeToRefresh });
+  return { subscribeToRefresh, stopRefresh, auth, socialSignIn, getInitialURL, connect, onChange, lifecycle, environment,
     emit: (event: Parameters<AuthCallback>[0], value: AuthSession | null) => callback(event, value),
-    start: () => lifecycle.start(onChange),
+    start: () => lifecycle.subscribe(() => onChange(lifecycle.getSnapshot())),
   };
 }
 async function flush() { await vi.runAllTimersAsync(); }
 afterEach(() => vi.useRealTimers());
 
 describe("sign-in session", () => {
+  it("caches immutable snapshots and starts external work only when observed", async () => {
+    const test = setup();
+    const initial = test.lifecycle.getSnapshot();
+    expect(test.lifecycle.getSnapshot()).toBe(initial);
+    expect(test.auth.onAuthStateChange).not.toHaveBeenCalled();
+    expect(test.getInitialURL).not.toHaveBeenCalled();
+    expect(test.subscribeToRefresh).not.toHaveBeenCalled();
+
+    test.start(); await flush();
+    const ready = test.lifecycle.getSnapshot();
+    expect(ready.status).toBe("ready");
+    expect(test.lifecycle.getSnapshot()).toBe(ready);
+    test.emit("SIGNED_OUT", null);
+    expect(test.lifecycle.getSnapshot()).toEqual({ status: "signed-out", error: null });
+    expect(test.lifecycle.getSnapshot()).not.toBe(ready);
+    expect(ready.status).toBe("ready");
+    expect(initial).toEqual({ status: "loading" });
+  });
+  it("shares one lifecycle until the last observer leaves, with idempotent cleanup", async () => {
+    const test = setup();
+    const stopFirst = test.start(); await flush();
+    const second = vi.fn();
+    const stopSecond = test.lifecycle.subscribe(second);
+    expect(test.auth.onAuthStateChange).toHaveBeenCalledOnce();
+    expect(test.subscribeToRefresh).toHaveBeenCalledOnce();
+    expect(test.auth.getSession).toHaveBeenCalledOnce();
+    const unsubscribeAuth = test.auth.onAuthStateChange.mock.results[0].value.data.subscription.unsubscribe;
+
+    stopFirst(); stopFirst();
+    expect(unsubscribeAuth).not.toHaveBeenCalled();
+    expect(test.stopRefresh).not.toHaveBeenCalled();
+    test.emit("SIGNED_OUT", null);
+    expect(second).toHaveBeenCalledOnce();
+    expect(test.onChange).toHaveBeenLastCalledWith({ status: "ready", session, environment: test.environment });
+    stopSecond(); stopSecond();
+    expect(unsubscribeAuth).toHaveBeenCalledOnce();
+    expect(test.stopRefresh).toHaveBeenCalledOnce();
+  });
+  it("tracks separate subscriptions using the same listener", () => {
+    const test = setup();
+    const listener = vi.fn();
+    const stopFirst = test.lifecycle.subscribe(listener);
+    const stopSecond = test.lifecycle.subscribe(listener);
+    stopFirst();
+    expect(test.stopRefresh).not.toHaveBeenCalled();
+    stopSecond();
+    expect(test.stopRefresh).toHaveBeenCalledOnce();
+  });
+  it("ignores old auth and refresh callbacks after a StrictMode resubscription", async () => {
+    const test = setup();
+    const stop = test.start(); await flush();
+    const oldAuthCallback = test.auth.onAuthStateChange.mock.calls[0][0];
+    const oldRefreshFailure = test.subscribeToRefresh.mock.calls[0][0];
+    stop();
+    test.start(); await flush();
+    const current = test.lifecycle.getSnapshot();
+    const calls = test.onChange.mock.calls.length;
+    oldAuthCallback("SIGNED_OUT", null);
+    oldAuthCallback("SIGNED_IN", otherSession);
+    oldRefreshFailure();
+    await flush();
+    expect(test.lifecycle.getSnapshot()).toBe(current);
+    expect(test.onChange).toHaveBeenCalledTimes(calls);
+    expect(test.auth.onAuthStateChange).toHaveBeenCalledTimes(2);
+    expect(test.subscribeToRefresh).toHaveBeenCalledTimes(2);
+
+    test.subscribeToRefresh.mock.calls[1][0]();
+    expect(test.lifecycle.getSnapshot()).toEqual({ status: "signed-out", error: expect.any(String) });
+  });
+  it("ignores a connection from an earlier subscription after resubscribing", async () => {
+    const test = setup();
+    const oldConnection = deferred<Environment>();
+    test.connect.mockReturnValueOnce(oldConnection.promise);
+    const stop = test.start(); await flush(); stop();
+    test.auth.getSession.mockResolvedValue(restored(otherSession));
+    test.start(); await flush();
+    const current = test.lifecycle.getSnapshot();
+    oldConnection.resolve(test.environment); await flush();
+    expect(test.lifecycle.getSnapshot()).toBe(current);
+    expect(current).toEqual({ status: "ready", session: otherSession, environment: test.environment });
+  });
+  it("ignores restoration from an earlier subscription after resubscribing", async () => {
+    const test = setup();
+    const oldRestore = deferred<SessionResult>();
+    test.auth.getSession.mockReturnValueOnce(oldRestore.promise);
+    const stop = test.start(); await flush(); stop();
+    test.auth.getSession.mockResolvedValue(restored(otherSession));
+    test.start(); await flush();
+    const current = test.lifecycle.getSnapshot();
+    oldRestore.resolve(restored(session)); await flush();
+    expect(test.lifecycle.getSnapshot()).toBe(current);
+    expect(test.connect).toHaveBeenCalledExactlyOnceWith(otherSession);
+  });
   it("restores once and retains the Relay store across token refresh", async () => {
     const test = setup(); test.start(); await flush();
     test.emit("TOKEN_REFRESHED", { ...session, access_token: "rotated" }); await flush();
@@ -127,6 +222,18 @@ describe("sign-in session", () => {
     expect(first).toBe(second); expect(test.auth.signOut).toHaveBeenCalledExactlyOnceWith({ scope: "local" });
     logout.resolve({ error: null }); expect(await first).toEqual({ status: "success" });
     expect(test.onChange).toHaveBeenLastCalledWith({ status: "signed-out", error: null });
+  });
+  it("retains an in-flight logout across a store resubscription", async () => {
+    const test = setup();
+    const stop = test.start(); await flush();
+    const logout = deferred<{ error: null }>(); test.auth.signOut.mockReturnValue(logout.promise);
+    const first = test.lifecycle.signOut();
+    stop(); test.start(); await flush();
+    const second = test.lifecycle.signOut();
+    expect(second).toBe(first);
+    expect(test.auth.signOut).toHaveBeenCalledOnce();
+    logout.resolve({ error: null });
+    expect(await second).toEqual({ status: "success" });
   });
   it("preserves the authenticated page when logout fails", async () => {
     const test = setup(); test.start(); await flush(); test.auth.signOut.mockRejectedValue(new Error("storage"));

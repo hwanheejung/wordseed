@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet } from "react-native";
-import { useSession } from "@/entities/session";
+import { useAuthenticatedSession } from "@/entities/session";
 import { Avatar, Surface, Text, useUITheme } from "@/shared/ui";
 
 export const accountPageOptions = {
@@ -10,7 +10,7 @@ export const accountPageOptions = {
 } satisfies NativeStackNavigationOptions;
 
 export function AccountPage() {
-  const { user, signOut } = useSession();
+  const { user, signOut } = useAuthenticatedSession();
   const { colors } = useUITheme();
   const [status, setStatus] = useState<"idle" | "signingOut" | "failed">("idle");
   const signingOut = useRef(false);

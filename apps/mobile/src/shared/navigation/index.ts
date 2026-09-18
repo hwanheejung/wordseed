@@ -1,4 +1,6 @@
 export type AppStackParams = {
+  SignIn: undefined;
+  SessionStatus: undefined;
   Tabs: undefined;
   Account: undefined;
 };

@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationOptions, NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { useSession } from "@/entities/session";
+import { useAuthenticatedSession } from "@/entities/session";
 import { UserAvatarButton } from "@/entities/user";
 import type { AppStackParams, HomeStackParams } from "@/shared/navigation";
 import { Button, Separator, Surface, Text } from "@/shared/ui";
@@ -70,7 +70,7 @@ export function HomePage() {
 
 function HomeAccountButton() {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackParams>>();
-  const { user } = useSession();
+  const { user } = useAuthenticatedSession();
 
   return <UserAvatarButton user={user} accessibilityLabel="Account" onPress={() => navigation.navigate("Account")} />;
 }

@@ -1,3 +1,7 @@
+import { RelayEnvironmentProvider } from "react-relay";
+import { useSession } from "@/entities/session";
+import { SignInPage, signInPageOptions } from "@/routes/SignInPage";
+import { SessionStatusPage, sessionStatusPageOptions } from "@/routes/SessionStatusPage";
 import { Text } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AccountPage, accountPageOptions } from "@/routes/AccountPage";
@@ -15,13 +19,14 @@ import {
 import { AppTabs } from "./AppTabs";
 import type { AppTabsProps, TabDefinition } from "./tab-definition";
 import type {
-  AppStackParams,
   HomeStackParams,
   LibraryStackParams,
   SearchStackParams,
 } from "@/shared/navigation";
 
 const screens = {
+  SignIn: { screen: SignInPage, options: signInPageOptions },
+  SessionStatus: { screen: SessionStatusPage, options: sessionStatusPageOptions },
   Home: { screen: HomePage, options: homePageOptions },
   Library: { screen: LibraryPage, options: libraryPageOptions },
   Search: { screen: SearchPage, options: searchPageOptions },
@@ -96,12 +101,48 @@ function Tabs() {
   return <AppTabs tabs={defaultTabs} />;
 }
 
-export const AppNavigator = createNativeStackNavigator<AppStackParams>({
-  screens: {
-    Tabs: {
-      screen: Tabs,
-      options: { headerShown: false },
+const RootNavigator = createNativeStackNavigator({
+  groups: {
+    Pending: {
+      if: useIsSessionPending,
+      screens: { SessionStatus: screens.SessionStatus },
     },
-    Account: screens.Account,
+    SignedOut: {
+      if: useIsSignedOut,
+      screens: { SignIn: screens.SignIn },
+    },
+    SignedIn: {
+      if: useIsSignedIn,
+      screens: {
+        Tabs: { screen: Tabs, options: { headerShown: false } },
+        Account: screens.Account,
+      },
+    },
   },
 }).getComponent();
+
+export function AppNavigator() {
+  const session = useSession();
+
+  if (session.status === "ready") {
+    return (
+      <RelayEnvironmentProvider key={session.user.id} environment={session.environment}>
+        <RootNavigator />
+      </RelayEnvironmentProvider>
+    );
+  }
+  return <RootNavigator />;
+}
+
+function useIsSessionPending() {
+  const session = useSession();
+  return session.status === "loading" || session.status === "connecting" || session.status === "unavailable";
+}
+
+function useIsSignedOut() {
+  return useSession().status === "signed-out";
+}
+
+function useIsSignedIn() {
+  return useSession().status === "ready";
+}
