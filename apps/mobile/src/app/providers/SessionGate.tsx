@@ -1,9 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { ActivityIndicator, AppState, StyleSheet, View } from "react-native";
+import { ActivityIndicator, AppState, Linking, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RelayEnvironmentProvider } from "react-relay";
-import { SignInForm, completeSignIn } from "@/features/sign-in";
-import { isKeychainAvailable, createKeychainSessionStorage, createSupabaseAuthClient, type AuthClient, type AuthSession } from "@/shared/auth";
+import { SignInForm, completeSignIn, createSocialSignIn } from "@/features/sign-in";
+import { isKeychainAvailable, createKeychainSessionStorage, createSupabaseAuthClient, getSessionAccessToken, type AuthClient, type AuthSession } from "@/shared/auth";
 import { createRelayEnvironment } from "@/shared/relay";
 import { Button, Surface, Text } from "@/shared/ui";
 import type { MobileConfiguration } from "../mobile-configuration";
@@ -32,6 +32,18 @@ function ConfiguredSessionGate({ configuration, children }: SessionGateProps) {
   }));
   const [state, setState] = useState<SessionState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
+  const [socialSignIn] = useState(() => createSocialSignIn(auth, configuration.oauthBrowser));
+  const [callbackStatus, setCallbackStatus] = useState<"loading" | "ready" | "failed">("loading");
+
+  // Consume a cold-launch OAuth callback once; warm callbacks belong to the browser session.
+  useEffect(() => {
+    let active = true;
+    void Linking.getInitialURL().then(async (url) => {
+      const result = url ? await socialSignIn.consumeCallback(url) : null;
+      if (active) setCallbackStatus(result?.status === "error" ? "failed" : "ready");
+    }).catch(() => { if (active) setCallbackStatus("failed"); });
+    return () => { active = false; };
+  }, [socialSignIn]);
 
   // Synchronize the native app with Supabase session changes and foreground token refresh.
   useEffect(() => {
@@ -51,24 +63,24 @@ function ConfiguredSessionGate({ configuration, children }: SessionGateProps) {
     };
   }, [auth, attempt]);
 
-  if (state.status === "loading") return <View style={styles.center}><ActivityIndicator /></View>;
+  if (state.status === "loading" || callbackStatus === "loading") return <View style={styles.center}><ActivityIndicator /></View>;
   if (state.status === "failed") return <Surface tone="background" style={styles.center}>
     <Text accessibilityRole="alert">로그인을 준비하지 못했어요.</Text>
     <Button label="다시 시도" onPress={() => setAttempt((value) => value + 1)} />
   </Surface>;
   if (!state.session) return <SafeAreaView style={{ flex: 1 }}>
-    {configuration.enableEmailTestLogin ? <SignInForm authClient={auth} /> : <Surface tone="background" style={styles.center}><Text>로그인 기능이 준비 중이에요.</Text></Surface>}
+    {callbackStatus === "failed" && <Text accessibilityRole="alert">로그인을 완료하지 못했어요. 다시 로그인해 주세요.</Text>}
+    <SignInForm socialSignIn={socialSignIn} />
   </SafeAreaView>;
   return <AuthenticatedSession key={state.session.user.id} auth={auth} session={state.session} apiUrl={configuration.apiUrl}>{children}</AuthenticatedSession>;
 }
 
 interface AuthenticatedSessionProps { auth: AuthClient; session: AuthSession; apiUrl: string; children: ReactNode }
 function AuthenticatedSession({ auth, session, apiUrl, children }: AuthenticatedSessionProps) {
-  const [environment] = useState(() => createRelayEnvironment({ apiUrl, getAccessToken: async () => {
-    const { data, error } = await auth.getSession();
-    if (error || !data.session || data.session.user.id !== session.user.id) throw new Error("Authentication session changed.");
-    return data.session.access_token;
-  } }));
+  const [environment] = useState(() => createRelayEnvironment({
+    apiUrl,
+    getAccessToken: () => getSessionAccessToken(auth, session.user.id),
+  }));
   const [status, setStatus] = useState<"connecting" | "ready" | "failed">("connecting");
   const [attempt, setAttempt] = useState(0);
   const [signingOut, setSigningOut] = useState(false);
@@ -80,7 +92,10 @@ function AuthenticatedSession({ auth, session, apiUrl, children }: Authenticated
     setStatus("connecting");
     void completeSignIn(environment).then(() => {
       if (active) setStatus("ready");
-    }).catch(() => { if (active) setStatus("failed"); });
+    }).catch((error: unknown) => {
+      console.error("Failed to connect the authenticated Wordseed account.", error);
+      if (active) setStatus("failed");
+    });
     return () => { active = false; };
   }, [environment, attempt]);
 

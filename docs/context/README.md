@@ -10,6 +10,8 @@ Durable product constraints for agents; implementation status and transcripts be
 
 Read these for product work. Read [Dictionary architecture](../architecture/dictionary-target-model.md) only for Dictionary schema, publishing, validation, or data-ownership work; it is not required for routine UI tasks.
 
+For mobile authentication implementation and ownership, read [Mobile authentication](../architecture/mobile-authentication.md). It documents OAuth, session restoration, token refresh, and API account linking; product policy remains in the context documents above.
+
 ## Authority and maintenance
 
 - Decisions constrain implementation; hypotheses remain unvalidated; candidates are not commitments.

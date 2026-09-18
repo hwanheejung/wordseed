@@ -25,7 +25,8 @@ export function createKeychainSessionStorage(): AuthSessionStorage {
       const result = await setGenericPassword("supabase-session", value, {
         service: `${SERVICE_PREFIX}${key}`,
         accessible: ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
-        cloudSync: false,
+        // Omit cloudSync: the installed iOS bridge treats any supplied NSNumber
+        // (including false) as enabled. Its absent default is local-only.
       });
       if (!result) throw new Error("Unable to persist the authentication session securely.");
     },

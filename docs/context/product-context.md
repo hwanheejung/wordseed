@@ -8,6 +8,7 @@ Initial users are Korean-speaking intermediate English learners collecting expre
 
 ## Governing decisions
 
+- Sign-in uses Apple or Google through Supabase. Persist sessions without an app-enforced lifetime or inactivity timeout; require sign-in again after explicit logout or session revocation. Email/password sign-in is not supported.
 - Every saved item references the shared Wordseed Dictionary. There is no private Dictionary or unvalidated fallback.
 - Existing meanings can be saved without choosing a wordbook. Missing or delayed/failed AI-validated content becomes an addition request, not a completed save. Automatic saving after publication is proposed; fulfillment details remain open.
 - AI may create Lexemes or add missing Senses, never edit existing content. Report submits errors for separate correction.

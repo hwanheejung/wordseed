@@ -1,50 +1,47 @@
-import { useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from "react-native";
-import type { AuthClient } from "@/shared/auth";
-import { Button, Surface, Text, useUITheme } from "@/shared/ui";
+import { useRef, useState } from "react";
+import { ScrollView, StyleSheet } from "react-native";
+import { Button, Surface, Text } from "@/shared/ui";
+import type { SocialProvider, SocialSignIn } from "../api/social-sign-in";
 
-interface SignInFormProps { authClient: AuthClient }
+interface SignInFormProps { socialSignIn: SocialSignIn }
 
-export function SignInForm({ authClient }: SignInFormProps) {
-  const { colors } = useUITheme();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
+type SignInState = { status: "idle" } | { status: "submitting"; provider: SocialProvider } | { status: "error"; message: string };
 
-  async function handleSignIn() {
-    if (status === "submitting" || !email.trim() || !password) return;
-    setStatus("submitting");
+export function SignInForm({ socialSignIn }: SignInFormProps) {
+  const [state, setState] = useState<SignInState>({ status: "idle" });
+  const submitting = useRef(false);
+
+  async function handleSignIn(provider: SocialProvider) {
+    if (submitting.current) return;
+    submitting.current = true;
+    setState({ status: "submitting", provider });
     try {
-      const { data, error } = await authClient.signInWithPassword({ email: email.trim(), password });
-      if (error || !data.session) {
-        setStatus("error");
-        return;
-      }
-      setPassword("");
-      setStatus("idle");
+      const result = await socialSignIn.signIn(provider);
+      if (result.status === "error") {
+        const messages = {
+          provider: "로그인을 시작하지 못했어요. 다시 시도해 주세요.",
+          browser: "로그인 브라우저를 열지 못했어요. 다시 시도해 주세요.",
+          callback: "로그인 응답을 확인하지 못했어요. 다시 시도해 주세요.",
+          exchange: "로그인 세션을 연결하지 못했어요. 다시 시도해 주세요.",
+        };
+        setState({ status: "error", message: messages[result.reason] });
+      } else setState({ status: "idle" });
     } catch {
-      setStatus("error");
+      setState({ status: "error", message: "로그인하지 못했어요. 다시 시도해 주세요." });
+    } finally {
+      submitting.current = false;
     }
   }
 
   return <Surface tone="background" style={styles.page}>
-    <KeyboardAvoidingView style={styles.page} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
-        <Text variant="title">Wordseed</Text>
-        <Text>로그인하고 표현을 모아 보세요.</Text>
-        <View style={styles.field}>
-          <Text nativeID="sign-in-email">이메일</Text>
-          <TextInput accessibilityLabel="이메일" accessibilityLabelledBy="sign-in-email" value={email} onChangeText={setEmail} autoCapitalize="none" autoCorrect={false} autoComplete="email" keyboardType="email-address" textContentType="emailAddress" editable={status !== "submitting"} style={[styles.input, { color: colors.text, backgroundColor: colors.surface }]} />
-        </View>
-        <View style={styles.field}>
-          <Text nativeID="sign-in-password">비밀번호</Text>
-          <TextInput accessibilityLabel="비밀번호" accessibilityLabelledBy="sign-in-password" value={password} onChangeText={setPassword} autoCapitalize="none" autoCorrect={false} autoComplete="current-password" textContentType="password" secureTextEntry editable={status !== "submitting"} returnKeyType="go" onSubmitEditing={() => void handleSignIn()} style={[styles.input, { color: colors.text, backgroundColor: colors.surface }]} />
-        </View>
-        {status === "error" && <Text accessibilityRole="alert">로그인하지 못했어요. 이메일과 비밀번호, 연결 상태를 확인해 주세요.</Text>}
-        <Button label="로그인" loading={status === "submitting"} disabled={!email.trim() || !password} onPress={() => void handleSignIn()} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+    <ScrollView contentContainerStyle={styles.content}>
+      <Text variant="title">Wordseed</Text>
+      <Text>로그인하고 표현을 모아 보세요.</Text>
+      <Button label="Apple로 계속하기" loading={state.status === "submitting" && state.provider === "apple"} disabled={state.status === "submitting"} onPress={() => void handleSignIn("apple")} />
+      <Button label="Google로 계속하기" loading={state.status === "submitting" && state.provider === "google"} disabled={state.status === "submitting"} onPress={() => void handleSignIn("google")} />
+      {state.status === "error" && <Text accessibilityRole="alert">{state.message}</Text>}
+    </ScrollView>
   </Surface>;
 }
 
-const styles = StyleSheet.create({ page: { flex: 1 }, content: { flexGrow: 1, justifyContent: "center", padding: 24, gap: 20 }, field: { gap: 8 }, input: { minHeight: 52, padding: 14, borderRadius: 12, fontSize: 17 } });
+const styles = StyleSheet.create({ page: { flex: 1 }, content: { flexGrow: 1, justifyContent: "center", padding: 24, gap: 20 } });

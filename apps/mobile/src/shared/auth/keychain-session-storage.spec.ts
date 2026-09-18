@@ -44,7 +44,7 @@ describe("keychain session storage", () => {
     const storage = createKeychainSessionStorage();
     vi.mocked(setGenericPassword).mockResolvedValue({ service: "test", storage: STORAGE_TYPE.AES_GCM_NO_AUTH });
     await storage.setItem("project-session", "session-json");
-    expect(setGenericPassword).toHaveBeenCalledWith("supabase-session", "session-json", { service: "wordseed.supabase.project-session", accessible: ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY, cloudSync: false });
+    expect(setGenericPassword).toHaveBeenCalledWith("supabase-session", "session-json", { service: "wordseed.supabase.project-session", accessible: ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY });
   });
 
   it("propagates failed secure writes instead of claiming persistence", async () => {

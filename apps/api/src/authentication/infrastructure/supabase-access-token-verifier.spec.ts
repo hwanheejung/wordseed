@@ -85,45 +85,34 @@ describe("SupabaseAccessTokenVerifier", () => {
     );
   });
 
-  it("accepts email identities only when explicitly enabled for development", async () => {
-    verifier = new SupabaseAccessTokenVerifier(createConfigService("true"));
-    const token = await signAccessToken(keyPair.privateKey, "authenticated", ["email"]);
+  it.each(["apple", "google"])("accepts a %s identity", async (provider) => {
+    const token = await signAccessToken(keyPair.privateKey, "authenticated", [provider]);
     await expect(verifier.verify(token)).resolves.toEqual({ subject: authSubject, sessionId });
   });
 
-  it("rejects email identities with an explicit false flag", async () => {
-    verifier = new SupabaseAccessTokenVerifier(createConfigService("false"));
-    await expect(verifier.verify(await signAccessToken(keyPair.privateKey, "authenticated", ["email"]))).rejects.toBeInstanceOf(InvalidAccessTokenError);
+  it.each(["apple", "google"])("accepts %s linked to an existing email identity", async (provider) => {
+    const token = await signAccessToken(keyPair.privateKey, "authenticated", ["email", provider]);
+    await expect(verifier.verify(token)).resolves.toEqual({ subject: authSubject, sessionId });
   });
 
-  it.each(["apple", "google"])("preserves the %s provider policy with email testing enabled", async (provider) => {
-    verifier = new SupabaseAccessTokenVerifier(createConfigService("true"));
-    await expect(verifier.verify(await signAccessToken(keyPair.privateKey, "authenticated", [provider]))).resolves.toMatchObject({ subject: authSubject });
+  it("rejects expired social tokens", async () => {
+    const token = await signAccessToken(keyPair.privateKey, "authenticated", ["google"], { expiresAt: "-1m" });
+    await expect(verifier.verify(token)).rejects.toBeInstanceOf(InvalidAccessTokenError);
   });
 
-  it("rejects expired email tokens even when testing is enabled", async () => {
-    verifier = new SupabaseAccessTokenVerifier(createConfigService("true"));
-    await expect(verifier.verify(await signAccessToken(keyPair.privateKey, "authenticated", ["email"], { expiresAt: "-1m" }))).rejects.toBeInstanceOf(InvalidAccessTokenError);
+  it("rejects social tokens from the wrong issuer", async () => {
+    const token = await signAccessToken(keyPair.privateKey, "authenticated", ["apple"], { tokenIssuer: "https://other.supabase.co/auth/v1" });
+    await expect(verifier.verify(token)).rejects.toBeInstanceOf(InvalidAccessTokenError);
   });
 
-  it("rejects email tokens from the wrong issuer even when testing is enabled", async () => {
-    verifier = new SupabaseAccessTokenVerifier(createConfigService("true"));
-    await expect(verifier.verify(await signAccessToken(keyPair.privateKey, "authenticated", ["email"], { tokenIssuer: "https://other.supabase.co/auth/v1" }))).rejects.toBeInstanceOf(InvalidAccessTokenError);
+  it("rejects anonymous tokens", async () => {
+    const token = await signAccessToken(keyPair.privateKey, "authenticated", ["apple"], { anonymous: true });
+    await expect(verifier.verify(token)).rejects.toBeInstanceOf(InvalidAccessTokenError);
   });
 
-  it("rejects anonymous email tokens even when testing is enabled", async () => {
-    verifier = new SupabaseAccessTokenVerifier(createConfigService("true"));
-    await expect(verifier.verify(await signAccessToken(keyPair.privateKey, "authenticated", ["email"], { anonymous: true }))).rejects.toBeInstanceOf(InvalidAccessTokenError);
-  });
-
-  it("rejects email tokens with the wrong audience even when testing is enabled", async () => {
-    verifier = new SupabaseAccessTokenVerifier(createConfigService("true"));
-    await expect(verifier.verify(await signAccessToken(keyPair.privateKey, "another-audience", ["email"]))).rejects.toBeInstanceOf(InvalidAccessTokenError);
-  });
-
-  it("rejects unsupported providers even when email testing is enabled", async () => {
-    verifier = new SupabaseAccessTokenVerifier(createConfigService("true"));
-    await expect(verifier.verify(await signAccessToken(keyPair.privateKey, "authenticated", ["github"]))).rejects.toBeInstanceOf(InvalidAccessTokenError);
+  it("rejects unsupported providers", async () => {
+    const token = await signAccessToken(keyPair.privateKey, "authenticated", ["github"]);
+    await expect(verifier.verify(token)).rejects.toBeInstanceOf(InvalidAccessTokenError);
   });
 
   it("rejects malformed tokens without exposing verifier errors", async () => {
@@ -133,8 +122,8 @@ describe("SupabaseAccessTokenVerifier", () => {
   });
 });
 
-function createConfigService(allowEmailTestLogin?: "true" | "false"): ConfigService<ApiEnvironment, true> {
-  const environment = validateEnvironment({ SUPABASE_URL: supabaseUrl, ALLOW_EMAIL_TEST_LOGIN: allowEmailTestLogin });
+function createConfigService(): ConfigService<ApiEnvironment, true> {
+  const environment = validateEnvironment({ SUPABASE_URL: supabaseUrl });
 
   return new ConfigService<ApiEnvironment, true>(environment);
 }

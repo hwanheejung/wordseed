@@ -1,4 +1,4 @@
-import { createClient, type Session, type SupabaseClient, type SupportedStorage } from "@supabase/supabase-js";
+import { createClient, processLock, type Session, type SupabaseClient, type SupportedStorage } from "@supabase/supabase-js";
 
 export type AuthClient = SupabaseClient["auth"];
 export type AuthSession = Session;
@@ -15,6 +15,8 @@ export function createSupabaseAuthClient({ url, publishableKey, storage }: Supab
   return createClient(url, publishableKey, {
     auth: {
       storage,
+      flowType: "pkce",
+      lock: processLock,
       persistSession: true,
       autoRefreshToken: false,
       detectSessionInUrl: false,
