@@ -8,3 +8,4 @@ export { Text } from "./Text";
 export type { TextProps } from "./Text";
 export { UIThemeProvider, useUITheme } from "./theme";
 export type { UITheme, UIThemeProviderProps } from "./theme";
+export { Avatar } from "./Avatar";

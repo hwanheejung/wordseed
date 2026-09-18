@@ -4,7 +4,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useUITheme } from "@/shared/ui";
 import type { MobileConfiguration } from "./mobile-configuration";
 import { SessionGate } from "./providers/SessionGate";
-import { AppTabs } from "./navigation/AppTabs";
+import { AppNavigator } from "./navigation/AppNavigator";
 
 export function App({ configuration }: { configuration: MobileConfiguration }) {
   const scheme = useColorScheme();
@@ -22,7 +22,7 @@ export function App({ configuration }: { configuration: MobileConfiguration }) {
         border: colors.separator,
       } }}>
         <StatusBar barStyle={scheme === "dark" ? "light-content" : "dark-content"} />
-        <SessionGate configuration={configuration}><AppTabs /></SessionGate>
+        <SessionGate configuration={configuration}><AppNavigator /></SessionGate>
       </NavigationContainer>
     </SafeAreaProvider>
   );

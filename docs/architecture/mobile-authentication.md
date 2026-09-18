@@ -22,7 +22,7 @@ sequenceDiagram
     participant Browser as Expo authentication browser
     participant Auth as Supabase Auth
     participant Provider as Google or Apple
-    participant Gate as SessionGate
+    participant Gate as Sign-in session
 
     User->>Feature: Select provider
     Feature->>SDK: signInWithOAuth(provider, redirectTo)
@@ -68,7 +68,7 @@ The provider authorization result and the Supabase PKCE code belong to different
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Gate as SessionGate
+    participant Gate as Sign-in session
     participant Relay as Per-user Relay environment
     participant SDK as Supabase JS SDK
     participant API as Wordseed API
@@ -93,7 +93,7 @@ sequenceDiagram
 - completeSignIn upserts the user and can be repeated after restoration without creating another account.
 - The API requires UUID sub/session_id claims, authenticated role, non-anonymous status, and an Apple or Google identity. Its current provider allowlist is apple, google, and email.
 - Local session checks select screens; API verification authorizes access.
-- Connection failure retains the Supabase session and offers a mutation retry. API downtime does not require another social sign-in.
+- Connection failure retains persisted Supabase credentials but returns to the sign-in screen with an inline error. Explicit provider sign-in starts another connection attempt. Background token refresh cannot silently reopen authenticated screens after failure.
 - Account-merging UI is not implemented. Identities sharing a Supabase user ID share a Wordseed account; Wordseed does not merge different IDs by email.
 
 ## Automatic sign-in and refresh
@@ -108,14 +108,13 @@ flowchart TD
     Expiry -->|No| Social{Apple or Google identity?}
     Expiry -->|Yes| Refresh[SDK refreshes session]
     Refresh -->|Success and persisted| Social
-    Refresh -->|Temporary network failure| Retry[Restoration error with retry]
+    Refresh -->|Temporary network failure| LoginError[Sign-in screen with error]
     Refresh -->|Session invalidated and SIGNED_OUT| Login
     Social -->|No| Login
     Social -->|Yes| Connect[completeSignIn]
     Connect -->|Success| Ready[App content]
-    Connect -->|Failure| ConnectRetry[Keep session and offer retry]
-    ConnectRetry --> Connect
-    Retry --> Restore
+    Connect -->|Failure| LoginError
+    LoginError -->|Explicit provider sign-in| Connect
     Ready --> Background[Background: stopAutoRefresh]
     Background --> Active[Foreground: startAutoRefresh]
     Active --> Request[getSession before API request]
@@ -132,7 +131,7 @@ completeSignIn runs for initial connection and restoration, not on every token r
 - There is no custom 60-second refresh timer or unconditional foreground refresh. The SDK owns auto-refresh timing and getSession expiry checks.
 - Each GraphQL request awaits getSessionAccessToken. Missing sessions, changed user IDs, and actually expired tokens block requests. Server verification still applies.
 - INITIAL_SESSION(null) can represent offline restoration failure, so it cannot supersede the explicit startup result. Later SIGNED_IN, SIGNED_OUT, and TOKEN_REFRESHED events take precedence over a late startup snapshot.
-- The current configuration also supplies processLock. Installed Supabase 2.116.0 coordinates refreshes internally and emits a deprecation warning for that option. This is unrelated to session lifetime.
+- Refresh coordination belongs to the installed Supabase SDK; the app does not supply a custom process lock.
 
 ### Indefinite session retention
 
@@ -149,10 +148,10 @@ Mobile code does not change server settings. Logout, revocation, or storage loss
 
 ## Logout and cache isolation
 
-1. Logout calls auth.signOut with local scope, not a global logout across devices.
-2. After SDK session removal and SIGNED_OUT, the sign-in screen appears. Failed logout calls display an error.
-3. AuthenticatedSession unmounts and its Relay environment is no longer used.
-4. A different user.id creates a fresh component and Relay store. Refreshing the same user's token retains the store.
+1. The Home header avatar pushes AccountPage above the tabs. Native back navigation returns to Home; this is not a modal.
+2. AccountPage owns email, logout progress, and inline failure feedback. Logout calls auth.signOut with local scope, not a global logout across devices.
+3. After SDK session removal and SIGNED_OUT, the authenticated navigator unmounts and the sign-in screen appears. Its Relay environment is no longer used.
+4. A different user.id receives a fresh Relay store. Refreshing the same user's token retains the store.
 5. The old environment's token getter checks identity, preventing previous-user requests from using new-user credentials.
 
 ## Responsibilities
@@ -160,16 +159,18 @@ Mobile code does not change server settings. Logout, revocation, or storage loss
 | Owner | Responsibility | Source |
 |---|---|---|
 | Sign-in UI | Provider selection, progress, cancellation, errors | [SignInForm](../../apps/mobile/src/features/sign-in/ui/SignInForm.tsx) |
-| Sign-in feature | OAuth initiation, callback validation, PKCE exchange, deduplication | [social-sign-in](../../apps/mobile/src/features/sign-in/api/social-sign-in.ts) |
+| Sign-in feature | OAuth initiation, callback validation, PKCE exchange, deduplication; startup/auth-event account connection, failure recovery, logout | [social-sign-in](../../apps/mobile/src/features/sign-in/api/social-sign-in.ts), [sign-in-session](../../apps/mobile/src/features/sign-in/api/sign-in-session.ts) |
 | Native adapters | Expo browser and Hermes cryptographic APIs | [expo-oauth-browser](../../apps/mobile/src/app/native-auth/expo-oauth-browser.ts), [install-pkce-crypto](../../apps/mobile/src/app/native-auth/install-pkce-crypto.ts) |
 | shared/auth | Client construction, secure persistence, request token lookup | [supabase-auth-client](../../apps/mobile/src/shared/auth/supabase-auth-client.ts), [keychain-session-storage](../../apps/mobile/src/shared/auth/keychain-session-storage.ts), [session-access-token](../../apps/mobile/src/shared/auth/session-access-token.ts) |
-| app/providers | Configuration, session observation, AppState lifecycle, screen gating | [SessionGate](../../apps/mobile/src/app/providers/SessionGate.tsx), [session-lifecycle](../../apps/mobile/src/app/providers/session-lifecycle.ts) |
+| app/providers | Configuration, lifecycle subscription, AppState refresh, screen gating and per-user providers | [SessionGate](../../apps/mobile/src/app/providers/SessionGate.tsx) |
+| Session entity | Authenticated user and logout action injection contract | [session-context](../../apps/mobile/src/entities/session/session-context.tsx) |
+| Account route | Account information, logout progress/error UI | [AccountPage](../../apps/mobile/src/routes/AccountPage.tsx) |
 | Account connection | Relay mutation definition and execution | [complete-sign-in](../../apps/mobile/src/features/sign-in/api/complete-sign-in.ts) |
 | shared/relay | Per-request token lookup and Bearer headers | [relayEnvironment](../../apps/mobile/src/shared/relay/relayEnvironment.ts) |
 | API authentication | JWT validation and authenticated principal | [SupabaseAccessTokenVerifier](../../apps/api/src/authentication/infrastructure/supabase-access-token-verifier.ts) |
 | API user | Application user lookup/upsert by authSubject | [UserService](../../apps/api/src/user/application/user.service.ts), [PrismaUserRepository](../../apps/api/src/user/infrastructure/prisma-user.repository.ts) |
 
-SessionGate currently also initiates account connection and contains the logout handler. These are actual responsibilities, not a claim that all authentication actions have already been extracted into features.
+SessionGate retains one effect to attach/detach the external authentication lifecycle and native AppState listener. Account connection runs from startup/auth events or explicit sign-in; it is not triggered by an effect watching React state. Each page exports its navigation options; AppNavigator.tsx centrally declares the screen registry and every stack using React Navigation static configuration. Tab definitions and their default ordering live beside the stack registry. Platform-specific AppTabs adapters render the supplied definition array, using stable route names and separate standard/iOS options. A future experiment chooses its array at the caller; the adapters do not own assignment or hardcode tab destinations. Removing a tab does not promise preservation of its navigation state. Home owns session lookup and account navigation, while `entities/user` renders the avatar button from props. Static headers need no effect; Search retains native search-bar synchronization with page state.
 
 For Bare React Native, retain Supabase, Keychain, Relay, and the sign-in feature. Keep Expo modules or replace the OAuthBrowser implementation and cryptographic bridge. Configure native URL schemes and callback delivery. The browser is injected through MobileConfiguration.oauthBrowser.
 
@@ -193,13 +194,15 @@ Diagnostics record stages and restricted error names/codes. Do not log tokens, v
 
 ## Verification scope
 
-Verified in the development environment on 2026-09-18:
+Earlier development-environment verification on 2026-09-18, before the session-gate/account-page refactor:
 
 - Native iOS simulator build and Apple/Google buttons.
 - Hermes randomness, digest, and TextEncoder APIs, including SHA-256 of a public test string.
 - Keychain temporary-value round trip after correcting cloudSync configuration.
 - Actual Google sign-in, persisted session restoration after a JavaScript reload, and account connection/Home entry after restoring the API.
 - 53 mobile tests and type checking; 17 API authentication/configuration tests and API type checking.
+
+The session-gate/account-page refactor passes 63 mobile tests and type checking. The restarted iOS simulator displays Home with the circular account avatar, English interface copy, and no persistent email/logout strip. Account tap/back navigation, actual provider sign-in, and native logout behavior have not been reverified for this revision.
 
 Not yet verified end to end:
 

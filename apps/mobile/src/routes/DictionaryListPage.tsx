@@ -33,9 +33,9 @@ export function DictionaryListPage({ onSelect }: DictionaryListPageProps) {
       contentContainerStyle={styles.content}
     >
       <Text style={styles.title}>Dictionary</Text>
-      <Text style={styles.count}>전체 {data.dictionaryLexemes.totalCount}개</Text>
+      <Text style={styles.count}>{data.dictionaryLexemes.totalCount} entries</Text>
       {lexemes.length === 0 ? (
-        <Text style={styles.empty}>사전 데이터가 없습니다.</Text>
+        <Text style={styles.empty}>No dictionary entries yet.</Text>
       ) : (
         lexemes.map(({ node }) => (
           <Pressable

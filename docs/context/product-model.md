@@ -48,11 +48,14 @@ Events demonstrate viewing, not attention, correct recall, or mastery. Review-in
 ## Navigation
 
 - Home: saved content and Quick Review, without a scheduling dependency.
+- Account: a circular avatar in the Home header opens a separate page with account information and logout. Use normal push/back navigation, not a modal. Account controls do not occupy a persistent strip above the tabs.
 - Library: expressions, wordbooks, sorting, and detail entry.
 - Search: Dictionary lookup, save supported meanings, request additions.
 - Detail: expression, meaning, examples/context, Master/Unmaster, Report.
 
 Quick Review displays meaning immediately. Library ordering is separate from future review scheduling.
+
+Authentication restoration, callback, or account-connection failures return to the sign-in screen with an inline error and provider actions. Do not trap the user on a separate retry-only screen. Temporary connection failures do not explicitly delete stored credentials; returning to sign-in is a screen decision, not automatic logout.
 
 ## Exclusions and later work
 

@@ -1,15 +1,14 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Text } from "react-native";
-import { HomeStack, LibraryStack, SearchStack } from "./ScreenStacks";
+import type { AppTabsProps } from "./tab-definition";
 
 const Tab = createBottomTabNavigator();
 
-export function AppTabs() {
+export function AppTabs({ tabs }: AppTabsProps) {
   return (
     <Tab.Navigator backBehavior="history" screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="Home" component={HomeStack} options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>⌂</Text> }} />
-      <Tab.Screen name="Library" component={LibraryStack} options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>▤</Text> }} />
-      <Tab.Screen name="Search" component={SearchStack} options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>⌕</Text> }} />
+      {tabs.map((tab) => (
+        <Tab.Screen key={tab.name} name={tab.name} component={tab.component} options={tab.options} />
+      ))}
     </Tab.Navigator>
   );
 }

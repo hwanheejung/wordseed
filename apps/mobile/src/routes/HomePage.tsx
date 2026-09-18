@@ -1,27 +1,41 @@
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationOptions, NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useSession } from "@/entities/session";
+import { UserAvatarButton } from "@/entities/user";
+import type { AppStackParams, HomeStackParams } from "@/shared/navigation";
 import { Button, Separator, Surface, Text } from "@/shared/ui";
 
-interface HomePageProps {
-  onOpenDetail: (title: string) => void;
-}
+export const homePageOptions = {
+  title: "Home",
+  headerLargeTitle: true,
+  headerRight: () => <HomeAccountButton />,
+} satisfies NativeStackNavigationOptions;
 
-export function HomePage({ onOpenDetail }: HomePageProps) {
+type HomePageProps = NativeStackScreenProps<HomeStackParams, "HomeOverview">;
+
+export function HomePage() {
+  const navigation = useNavigation<HomePageProps["navigation"]>();
+  function handleOpenDetail(title: string) {
+    navigation.navigate("Detail", { title });
+  }
+
   return (
     <Surface tone="background" style={styles.page}>
       <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content}>
         <View style={styles.section}>
           <Text variant="heading">Quick Review</Text>
           <Surface style={styles.review}>
-            <Text variant="caption" tone="secondary">내가 저장한 표현</Text>
+            <Text variant="caption" tone="secondary">Saved expression</Text>
             <Text variant="title">take your time</Text>
             <Text>서두르지 않고 천천히 하다</Text>
             <Separator />
             <Text tone="secondary">“Take your time. There’s no rush.”</Text>
-            <Button label="표현 보기" onPress={() => onOpenDetail("take your time")} />
+            <Button label="View expression" onPress={() => handleOpenDetail("take your time")} />
           </Surface>
         </View>
         <View style={styles.section}>
-          <Text variant="heading">최근 저장한 표현</Text>
+          <Text variant="heading">Recently added</Text>
           <Surface style={styles.list}>
             {[
               { expression: "make it happen", meaning: "실현하다" },
@@ -29,7 +43,7 @@ export function HomePage({ onOpenDetail }: HomePageProps) {
             ].map((item, index) => (
               <View key={item.expression}>
                 {index > 0 && <Separator />}
-                <Pressable accessibilityRole="button" onPress={() => onOpenDetail(item.expression)} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}>
+                <Pressable accessibilityRole="button" onPress={() => handleOpenDetail(item.expression)} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}>
                   <View style={styles.rowText}>
                     <Text>{item.expression}</Text>
                     <Text variant="caption" tone="secondary">{item.meaning}</Text>
@@ -41,17 +55,24 @@ export function HomePage({ onOpenDetail }: HomePageProps) {
           </Surface>
         </View>
         <View style={styles.section}>
-          <Text variant="heading">내 단어장</Text>
-          <Pressable accessibilityRole="button" onPress={() => onOpenDetail("일상 속 표현")} style={({ pressed }) => [styles.wordbook, { opacity: pressed ? 0.6 : 1 }]}>
+          <Text variant="heading">My wordbooks</Text>
+          <Pressable accessibilityRole="button" onPress={() => handleOpenDetail("Everyday expressions")} style={({ pressed }) => [styles.wordbook, { opacity: pressed ? 0.6 : 1 }]}>
             <View style={styles.artwork}><Text style={styles.artworkText}>Everyday</Text></View>
-            <Text>일상 속 표현</Text>
-            <Text variant="caption" tone="secondary">3개 표현</Text>
+            <Text>Everyday expressions</Text>
+            <Text variant="caption" tone="secondary">3 expressions</Text>
           </Pressable>
         </View>
-        <Text variant="caption" tone="secondary" style={styles.notice}>미리보기 · 샘플 콘텐츠</Text>
+        <Text variant="caption" tone="secondary" style={styles.notice}>Preview · Sample content</Text>
       </ScrollView>
     </Surface>
   );
+}
+
+function HomeAccountButton() {
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackParams>>();
+  const { user } = useSession();
+
+  return <UserAvatarButton user={user} accessibilityLabel="Account" onPress={() => navigation.navigate("Account")} />;
 }
 
 const styles = StyleSheet.create({

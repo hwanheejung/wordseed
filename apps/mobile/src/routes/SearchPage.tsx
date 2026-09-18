@@ -1,16 +1,37 @@
-import { startTransition, useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
+import { startTransition, useLayoutEffect, useState } from "react";
+import type { NativeStackNavigationOptions, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
+import type { SearchStackParams } from "@/shared/navigation";
+import { QueryBoundary } from "@/shared/relay";
 import { Button, Surface, Text, useUITheme } from "@/shared/ui";
 import type { SearchPageQuery } from "./__generated__/SearchPageQuery.graphql";
 import type { SearchPage_lexemes$key } from "./__generated__/SearchPage_lexemes.graphql";
 import type { SearchPagePaginationQuery } from "./__generated__/SearchPagePaginationQuery.graphql";
 
-interface SearchPageProps { fetchKey?: number; onOpenDetail: (lexemeId: string) => void }
+export const searchPageOptions = {
+  title: "Search",
+  headerLargeTitle: true,
+} satisfies NativeStackNavigationOptions;
 
-export function SearchPage({ onOpenDetail, fetchKey }: SearchPageProps) {
+type SearchPageProps = NativeStackScreenProps<SearchStackParams, "SearchOverview">;
+
+export function SearchPage() {
+  const navigation = useNavigation<SearchPageProps["navigation"]>();
+  return (
+    <QueryBoundary>
+      {(fetchKey) => <SearchContent navigation={navigation} fetchKey={fetchKey} />}
+    </QueryBoundary>
+  );
+}
+
+interface SearchContentProps {
+  navigation: SearchPageProps["navigation"];
+  fetchKey: number;
+}
+
+function SearchContent({ navigation, fetchKey }: SearchContentProps) {
   const [search, setSearch] = useState("");
   const query = useLazyLoadQuery<SearchPageQuery>(graphql`
     query SearchPageQuery($query: String!) { ...SearchPage_lexemes @arguments(query: $query) }
@@ -26,7 +47,6 @@ export function SearchPage({ onOpenDetail, fetchKey }: SearchPageProps) {
     }
   `, query);
   const { colors } = useUITheme();
-  const navigation = useNavigation();
   const [draft, setDraft] = useState("");
   const [paginationFailed, setPaginationFailed] = useState(false);
 
@@ -43,7 +63,7 @@ export function SearchPage({ onOpenDetail, fetchKey }: SearchPageProps) {
   useLayoutEffect(() => {
     if (Platform.OS !== "ios") return;
     navigation.setOptions({ headerSearchBarOptions: {
-      placeholder: "영어 단어 또는 표현 검색", autoCapitalize: "none", hideWhenScrolling: false,
+      placeholder: "Search English words or expressions", autoCapitalize: "none", hideWhenScrolling: false,
       onSearchButtonPress: (event) => {
         setPaginationFailed(false);
         startTransition(() => setSearch(event.nativeEvent.text.trim()));
@@ -55,24 +75,24 @@ export function SearchPage({ onOpenDetail, fetchKey }: SearchPageProps) {
   return <Surface tone="background" style={styles.page}>
     <ScrollView contentInsetAdjustmentBehavior="automatic" keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
       {Platform.OS !== "ios" && <View style={styles.search}>
-        <TextInput accessibilityLabel="영어 단어 또는 표현 검색" placeholder="영어 단어 또는 표현 검색" placeholderTextColor={colors.secondaryText} value={draft} onChangeText={setDraft} onSubmitEditing={handleSearch} autoCapitalize="none" autoCorrect={false} returnKeyType="search" style={[styles.input, { color: colors.text, backgroundColor: colors.surface }]} />
-        <Button label="검색" variant="plain" onPress={handleSearch} />
+        <TextInput accessibilityLabel="Search English words or expressions" placeholder="Search English words or expressions" placeholderTextColor={colors.secondaryText} value={draft} onChangeText={setDraft} onSubmitEditing={handleSearch} autoCapitalize="none" autoCorrect={false} returnKeyType="search" style={[styles.input, { color: colors.text, backgroundColor: colors.surface }]} />
+        <Button label="Search" variant="plain" onPress={handleSearch} />
       </View>}
-      <Text variant="caption" tone="secondary">{search ? `“${search}” 검색 결과` : "사전 둘러보기"} · {data.dictionaryLexemes.totalCount}개</Text>
-      {data.dictionaryLexemes.edges.length === 0 && <Text>검색 결과가 없어요. 다른 영어 단어나 표현으로 검색해 보세요.</Text>}
-      {data.dictionaryLexemes.edges.map((edge) => edge?.node && <Pressable key={edge.node.id} accessibilityRole="button" onPress={() => onOpenDetail(edge.node.id)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+      <Text variant="caption" tone="secondary">{search ? `Results for “${search}”` : "Browse dictionary"} · {data.dictionaryLexemes.totalCount}</Text>
+      {data.dictionaryLexemes.edges.length === 0 && <Text>No results. Try another word or expression.</Text>}
+      {data.dictionaryLexemes.edges.map((edge) => edge?.node && <Pressable key={edge.node.id} accessibilityRole="button" onPress={() => navigation.navigate("DictionaryDetail", { lexemeId: edge.node.id })} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
         <Surface style={styles.row}>
           <View style={styles.rowText}><Text>{edge.node.canonicalLemma}</Text><Text variant="caption" tone="secondary">{edge.node.lexicalCategory.displayName}</Text><Text tone="secondary">{preferredGloss(edge.node.senses.flatMap((sense) => sense.glosses))}</Text></View>
           <Text tone="secondary">›</Text>
         </Surface>
       </Pressable>)}
-      {paginationFailed && <Text accessibilityRole="alert">다음 결과를 불러오지 못했어요. 다시 시도해 주세요.</Text>}
-      {hasNext && <Button label={paginationFailed ? "다시 불러오기" : "더 보기"} variant="plain" loading={isLoadingNext} onPress={handleLoadMore} />}
+      {paginationFailed && <Text accessibilityRole="alert">Couldn’t load more results. Try again.</Text>}
+      {hasNext && <Button label={paginationFailed ? "Try again" : "Show more"} variant="plain" loading={isLoadingNext} onPress={handleLoadMore} />}
     </ScrollView>
   </Surface>;
 }
 
 function preferredGloss(glosses: readonly { languageTag: string; text: string }[]): string {
-  return glosses.find((gloss) => gloss.languageTag === "ko")?.text ?? glosses.find((gloss) => gloss.languageTag === "en")?.text ?? glosses[0]?.text ?? "뜻이 없어요";
+  return glosses.find((gloss) => gloss.languageTag === "ko")?.text ?? glosses.find((gloss) => gloss.languageTag === "en")?.text ?? glosses[0]?.text ?? "No definition available";
 }
 const styles = StyleSheet.create({ page: { flex: 1 }, content: { padding: 20, paddingBottom: 40, gap: 16 }, search: { gap: 8 }, input: { minHeight: 52, borderRadius: 14, paddingHorizontal: 16, paddingVertical: 12, fontSize: 17 }, row: { borderRadius: 16, padding: 16, flexDirection: "row", alignItems: "center", gap: 12 }, rowText: { flex: 1, gap: 4 } });

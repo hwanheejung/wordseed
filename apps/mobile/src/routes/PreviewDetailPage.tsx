@@ -1,3 +1,6 @@
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationOptions, NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { HomeStackParams } from "@/shared/navigation";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Button, Separator, Surface, Text } from "@/shared/ui";
 
@@ -7,12 +10,15 @@ const expressions = [
   { expression: "a fresh start", meaning: "새로운 시작", example: "Moving to a new city felt like a fresh start.", translation: "새 도시로 이사하는 건 새로운 시작처럼 느껴졌어." },
 ];
 
-interface PreviewDetailPageProps {
-  title: string;
-  onOpenDetail: (title: string) => void;
+type PreviewDetailPageProps = NativeStackScreenProps<HomeStackParams, "Detail">;
+
+export function previewDetailPageOptions({ route }: Pick<PreviewDetailPageProps, "route">): NativeStackNavigationOptions {
+  return { title: route.params.title };
 }
 
-export function PreviewDetailPage({ title, onOpenDetail }: PreviewDetailPageProps) {
+export function PreviewDetailPage({ route }: Pick<PreviewDetailPageProps, "route">) {
+  const navigation = useNavigation<PreviewDetailPageProps["navigation"]>();
+  const { title } = route.params;
   const expression = expressions.find((item) => item.expression === title);
 
   return (
@@ -22,35 +28,35 @@ export function PreviewDetailPage({ title, onOpenDetail }: PreviewDetailPageProp
           {expression ? (
             <>
               <Surface style={styles.card}>
-                <Text variant="caption" tone="secondary">표현</Text>
+                <Text variant="caption" tone="secondary">Expression</Text>
                 <Text variant="title">{expression.expression}</Text>
                 <Text variant="heading">{expression.meaning}</Text>
                 <Separator />
-                <Text variant="caption" tone="secondary">예문</Text>
+                <Text variant="caption" tone="secondary">Example</Text>
                 <Text>{expression.example}</Text>
                 <Text tone="secondary">{expression.translation}</Text>
               </Surface>
-              <Button label="Library에 저장" disabled />
+              <Button label="Save to Library" disabled />
               <Button label="Master" variant="plain" disabled />
-              <Button label="문제 신고" variant="plain" disabled />
+              <Button label="Report a problem" variant="plain" disabled />
             </>
           ) : (
             <>
               <View style={styles.artwork}><Text style={styles.artworkText}>Everyday</Text></View>
               <Text variant="heading">{title}</Text>
-              <Text tone="secondary">매일 쓰고 싶은 표현들 · 3개 표현</Text>
+              <Text tone="secondary">Everyday expressions · 3 expressions</Text>
               <Surface style={styles.card}>
                 {expressions.map((item) => (
-                  <Pressable key={item.expression} accessibilityRole="button" onPress={() => onOpenDetail(item.expression)} style={({ pressed }) => [styles.expression, { opacity: pressed ? 0.6 : 1 }]}>
+                  <Pressable key={item.expression} accessibilityRole="button" onPress={() => navigation.push("Detail", { title: item.expression })} style={({ pressed }) => [styles.expression, { opacity: pressed ? 0.6 : 1 }]}>
                     <Text>{item.expression}</Text>
                     <Text variant="caption" tone="secondary">{item.meaning}</Text>
                   </Pressable>
                 ))}
               </Surface>
-              <Button label="표현 추가" disabled />
+              <Button label="Add expression" disabled />
             </>
           )}
-          <Text variant="caption" tone="secondary">미리보기 · 샘플 콘텐츠</Text>
+          <Text variant="caption" tone="secondary">Preview · Sample content</Text>
         </View>
       </ScrollView>
     </Surface>

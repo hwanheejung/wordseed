@@ -42,7 +42,7 @@ export function DictionaryLexemeSummary({
           {lexeme.lexicalCategory.displayName}
         </Text>
       </View>
-      <Text style={styles.gloss}>{preferredGloss?.text ?? "뜻 없음"}</Text>
+      <Text style={styles.gloss}>{preferredGloss?.text ?? "No definition available"}</Text>
     </View>
   );
 }

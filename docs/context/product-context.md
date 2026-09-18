@@ -21,6 +21,8 @@ Initial users are Korean-speaking intermediate English learners collecting expre
 
 ## Principles and ownership
 
+Write interface copy in English by default, including navigation, actions, loading states, errors, and accessibility labels. Learning content such as Korean meanings and translations retains its intended language.
+
 Keep existing-content saves fast, distinguish requests from saves, and preserve Dictionary quality when generation fails. Public additions must not expose private request context.
 
 The Dictionary owns shared lexical content. Users own collection membership, context, Master status, and viewing history. Detailed behavior belongs in [Product model](./product-model.md).

@@ -1,14 +1,14 @@
 import { createNativeBottomTabNavigator } from "@react-navigation/bottom-tabs/unstable";
-import { HomeStack, LibraryStack, SearchStack } from "./ScreenStacks";
+import type { AppTabsProps } from "./tab-definition";
 
 const Tab = createNativeBottomTabNavigator();
 
-export function AppTabs() {
+export function AppTabs({ tabs }: AppTabsProps) {
   return (
     <Tab.Navigator backBehavior="history" screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="Home" component={HomeStack} options={{ tabBarIcon: { type: "sfSymbol", name: "house" } }} />
-      <Tab.Screen name="Library" component={LibraryStack} options={{ tabBarIcon: { type: "sfSymbol", name: "books.vertical" } }} />
-      <Tab.Screen name="Search" component={SearchStack} options={{ tabBarSystemItem: "search" }} />
+      {tabs.map((tab) => (
+        <Tab.Screen key={tab.name} name={tab.name} component={tab.component} options={tab.iosOptions} />
+      ))}
     </Tab.Navigator>
   );
 }

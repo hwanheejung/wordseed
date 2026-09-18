@@ -1,4 +1,8 @@
 import { useState } from "react";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationOptions, NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { LibraryStackParams } from "@/shared/navigation";
+import { QueryBoundary } from "@/shared/relay";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
 import { Button, Surface, Text } from "@/shared/ui";
@@ -6,9 +10,35 @@ import type { LibraryPageQuery } from "./__generated__/LibraryPageQuery.graphql"
 import type { LibraryPage_items$key } from "./__generated__/LibraryPage_items.graphql";
 import type { LibraryPagePaginationQuery } from "./__generated__/LibraryPagePaginationQuery.graphql";
 
-interface LibraryPageProps { fetchKey?: number; onOpenDetail: (lexemeId: string, senseId: string) => void }
+export const libraryPageOptions = {
+  title: "Library",
+  headerLargeTitle: true,
+} satisfies NativeStackNavigationOptions;
 
-export function LibraryPage({ onOpenDetail, fetchKey }: LibraryPageProps) {
+type LibraryPageProps = NativeStackScreenProps<LibraryStackParams, "LibraryOverview">;
+
+export function LibraryPage() {
+  const navigation = useNavigation<LibraryPageProps["navigation"]>();
+  const focused = useIsFocused();
+
+  return (
+    <QueryBoundary active={focused}>
+      {(fetchKey) => (
+        <LibraryContent
+          fetchKey={fetchKey}
+          onOpenDetail={(lexemeId, senseId) => navigation.navigate("DictionaryDetail", { lexemeId, senseId })}
+        />
+      )}
+    </QueryBoundary>
+  );
+}
+
+interface LibraryContentProps {
+  fetchKey: number;
+  onOpenDetail: (lexemeId: string, senseId: string) => void;
+}
+
+function LibraryContent({ onOpenDetail, fetchKey }: LibraryContentProps) {
   const query = useLazyLoadQuery<LibraryPageQuery>(graphql`
     query LibraryPageQuery { ...LibraryPage_items }
   `, {}, { fetchPolicy: "store-or-network", fetchKey });
@@ -31,21 +61,21 @@ export function LibraryPage({ onOpenDetail, fetchKey }: LibraryPageProps) {
 
   return <Surface tone="background" style={styles.page}>
     <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content}>
-      <Text variant="caption" tone="secondary">최근 추가한 순 · {data.mySavedLearningItems.totalCount}개</Text>
-      {data.mySavedLearningItems.edges.length === 0 && <Text>아직 저장한 표현이 없어요. Search에서 뜻을 골라 저장해 보세요.</Text>}
+      <Text variant="caption" tone="secondary">Recently added · {data.mySavedLearningItems.totalCount}</Text>
+      {data.mySavedLearningItems.edges.length === 0 && <Text>No saved expressions yet. Find a meaning in Search to save.</Text>}
       {data.mySavedLearningItems.edges.map((edge) => edge?.node && <Pressable key={edge.node.id} accessibilityRole="button" onPress={() => onOpenDetail(edge.node.lexeme.id, edge.node.sense.id)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
         <Surface style={styles.row}>
           <View style={styles.rowText}><Text>{edge.node.lexeme.canonicalLemma}</Text><Text tone="secondary">{preferredGloss(edge.node.sense.glosses)}</Text></View>
           <Text tone="secondary">›</Text>
         </Surface>
       </Pressable>)}
-      {paginationFailed && <Text accessibilityRole="alert">다음 표현을 불러오지 못했어요. 다시 시도해 주세요.</Text>}
-      {hasNext && <Button label={paginationFailed ? "다시 불러오기" : "더 보기"} variant="plain" loading={isLoadingNext} onPress={handleLoadMore} />}
+      {paginationFailed && <Text accessibilityRole="alert">Couldn’t load more expressions. Try again.</Text>}
+      {hasNext && <Button label={paginationFailed ? "Try again" : "Show more"} variant="plain" loading={isLoadingNext} onPress={handleLoadMore} />}
     </ScrollView>
   </Surface>;
 }
 
 function preferredGloss(glosses: readonly { languageTag: string; text: string }[]): string {
-  return glosses.find((gloss) => gloss.languageTag === "ko")?.text ?? glosses.find((gloss) => gloss.languageTag === "en")?.text ?? glosses[0]?.text ?? "뜻이 없어요";
+  return glosses.find((gloss) => gloss.languageTag === "ko")?.text ?? glosses.find((gloss) => gloss.languageTag === "en")?.text ?? glosses[0]?.text ?? "No definition available";
 }
 const styles = StyleSheet.create({ page: { flex: 1 }, content: { padding: 20, paddingBottom: 40, gap: 16 }, row: { borderRadius: 16, padding: 16, flexDirection: "row", alignItems: "center", gap: 12 }, rowText: { flex: 1, gap: 4 } });

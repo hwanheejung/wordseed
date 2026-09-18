@@ -123,17 +123,17 @@ export function DictionaryLexemeDetail({
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>표제어</Text>
+        <Text style={styles.sectionTitle}>Headwords</Text>
         {lexeme.lemmas.map((lemma) => (
           <Text key={lemma.id} style={styles.body}>
-            {lemma.value} · {lemma.languageTag}{lemma.isPrimary ? " · 대표" : ""}
+            {lemma.value} · {lemma.languageTag}{lemma.isPrimary ? " · Primary" : ""}
           </Text>
         ))}
       </View>
 
       {lexeme.forms.length > 0 ? (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>형태와 발음</Text>
+          <Text style={styles.sectionTitle}>Forms and pronunciation</Text>
           {lexeme.forms.map((form) => (
             <View key={form.id} style={styles.subsection}>
               {form.representations.map((representation) => (
@@ -158,25 +158,25 @@ export function DictionaryLexemeDetail({
 
       {lexeme.senses.map((sense) => (
         <View key={sense.id} style={styles.senseCard}>
-          <Text style={styles.senseTitle}>의미 {sense.order}</Text>
+          <Text style={styles.senseTitle}>Meaning {sense.order}</Text>
 
           {sense.glosses.map((gloss) => (
             <View key={gloss.id} style={styles.block}>
-              <Text style={styles.label}>뜻 · {gloss.languageTag}</Text>
+              <Text style={styles.label}>Meaning · {gloss.languageTag}</Text>
               <Text style={styles.body}>{gloss.text}</Text>
             </View>
           ))}
 
           {sense.synset?.definitions.map((definition) => (
             <View key={definition.id} style={styles.block}>
-              <Text style={styles.label}>공유 개념 · {definition.languageTag}</Text>
+              <Text style={styles.label}>Shared definition · {definition.languageTag}</Text>
               <Text style={styles.body}>{definition.text}</Text>
             </View>
           ))}
 
           {sense.examples.map((example) => (
             <View key={example.id} style={styles.block}>
-              <Text style={styles.label}>예문 · {example.languageTag}</Text>
+              <Text style={styles.label}>Example · {example.languageTag}</Text>
               <Text style={styles.body}>{example.text}</Text>
               {example.translations.map((translation) => (
                 <Text key={translation.id} style={styles.translation}>
@@ -197,7 +197,7 @@ export function DictionaryLexemeDetail({
 
           {sense.usages.length > 0 ? (
             <View style={styles.block}>
-              <Text style={styles.label}>사용 정보</Text>
+              <Text style={styles.label}>Usage</Text>
               {sense.usages.map((usage) => (
                 <Text key={usage.id} style={styles.meta}>
                   {formatUsage(usage)}
@@ -208,7 +208,7 @@ export function DictionaryLexemeDetail({
 
           {sense.recommendations.length > 0 ? (
             <View style={styles.recommendations}>
-              <Text style={styles.recommendationHeading}>관련 단어·표현</Text>
+              <Text style={styles.recommendationHeading}>Related words and expressions</Text>
               {sense.recommendations.map((recommendation) => (
                 <Pressable
                   key={`${recommendation.targetLexeme.id}-${recommendation.targetSense.id}`}
@@ -267,7 +267,7 @@ function getPreferredGloss(
     glosses.find(({ languageTag }) => languageTag === "ko")?.text ??
     glosses.find(({ languageTag }) => languageTag === "en")?.text ??
     glosses[0]?.text ??
-    "뜻 없음"
+    "No definition available"
   );
 }
 
@@ -285,7 +285,7 @@ function formatPronunciation(pronunciation: {
     pronunciation.syllabification,
     pronunciation.audioUrl === null || pronunciation.audioUrl === undefined
       ? null
-      : "오디오 있음",
+      : "Audio available",
   ].filter((value): value is string => value !== null && value !== undefined).join(" · ");
 }
 
@@ -300,25 +300,25 @@ function formatUsage(usage: {
     usage.corpus,
     usage.regionTag,
     usage.register,
-    usage.rank === null || usage.rank === undefined ? null : `순위 ${usage.rank}`,
-    usage.score === null || usage.score === undefined ? null : `점수 ${usage.score}`,
+    usage.rank === null || usage.rank === undefined ? null : `Rank ${usage.rank}`,
+    usage.score === null || usage.score === undefined ? null : `Score ${usage.score}`,
   ].filter((value): value is string => value !== null && value !== undefined).join(" · ");
 }
 
 function getRecommendationReasonLabel(reason: string): string {
   switch (reason) {
-    case "SAME_SYNSET": return "같은 의미";
-    case "DERIVED_FROM": return "기본형";
-    case "DERIVATIVE": return "파생 표현";
-    case "CONFUSABLE": return "헷갈리기 쉬운 표현";
-    case "ANTONYM": return "반대말";
-    case "RELATED": return "관련 표현";
-    case "HYPERNYM": return "더 넓은 개념";
-    case "HYPONYM": return "더 구체적인 표현";
-    case "HOLONYM": return "전체 개념";
-    case "MERONYM": return "부분 개념";
-    case "SYNONYM": return "유의어";
-    case "TRANSLATION": return "번역 표현";
-    default: return "관련 표현";
+    case "SAME_SYNSET": return "Same meaning";
+    case "DERIVED_FROM": return "Base form";
+    case "DERIVATIVE": return "Derived expression";
+    case "CONFUSABLE": return "Commonly confused";
+    case "ANTONYM": return "Antonym";
+    case "RELATED": return "Related expression";
+    case "HYPERNYM": return "Broader concept";
+    case "HYPONYM": return "More specific expression";
+    case "HOLONYM": return "Whole";
+    case "MERONYM": return "Part";
+    case "SYNONYM": return "Synonym";
+    case "TRANSLATION": return "Translation";
+    default: return "Related expression";
   }
 }

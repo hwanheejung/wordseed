@@ -28,8 +28,8 @@ export function SaveDictionarySenseButton({ senseId }: SaveDictionarySenseButton
 
   return (
     <View style={{ gap: 8 }}>
-      <Button label={status === "saved" ? "저장됨" : status === "error" ? "다시 저장" : "이 뜻 저장"} loading={isSaving} disabled={status === "saved"} onPress={handleSave} />
-      {status === "error" && <Text accessibilityRole="alert" variant="caption">저장하지 못했어요. 다시 시도해 주세요.</Text>}
+      <Button label={status === "saved" ? "Saved" : status === "error" ? "Try again" : "Save meaning"} loading={isSaving} disabled={status === "saved"} onPress={handleSave} />
+      {status === "error" && <Text accessibilityRole="alert" variant="caption">Couldn’t save this meaning. Try again.</Text>}
     </View>
   );
 }
