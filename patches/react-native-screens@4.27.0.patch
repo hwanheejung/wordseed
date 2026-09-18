@@ -1,0 +1,184 @@
+diff --git a/ios/tabs/host/RNSTabBarController.mm b/ios/tabs/host/RNSTabBarController.mm
+index 06c1957571fa2c0b491e9276e920f849ff955373..52b7c3dff7077cbddf5d0ccf9b0c8ce1e8303612 100644
+--- a/ios/tabs/host/RNSTabBarController.mm
++++ b/ios/tabs/host/RNSTabBarController.mm
+@@ -202,8 +202,34 @@ static void rns_pushViewController(__unsafe_unretained id self,
+   }
+ }
+ 
++// iOS 27+: `.tabs` is authoritative for selection.
++- (nullable __kindof UIViewController *)selectedViewController
++{
++  if (@available(iOS 27.0, *)) {
++    if (self.tabs.count > 0) {
++      return self.selectedTab.viewController;
++    }
++  }
++  return [super selectedViewController];
++}
++
+ - (void)setSelectedViewController:(__kindof UIViewController *)selectedViewController
+ {
++  if (@available(iOS 27.0, *)) {
++    if (self.tabs.count > 0) {
++      for (UITab *tab in self.tabs) {
++        if (tab.viewController == selectedViewController) {
++          self.selectedTab = tab;
++          break;
++        }
++      }
++      if (!_isHandlingExplicitSelectionUpdate) {
++        [self reconcileNavigationStateWithUIKitState];
++      }
++      return;
++    }
++  }
++
+   [super setSelectedViewController:selectedViewController];
+   if (!_isHandlingExplicitSelectionUpdate) {
+     [self reconcileNavigationStateWithUIKitState];
+@@ -462,6 +488,39 @@ static void rns_pushViewController(__unsafe_unretained id self,
+   _isHandlingExplicitSelectionUpdate = NO;
+ }
+ 
++// iOS 27+: `.tabs` delegate equivalents.
++- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectTab:(UITab *)tab API_AVAILABLE(ios(18.0))
++{
++  RCTAssert(tabBarController == self, @"[RNScreens] Unexpected type of controller: %@", tabBarController.class);
++
++  UIViewController *viewController = tab.viewController;
++  BOOL repeatedSelection = self.selectedTab == tab;
++
++  if (repeatedSelection) {
++    // See the matching comment in `shouldSelectViewController:` above.
++    [self userDidRepeatViewControllerSelection:viewController];
++    return NO;
++  }
++
++  if ([self shouldPreventNativeTabSelection:viewController]) {
++    [self onDidPreventUserFromSelectingViewControllerWithKey:[self screenKeyForViewController:viewController]];
++    return NO;
++  }
++
++  _isHandlingExplicitSelectionUpdate = YES;
++  return YES;
++}
++
++- (void)tabBarController:(UITabBarController *)tabBarController
++             didSelectTab:(UITab *)selectedTab
++              previousTab:(nullable UITab *)previousTab API_AVAILABLE(ios(18.0))
++{
++  RCTAssert(self == tabBarController, @"[RNScreens] Unexpected type of controller: %@", tabBarController.class);
++
++  [self userDidSelectViewController:selectedTab.viewController];
++  _isHandlingExplicitSelectionUpdate = NO;
++}
++
+ #pragma mark - UINavigationControllerDelegate
+ 
+ - (void)navigationController:(UINavigationController *)navigationController
+@@ -491,6 +550,32 @@ static void rns_pushViewController(__unsafe_unretained id self,
+   }
+ }
+ 
++// `<Stack.SearchBar>` sets `navigationItem.searchController` on the nested Stack's
++// topViewController, two containment levels below `screenController`. `automaticallyActivatesSearch`
++// only inspects `screenController.navigationItem` itself, so mirror it up.
++- (void)rns_mirrorSearchControllerForTabScreenController:(RNSTabsScreenViewController *)screenController
++    API_AVAILABLE(ios(27.0))
++{
++  UINavigationController *nestedNav = nil;
++  for (UIViewController *child in screenController.childViewControllers) {
++    if ([child isKindOfClass:UINavigationController.class]) {
++      nestedNav = static_cast<UINavigationController *>(child);
++      break;
++    }
++  }
++
++  if (nestedNav == nil || nestedNav.topViewController == nil) {
++    return;
++  }
++
++  UINavigationItem *sourceItem = nestedNav.topViewController.navigationItem;
++  screenController.navigationItem.searchController = sourceItem.searchController;
++  if (sourceItem.searchController != nil) {
++    screenController.navigationItem.preferredSearchBarPlacement = sourceItem.preferredSearchBarPlacement;
++    screenController.navigationItem.hidesSearchBarWhenScrolling = sourceItem.hidesSearchBarWhenScrolling;
++  }
++}
++
+ - (void)updateReactChildrenControllers
+ {
+   RNSLog(@"TabBarCtrl updateReactChildrenControllers");
+@@ -501,6 +586,37 @@ static void rns_pushViewController(__unsafe_unretained id self,
+     return;
+   }
+ 
++  if (@available(iOS 27.0, *)) {
++    // iOS 27 stopped granting the separated tab-bar treatment to a plain
++    // `UITabBarItem(systemItem: .search)`. Rebuild `.tabs` from the same, already-managed view
++    // controllers, using a real `UISearchTab` for the `role="search"` screen. iOS <= 26 keeps the
++    // plain path below, untouched.
++    NSMutableArray<UITab *> *tabs = [NSMutableArray arrayWithCapacity:_tabScreenControllers.count];
++    for (RNSTabsScreenViewController *screenController in _tabScreenControllers) {
++      __weak RNSTabsScreenViewController *weakScreenController = screenController;
++      UIViewController * (^provider)(UITab *) = ^UIViewController *(UITab *tab) {
++        return weakScreenController;
++      };
++      if (screenController.tabScreenComponentView.systemItem == RNSTabsScreenSystemItemSearch) {
++        [self rns_mirrorSearchControllerForTabScreenController:screenController];
++        UISearchTab *searchTab = [[UISearchTab alloc] initWithViewControllerProvider:provider];
++        searchTab.automaticallyActivatesSearch = YES;
++        [tabs addObject:searchTab];
++      } else {
++        NSString *identifier =
++            [screenController getScreenKeyOrNull] ?: [NSString stringWithFormat:@"%p", screenController];
++        UITabBarItem *item = screenController.tabBarItem;
++        UITab *tab = [[UITab alloc] initWithTitle:item.title ?: @""
++                                             image:item.image
++                                        identifier:identifier
++                            viewControllerProvider:provider];
++        [tabs addObject:tab];
++      }
++    }
++    self.tabs = tabs;
++    return;
++  }
++
+   [self setViewControllers:_tabScreenControllers animated:[[self viewControllers] count] != 0];
+ }
+ 
+@@ -513,7 +629,8 @@ static void rns_pushViewController(__unsafe_unretained id self,
+ 
+ - (void)updateSelectedViewController
+ {
+-  if (_pendingStateUpdate == nil || self.viewControllers.count == 0) {
++  // iOS 27+: use the managed controllers instead of `.viewControllers`.
++  if (_pendingStateUpdate == nil || _tabScreenControllers.count == 0) {
+     return;
+   }
+ 
+@@ -614,7 +731,8 @@ static void rns_pushViewController(__unsafe_unretained id self,
+ 
+ - (void)updateTabBarA11yIfNeeded
+ {
+-  for (UIViewController *tabViewController in self.viewControllers) {
++  // iOS 27+: use the managed controllers instead of `.viewControllers`.
++  for (RNSTabsScreenViewController *tabViewController in _tabScreenControllers) {
+     auto screenView = static_cast<RNSTabsScreenViewController *>(tabViewController).tabScreenComponentView;
+     if (!screenView.tabBarItemNeedsA11yUpdate) {
+       continue;
+@@ -633,11 +751,8 @@ static void rns_pushViewController(__unsafe_unretained id self,
+   if (screenKey == nil) {
+     return nil;
+   }
+-  for (UIViewController *viewController in self.viewControllers) {
+-    RCTAssert([viewController isKindOfClass:RNSTabsScreenViewController.class],
+-              @"[RNScreens] Unexpected type of controller: %@",
+-              viewController.class);
+-    auto *screenViewController = static_cast<RNSTabsScreenViewController *>(viewController);
++  // iOS 27+: use the managed controllers instead of `.viewControllers`.
++  for (RNSTabsScreenViewController *screenViewController in _tabScreenControllers) {
+     if ([screenViewController.getScreenKeyOrNull isEqualToString:screenKey]) {
+       return screenViewController;
+     }

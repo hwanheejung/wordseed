@@ -16,7 +16,7 @@
     "react-native": "0.86.3",
     "react-native-keychain": "^10.0.0",
     "react-native-safe-area-context": "^5.7.0",
-    "react-native-screens": "^4.26.2",
+    "react-native-screens": "^4.27.0",
     "react-native-url-polyfill": "^4.0.0",
     "react-relay": "^21.0.1",
     "relay-runtime": "^21.0.1"
