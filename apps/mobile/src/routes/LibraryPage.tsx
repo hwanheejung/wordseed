@@ -6,9 +6,9 @@ import { QueryBoundary } from "@/shared/relay";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
 import { Button, Surface, Text } from "@/shared/ui";
-import type { LibraryPageQuery } from "./__generated__/LibraryPageQuery.graphql";
-import type { LibraryPage_items$key } from "./__generated__/LibraryPage_items.graphql";
-import type { LibraryPagePaginationQuery } from "./__generated__/LibraryPagePaginationQuery.graphql";
+import type { LibraryPageQuery } from "@/__generated__/LibraryPageQuery.graphql";
+import type { LibraryPage_items$key } from "@/__generated__/LibraryPage_items.graphql";
+import type { LibraryPagePaginationQuery } from "@/__generated__/LibraryPagePaginationQuery.graphql";
 
 export const libraryPageOptions = {
   title: "Library",

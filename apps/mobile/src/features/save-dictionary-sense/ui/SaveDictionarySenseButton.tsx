@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import { graphql, useMutation } from "react-relay";
 import { Button, Text } from "@/shared/ui";
-import type { SaveDictionarySenseButtonMutation } from "./__generated__/SaveDictionarySenseButtonMutation.graphql";
+import type { SaveDictionarySenseButtonMutation } from "@/__generated__/SaveDictionarySenseButtonMutation.graphql";
 
 interface SaveDictionarySenseButtonProps { senseId: string }
 

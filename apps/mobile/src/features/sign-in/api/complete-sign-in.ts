@@ -1,6 +1,6 @@
 import { commitMutation, graphql } from "react-relay";
 import type { Environment } from "relay-runtime";
-import type { completeSignInMutation } from "./__generated__/completeSignInMutation.graphql";
+import type { completeSignInMutation } from "@/__generated__/completeSignInMutation.graphql";
 
 export function completeSignIn(environment: Environment): Promise<string> {
   return new Promise((resolve, reject) => {

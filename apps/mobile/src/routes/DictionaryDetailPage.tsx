@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import { SaveDictionarySenseButton } from "@/features/save-dictionary-sense";
 import { Surface, Text } from "@/shared/ui";
-import type { DictionaryDetailPageQuery } from "./__generated__/DictionaryDetailPageQuery.graphql";
+import type { DictionaryDetailPageQuery } from "@/__generated__/DictionaryDetailPageQuery.graphql";
 
 export const dictionaryDetailPageOptions = {
   title: "Meaning and examples",

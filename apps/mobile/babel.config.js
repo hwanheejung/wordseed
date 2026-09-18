@@ -3,6 +3,8 @@ module.exports = function configureBabel(api) {
 
   return {
     presets: ["babel-preset-expo"],
-    plugins: ["relay"],
+    plugins: [["relay", {
+      artifactDirectory: `${__dirname}/src/__generated__`,
+    }]],
   };
 };

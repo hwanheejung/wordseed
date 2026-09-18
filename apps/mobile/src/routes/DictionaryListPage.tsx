@@ -2,7 +2,7 @@ import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
 import { graphql, useLazyLoadQuery } from "react-relay";
 
 import { DictionaryLexemeSummary } from "@/entities/dictionary-lexeme";
-import type { DictionaryListPageQuery } from "./__generated__/DictionaryListPageQuery.graphql";
+import type { DictionaryListPageQuery } from "@/__generated__/DictionaryListPageQuery.graphql";
 
 interface DictionaryListPageProps {
   onSelect: (lexemeId: string) => void;

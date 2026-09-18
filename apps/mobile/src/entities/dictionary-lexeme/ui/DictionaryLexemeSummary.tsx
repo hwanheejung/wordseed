@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { graphql, useFragment } from "react-relay";
 
-import type { DictionaryLexemeSummary_lexeme$key } from "./__generated__/DictionaryLexemeSummary_lexeme.graphql";
+import type { DictionaryLexemeSummary_lexeme$key } from "@/__generated__/DictionaryLexemeSummary_lexeme.graphql";
 
 interface DictionaryLexemeSummaryProps {
   lexeme: DictionaryLexemeSummary_lexeme$key;

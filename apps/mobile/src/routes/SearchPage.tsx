@@ -6,9 +6,9 @@ import { graphql, useLazyLoadQuery, usePaginationFragment } from "react-relay";
 import type { SearchStackParams } from "@/shared/navigation";
 import { QueryBoundary } from "@/shared/relay";
 import { Button, Surface, Text, useUITheme } from "@/shared/ui";
-import type { SearchPageQuery } from "./__generated__/SearchPageQuery.graphql";
-import type { SearchPage_lexemes$key } from "./__generated__/SearchPage_lexemes.graphql";
-import type { SearchPagePaginationQuery } from "./__generated__/SearchPagePaginationQuery.graphql";
+import type { SearchPageQuery } from "@/__generated__/SearchPageQuery.graphql";
+import type { SearchPage_lexemes$key } from "@/__generated__/SearchPage_lexemes.graphql";
+import type { SearchPagePaginationQuery } from "@/__generated__/SearchPagePaginationQuery.graphql";
 
 export const searchPageOptions = {
   title: "Search",
